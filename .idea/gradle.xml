@@ -8,6 +8,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/formatter" />
+            <option value="$PROJECT_DIR$/interpreter" />
+            <option value="$PROJECT_DIR$/lexer" />
+            <option value="$PROJECT_DIR$/linter" />
+            <option value="$PROJECT_DIR$/parser" />
           </set>
         </option>
       </GradleProjectSettings>
