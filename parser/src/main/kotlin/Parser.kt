@@ -9,6 +9,9 @@ class Parser(private val tokens: List<Token>) {
     private var currentTokenIndex = 0
 
     fun generateAST(): BinaryNode? {
+        if(tokens.isEmpty()) {
+            return null
+        }
         return parseExpression()
     }
 
@@ -20,7 +23,7 @@ class Parser(private val tokens: List<Token>) {
         var node: BinaryNode? = parseMultiplication()
 
         while (currentTokenIndex < tokens.size && (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
-            val token = consumeCurrentToken()
+            val token = getTokenAndAdvance()
             val rightNode = parseMultiplication()
             node = BinaryOperationNode(token.value, node, rightNode)
         }
@@ -29,12 +32,12 @@ class Parser(private val tokens: List<Token>) {
     }
 
     fun parseMultiplication(): BinaryNode? {
-        var node: BinaryNode? = parseContent() as? BinaryNode
+        var node: BinaryNode? = parseContent()
 
         while (currentTokenIndex < tokens.size &&
             (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))) {
-            val token = consumeCurrentToken()
-            val rightNode = parseContent() as? BinaryNode
+            val token = getTokenAndAdvance()
+            val rightNode = parseContent()
 
             node = BinaryOperationNode(token.value, node, rightNode)
         }
@@ -43,51 +46,50 @@ class Parser(private val tokens: List<Token>) {
     }
 
 
-
-    fun parseContent(): BinaryNode? {
+    private fun parseContent(): BinaryNode? {
         val currentToken = getCurrentToken()
 
         return when (currentToken.type) {
             TokenType.NUMBER_TYPE -> {
-                consumeCurrentToken()
+                getTokenAndAdvance()
                 NumberOperatorNode(currentToken.value.toDouble())
             }
             TokenType.IDENTIFIER -> {
-                consumeCurrentToken()
+                getTokenAndAdvance()
                 IdentifierOperatorNode(currentToken.value)
             }
             TokenType.STRING_TYPE -> {
-                consumeCurrentToken()
+                getTokenAndAdvance()
                 StringOperatorNode(currentToken.value)
             }
             TokenType.OPEN_PARENTHESIS -> {
-                consumeCurrentToken()
+                getTokenAndAdvance()
                 val node = parseExpression()
-                this.getTokenAndAdvance(TokenType.CLOSE_PARENTHESIS)
-                node as? BinaryNode
+                this.getTokenAndAdvance()
+                node
             }
+            /*TokenType.STRING_LITERAL -> {
+                getTokenAndAdvance()
+                StringOperatorNode(currentToken.value)
+            }
+            TokenType.NUMERIC_LITERAL -> {
+                getTokenAndAdvance()
+                NumberOperatorNode(currentToken.value.toDouble())
+            }*/
             else -> null
         }
     }
+
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentToken().type == type
     }
 
-    private fun consumeCurrentToken(): Token {
-        val token = getCurrentToken()
-        currentTokenIndex++
-        return token
-    }
 
-    private fun getTokenAndAdvance(type: TokenType): Token {
+    private fun getTokenAndAdvance(): Token {
         val currentToken = getCurrentToken()
-        if (currentToken.type == type) {
-            currentTokenIndex++
-            return currentToken
-        } else {
-            throw RuntimeException("Expected token of type $type but found ${currentToken.type}")
-        }
+        currentTokenIndex++
+        return currentToken
     }
 
     private fun getCurrentToken(): Token {
@@ -154,11 +156,7 @@ class Parser(private val tokens: List<Token>) {
         return statementNode
     }
 
-    fun parseContent(): Node {
-        val currentToken = getCurrentToken()
-        currentTokenIndex++
-        return when (currentToken.type) {
-            TokenType.STRING_LITERAL -> {
+    TokenType.STRING_LITERAL -> {
                 Node(currentToken.type, headValue = currentToken.value)
             }
             TokenType.NUMERIC_LITERAL -> {
@@ -169,8 +167,6 @@ class Parser(private val tokens: List<Token>) {
             }
             else -> {
                 throw RuntimeException("Token de tipo ${currentToken.type} inesperado en la línea ${currentTokenIndex}")
-            }
-        }
-    }*/
+            }*/
 
 }

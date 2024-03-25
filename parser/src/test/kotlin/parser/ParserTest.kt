@@ -1,5 +1,6 @@
 
 import ast.BinaryOperationNode
+import ast.IdentifierOperatorNode
 import ast.NumberOperatorNode
 import common.token.Token
 import common.token.TokenType
@@ -10,19 +11,19 @@ import kotlin.test.assertEquals
 
 class ParserTest {
 
-    private val tokens = listOf(
-        Token(TokenType.NUMBER_TYPE, "5", 1),
-        Token(TokenType.MINUS, "-", 2),
-        Token(TokenType.NUMBER_TYPE, "3", 3)
-    )
-
     @Test
     fun testParseAddition() {
+        val tokens = listOf(
+            Token(TokenType.NUMBER_TYPE, "5", 1),
+            Token(TokenType.PLUS, "+", 2),
+            Token(TokenType.NUMBER_TYPE, "3", 3)
+        )
+
         val parser = Parser(tokens)
         val result = parser.parseAddition()
 
         val expected = BinaryOperationNode(
-            "-",
+            "+",
             NumberOperatorNode(5.0),
             NumberOperatorNode(3.0)
         )
@@ -31,14 +32,47 @@ class ParserTest {
     }
 
     @Test
-    fun testParser() {
+    fun testParseMultiplication() {
+        val tokens = listOf(
+            Token(TokenType.NUMBER_TYPE, "2", 1),
+            Token(TokenType.MULTIPLY, "*", 2),
+            Token(TokenType.NUMBER_TYPE, "8", 3)
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.parseMultiplication()
+
+        val expected = BinaryOperationNode(
+            "*",
+            NumberOperatorNode(2.0),
+            NumberOperatorNode(8.0)
+        )
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testParserComplexExpression() {
+        val tokens = listOf(
+            Token(TokenType.NUMBER_TYPE, "5", 1),
+            Token(TokenType.PLUS, "+", 2),
+            Token(TokenType.NUMBER_TYPE, "3", 3),
+            Token(TokenType.MULTIPLY, "*", 4),
+            Token(TokenType.NUMBER_TYPE, "2", 5)
+        )
+
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
+        // El resultado esperado es: (5 + (3 * 2))
         val expected = BinaryOperationNode(
-                "-",
-                NumberOperatorNode(5.0),
-                NumberOperatorNode(3.0)
+            "+",
+            NumberOperatorNode(5.0),
+            BinaryOperationNode(
+                "*",
+                NumberOperatorNode(3.0),
+                NumberOperatorNode(2.0)
+            )
         )
 
         assertEquals(expected, result)
