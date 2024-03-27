@@ -13,7 +13,8 @@ repositories {
 subprojects {
     println("Configuring subproject: $name")
     apply {
-      //  plugin("org.jlleitschuh.gradle.ktlint")
+        //TODO: Actualizar el codigo a las condiciones de este linter.
+       //plugin("org.jlleitschuh.gradle.ktlint")
         plugin("org.jetbrains.kotlin.jvm")
     }
     dependencies {
