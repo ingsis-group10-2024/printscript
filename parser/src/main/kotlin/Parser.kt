@@ -22,6 +22,7 @@ class Parser(private val tokens: List<Token>) {
     fun parseAddition(): BinaryNode? {
         var node: BinaryNode? = parseMultiplication()
 
+        // todo voy a tener que cambiar el tokens.size porque en la lista voy a tener muchas lineas de codigo???
         while (currentTokenIndex < tokens.size && (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
             val token = getTokenAndAdvance()
             val rightNode = parseMultiplication()
@@ -45,6 +46,32 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
+    fun parseDeclaration(): BinaryNode? {
+
+        getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.IDENTIFIER)) {
+            throw RuntimeException("Expected identifier after 'let' but found: " + getCurrentToken().value)
+        }
+        val identifier = getTokenAndAdvance().value
+
+        if (!isCurrentToken(TokenType.COLON)) {
+            throw RuntimeException("Expected ':' after identifier")
+        }
+        getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
+            throw RuntimeException("Expected type after ':'")
+        }
+        val type = getTokenAndAdvance().value
+
+        if (!isCurrentToken(TokenType.SEMICOLON)) {
+            throw RuntimeException("Expected ';' at the end of the declaration")
+        }
+        getTokenAndAdvance()
+
+        return DeclarationNode(identifier, type)
+    }
 
     private fun parseContent(): BinaryNode? {
         val currentToken = getCurrentToken()
@@ -67,6 +94,10 @@ class Parser(private val tokens: List<Token>) {
                 val node = parseExpression()
                 this.getTokenAndAdvance()
                 node
+            }
+            TokenType.LET -> {
+                // getTokenAndAdvance() por alguna razon no funciona aca
+                parseDeclaration()
             }
             /*TokenType.STRING_LITERAL -> {
                 getTokenAndAdvance()

@@ -1,5 +1,6 @@
 
 import ast.BinaryOperationNode
+import ast.DeclarationNode
 import ast.IdentifierOperatorNode
 import ast.NumberOperatorNode
 import common.token.Token
@@ -74,6 +75,24 @@ class ParserTest {
                 NumberOperatorNode(2.0)
             )
         )
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testParseDeclaration() {
+        val tokens = listOf(
+            Token(TokenType.LET, "let", 1),
+            Token(TokenType.IDENTIFIER, "x", 2),
+            Token(TokenType.COLON, ":", 3),
+            Token(TokenType.NUMBER_TYPE, "number", 4),
+            Token(TokenType.SEMICOLON, ";", 5)
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.parseDeclaration()
+
+        val expected = DeclarationNode("x", "number")
 
         assertEquals(expected, result)
     }
