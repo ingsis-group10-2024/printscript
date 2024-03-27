@@ -15,9 +15,9 @@ class ParserTest {
     @Test
     fun testParseAddition() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "5", 1),
-            Token(TokenType.PLUS, "+", 2),
-            Token(TokenType.NUMBER_TYPE, "3", 3)
+            Token(TokenType.NUMBER_TYPE, "5", 1,0),
+            Token(TokenType.PLUS, "+", 2,0),
+            Token(TokenType.NUMBER_TYPE, "3", 3,0)
         )
 
         val parser = Parser(tokens)
@@ -35,9 +35,9 @@ class ParserTest {
     @Test
     fun testParseMultiplication() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "2", 1),
-            Token(TokenType.MULTIPLY, "*", 2),
-            Token(TokenType.NUMBER_TYPE, "8", 3)
+            Token(TokenType.NUMBER_TYPE, "2", 1,0),
+            Token(TokenType.MULTIPLY, "*", 2,0),
+            Token(TokenType.NUMBER_TYPE, "8", 3,0)
         )
 
         val parser = Parser(tokens)
@@ -55,11 +55,11 @@ class ParserTest {
     @Test
     fun testParserComplexExpression() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "5", 1),
-            Token(TokenType.PLUS, "+", 2),
-            Token(TokenType.NUMBER_TYPE, "3", 3),
-            Token(TokenType.MULTIPLY, "*", 4),
-            Token(TokenType.NUMBER_TYPE, "2", 5)
+            Token(TokenType.NUMBER_TYPE, "5", 1,0),
+            Token(TokenType.PLUS, "+", 2,0),
+            Token(TokenType.NUMBER_TYPE, "3", 3,0),
+            Token(TokenType.MULTIPLY, "*", 4,0),
+            Token(TokenType.NUMBER_TYPE, "2", 5,0)
         )
 
         val parser = Parser(tokens)
@@ -82,11 +82,11 @@ class ParserTest {
     @Test
     fun testParseDeclaration() {
         val tokens = listOf(
-            Token(TokenType.LET, "let", 1),
-            Token(TokenType.IDENTIFIER, "x", 2),
-            Token(TokenType.COLON, ":", 3),
-            Token(TokenType.NUMBER_TYPE, "number", 4),
-            Token(TokenType.SEMICOLON, ";", 5)
+            Token(TokenType.LET, "let", 1,0),
+            Token(TokenType.IDENTIFIER, "x", 2,0),
+            Token(TokenType.COLON, ":", 3,0),
+            Token(TokenType.NUMBER_TYPE, "number", 4,0),
+            Token(TokenType.SEMICOLON, ";", 5,0)
         )
 
         val parser = Parser(tokens)
