@@ -4,57 +4,55 @@ import common.token.Token
 import common.token.TokenType
 
 class Lexer(private val input: String) {
+    private var position: Int = 0 // position in the input
+    private var lineNumber: Int = 1
 
-    private var position: Int = 0; //position in the input
-    private var lineNumber: Int = 1;
-
-    fun convertToToken(): List<Token>{
+    fun convertToToken(): List<Token> {
         val tokens = mutableListOf<Token>()
 
-        while (position < input.length){
-
-            when (val currentChar = input[position]){
-                ' ', '\t', '\n', '\r'-> {
+        while (position < input.length) {
+            when (val currentChar = input[position]) {
+                ' ', '\t', '\n', '\r' -> {
                     tokens.add(Token(TokenType.WHITESPACE, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '+'-> {
+                '+' -> {
                     tokens.add(Token(TokenType.PLUS, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '-'-> {
+                '-' -> {
                     tokens.add(Token(TokenType.MINUS, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '*'-> {
+                '*' -> {
                     tokens.add(Token(TokenType.TIMES, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '/'-> {
+                '/' -> {
                     tokens.add(Token(TokenType.DIVIDE, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '='-> {
+                '=' -> {
                     tokens.add(Token(TokenType.EQUALS, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                ';'-> {
+                ';' -> {
                     tokens.add(Token(TokenType.SEMICOLON, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                ':', ','-> {
+                ':', ',' -> {
                     tokens.add(Token(TokenType.COLON, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '>'-> {
+                '>' -> {
                     tokens.add(Token(TokenType.GREATER_THAN, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '<'-> {
+                '<' -> {
                     tokens.add(Token(TokenType.LESSER_THAN, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
-                '('-> {
+                '(' -> {
                     tokens.add(Token(TokenType.OPEN_PARENTHESIS, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
@@ -73,7 +71,7 @@ class Lexer(private val input: String) {
                     position++ // moves past the closing quote
                 }
                 else -> {
-                     if (currentChar.isLetter()) {
+                    if (currentChar.isLetter()) {
                         val start = position
                         while (position < input.length && input[position].isLetterOrDigit()) {
                             position++
@@ -93,20 +91,17 @@ class Lexer(private val input: String) {
                             "Int" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, lineNumber, start + 1))
                         }
-                    }
-                    else if (currentChar.isDigit()) {
+                    } else if (currentChar.isDigit()) {
                         val start = position
                         while (position < input.length && input[position].isDigit()) {
                             position++
                         }
                         tokens.add(Token(TokenType.NUMERIC_LITERAL, input.substring(start, position), lineNumber, start + 1))
-                    }
-                     else {
+                    } else {
                         position++
                     }
                 }
             }
-
         }
         return tokens
     }
