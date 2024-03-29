@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.21"
- //   id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 group = "com.example"
@@ -13,8 +13,7 @@ repositories {
 subprojects {
     println("Configuring subproject: $name")
     apply {
-        //TODO: Actualizar el codigo a las condiciones de este linter.
-       //plugin("org.jlleitschuh.gradle.ktlint")
+        plugin("org.jlleitschuh.gradle.ktlint")
         plugin("org.jetbrains.kotlin.jvm")
     }
     dependencies {
