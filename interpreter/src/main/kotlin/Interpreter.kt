@@ -1,8 +1,5 @@
 import ast.BinaryNode
 
-class Interpreter(val binaryNode: BinaryNode) {
-
-    fun interpret(binaryNode: BinaryNode){
-
-    }
+interface Interpreter {
+    fun interpret(astList: List<BinaryNode>) : Any?
 }

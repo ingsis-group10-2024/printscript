@@ -1,0 +1,2 @@
+sealed interface InterpreterResponse
+
