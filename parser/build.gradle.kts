@@ -2,7 +2,7 @@ plugins {
     id("jacoco")
 }
 
-dependencies{
+dependencies {
     implementation(project(":common"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
@@ -26,18 +26,3 @@ jacoco {
     toolVersion = "0.8.11"
     layout.buildDirectory.dir("customJacocoReportDir")
 }
-
-
-
-
-/*
-tasks.jacocoTestReport{
-    dependsOn("test")
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-
-
- */
