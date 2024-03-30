@@ -5,4 +5,6 @@ data class Token(
     val value: String,
     val position: Int,
     val lineNumber: Int,
-)
+) {
+    constructor(type: TokenType, value: String, position: Int) : this(type, value, position, 0)
+}
