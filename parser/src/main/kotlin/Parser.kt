@@ -23,8 +23,8 @@ class Parser(private val tokens: List<Token>) {
         return parseAddition()
     }
 
-    fun parseAddition(): BinaryNode? {
-        var node: BinaryNode? = parseMultiplication()
+    fun parseAddition(): ASTNode? {
+        var node: ASTNode? = parseMultiplication()
         while (currentTokenIndex < tokens.size &&
             (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
             val token = getTokenAndAdvance()
@@ -34,8 +34,8 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-    fun parseMultiplication(): BinaryNode? {
-        var node: BinaryNode? = parseContent() as BinaryNode?
+    fun parseMultiplication(): ASTNode? {
+        var node: ASTNode? = parseContent()
         while (currentTokenIndex < tokens.size &&
             (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))) {
             val token = getTokenAndAdvance()

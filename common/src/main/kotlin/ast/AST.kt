@@ -1,5 +1,8 @@
 package ast
 
+import common.token.Token
+import common.token.TokenType
+
 sealed interface ASTNode
 
 sealed interface Assignation : ASTNode  //Cuando el nodo representa asignaciones
@@ -13,7 +16,4 @@ data class DeclarationNode(val identifier: String, val type: String): ASTNode //
 data class DeclarationAssignationNode(val declaration: DeclarationNode, val assignation: BinaryNode): Assignation // Ej: let x: number = 5   let y: string = "Hello"
 data class AssignationNode(val identifier: String, val assignation: BinaryNode): Assignation // Ej: x = 5       x = 2 + 3 * 4
 data class MethodNode(val identifier: String, val value: BinaryNode) : ASTNode // Ej: print(x)
-
-
-
 
