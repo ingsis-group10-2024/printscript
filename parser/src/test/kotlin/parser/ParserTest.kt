@@ -10,9 +10,9 @@ class ParserTest {
     @Test
     fun testParseAddition() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "5", 1, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 1, 0),
             Token(TokenType.PLUS, "+", 2, 0),
-            Token(TokenType.NUMBER_TYPE, "3", 3, 0)
+            Token(TokenType.NUMERIC_LITERAL, "3", 3, 0)
         )
 
         val parser = Parser(tokens)
@@ -30,9 +30,9 @@ class ParserTest {
     @Test
     fun testParseMultiplication() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "2", 1, 0),
+            Token(TokenType.NUMERIC_LITERAL, "2", 1, 0),
             Token(TokenType.MULTIPLY, "*", 2, 0),
-            Token(TokenType.NUMBER_TYPE, "8", 3, 0)
+            Token(TokenType.NUMERIC_LITERAL, "8", 3, 0)
         )
 
         val parser = Parser(tokens)
@@ -50,11 +50,11 @@ class ParserTest {
     @Test
     fun testParserComplexExpression() {
         val tokens = listOf(
-            Token(TokenType.NUMBER_TYPE, "5", 1, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 1, 0),
             Token(TokenType.PLUS, "+", 2, 0),
-            Token(TokenType.NUMBER_TYPE, "3", 3, 0),
+            Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
             Token(TokenType.MULTIPLY, "*", 4, 0),
-            Token(TokenType.NUMBER_TYPE, "2", 5, 0)
+            Token(TokenType.NUMERIC_LITERAL, "2", 5, 0)
         )
 
         val parser = Parser(tokens)
@@ -80,7 +80,7 @@ class ParserTest {
             Token(TokenType.LET, "let", 1, 0),
             Token(TokenType.IDENTIFIER, "x", 2, 0),
             Token(TokenType.COLON, ":", 3, 0),
-            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+            Token(TokenType.NUMERIC_LITERAL, "number", 4, 0),
             Token(TokenType.SEMICOLON, ";", 5, 0)
         )
 
@@ -93,21 +93,21 @@ class ParserTest {
     }
 
     @Test
-    fun testGenerateAST(){
+    fun testGenerateMixedAST(){
         val tokens = listOf(
             Token(TokenType.LET, "let", 1, 0),
             Token(TokenType.IDENTIFIER, "x", 2, 0),
             Token(TokenType.COLON, ":", 3, 0),
-            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+            Token(TokenType.NUMERIC_LITERAL, "number", 4, 0),
             Token(TokenType.SEMICOLON, ";", 5, 1),
-            Token(TokenType.NUMBER_TYPE, "5", 6, 1),
+            Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
             Token(TokenType.PLUS, "+", 7, 1),
-            Token(TokenType.NUMBER_TYPE, "3", 8, 1),
+            Token(TokenType.NUMERIC_LITERAL, "3", 8, 1),
             Token(TokenType.MULTIPLY, "*", 9, 1),
-            Token(TokenType.NUMBER_TYPE, "2", 10, 1),
-            Token(TokenType.NUMBER_TYPE, "80", 11, 2),
+            Token(TokenType.NUMERIC_LITERAL, "2", 10, 1),
+            Token(TokenType.NUMERIC_LITERAL, "80", 11, 2),
             Token(TokenType.STRING_TYPE, "Hola", 12, 3),
-            Token(TokenType.IDENTIFIER, "x", 13, 4)
+            //Token(TokenType.IDENTIFIER, "x", 13, 4)
         )
 
         val parser = Parser(tokens)
@@ -125,10 +125,27 @@ class ParserTest {
             ),
             NumberOperatorNode(80.0),
             StringOperatorNode("Hola"),
-            IdentifierOperatorNode("x")
+            //IdentifierOperatorNode("x")
         )
 
         assertEquals(expected, result)
     }
+
+    @Test
+    fun testParseAssignation() {
+        val tokens = listOf(
+            Token(TokenType.IDENTIFIER, "x", 1, 0),
+            Token(TokenType.EQUALS, "=", 2, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected = listOf(AssignationNode("x",  NumberOperatorNode(5.0)))
+
+        assertEquals(expected, result)
+    }
+
 
 }

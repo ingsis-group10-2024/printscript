@@ -88,7 +88,7 @@ class Lexer(private val input: String) {
                             "private" -> tokens.add(Token(TokenType.PRIVATE, word, lineNumber, start + 1))
                             "protected" -> tokens.add(Token(TokenType.PROTECTED, word, lineNumber, start + 1))
                             "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, lineNumber, start + 1))
-                            "Int" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
+                            "Int" -> tokens.add(Token(TokenType.NUMERIC_LITERAL, word, lineNumber, start + 1))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, lineNumber, start + 1))
                         }
                     } else if (currentChar.isDigit()) {

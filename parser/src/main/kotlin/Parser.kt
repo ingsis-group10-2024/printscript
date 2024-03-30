@@ -50,45 +50,17 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-
-
-
-    fun parseDeclaration(): DeclarationNode {
-        getTokenAndAdvance()
-        if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            throw RuntimeException("Expected identifier after 'let' but found: " + getCurrentToken().value)
-        }
-        val identifier = getTokenAndAdvance().value
-
-        if (!isCurrentToken(TokenType.COLON)) {
-            throw RuntimeException("Expected ':' after identifier")
-        }
-        getTokenAndAdvance()
-
-        if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
-            throw RuntimeException("Expected type after ':'")
-        }
-        val type = getTokenAndAdvance().value
-
-        if (!isCurrentToken(TokenType.SEMICOLON)) {
-            throw RuntimeException("Expected ';' at the end of the declaration")
-        }
-        getTokenAndAdvance()
-
-        return DeclarationNode(identifier, type)
-    }
-
     private fun parseContent(): ASTNode? {
         val currentToken = getCurrentToken()
 
         return when (currentToken.type) {
-            TokenType.NUMBER_TYPE -> {
+            TokenType.NUMERIC_LITERAL -> {
                 getTokenAndAdvance()
                 NumberOperatorNode(currentToken.value.toDouble())
             }
             TokenType.IDENTIFIER -> {
-                getTokenAndAdvance()
-                IdentifierOperatorNode(currentToken.value)
+                // Es una assignation:  x=5
+                parseAssignation()
             }
             TokenType.STRING_TYPE -> {
                 getTokenAndAdvance()
@@ -104,6 +76,48 @@ class Parser(private val tokens: List<Token>) {
                 parseDeclaration()
             }
             else -> null
+        }
+    }
+
+    fun parseDeclaration(): DeclarationNode {
+        getTokenAndAdvance()
+        if (!isCurrentToken(TokenType.IDENTIFIER)) {
+            throw RuntimeException("Expected identifier after 'let' but found: " + getCurrentToken().value)
+        }
+        val identifier = getTokenAndAdvance().value
+
+        if (!isCurrentToken(TokenType.COLON)) {
+            throw RuntimeException("Expected ':' after identifier")
+        }
+        getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.NUMERIC_LITERAL) && !isCurrentToken(TokenType.STRING_TYPE)) {
+            throw RuntimeException("Expected type after ':'")
+        }
+        val type = getTokenAndAdvance().value
+
+        if (!isCurrentToken(TokenType.SEMICOLON)) {
+            throw RuntimeException("Expected ';' at the end of the declaration")
+        }
+        getTokenAndAdvance()
+
+        return DeclarationNode(identifier, type)
+    }
+
+    fun parseAssignation(): AssignationNode {   // x=5
+        val initialToken = getTokenAndAdvance()
+
+        if (isCurrentToken(TokenType.EQUALS)) {
+            getTokenAndAdvance()
+
+            if (isCurrentToken(TokenType.NUMERIC_LITERAL)) {
+                val rightNode = parseExpression()
+                return AssignationNode(initialToken.value, rightNode as BinaryNode)
+            } else {
+                throw RuntimeException("Expected a numeric literal after '=' in line: ${initialToken.lineNumber} and position: ${initialToken.position}")
+            }
+        } else {
+            throw RuntimeException("Expected '=' after an identifier in line: ${initialToken.lineNumber} and position: ${initialToken.position}")
         }
     }
 
