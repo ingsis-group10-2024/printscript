@@ -1,7 +1,4 @@
-import ast.ASTNode
-import ast.BinaryOperationNode
-import ast.DeclarationNode
-import ast.NumberOperatorNode
+import ast.*
 import common.token.Token
 import common.token.TokenType
 import org.junit.Test
@@ -103,11 +100,14 @@ class ParserTest {
             Token(TokenType.COLON, ":", 3, 0),
             Token(TokenType.NUMBER_TYPE, "number", 4, 0),
             Token(TokenType.SEMICOLON, ";", 5, 1),
-            Token(TokenType.NUMBER_TYPE, "5", 1, 1),
-            Token(TokenType.PLUS, "+", 2, 1),
-            Token(TokenType.NUMBER_TYPE, "3", 3, 1),
-            Token(TokenType.MULTIPLY, "*", 4, 1),
-            Token(TokenType.NUMBER_TYPE, "2", 5, 1)
+            Token(TokenType.NUMBER_TYPE, "5", 6, 1),
+            Token(TokenType.PLUS, "+", 7, 1),
+            Token(TokenType.NUMBER_TYPE, "3", 8, 1),
+            Token(TokenType.MULTIPLY, "*", 9, 1),
+            Token(TokenType.NUMBER_TYPE, "2", 10, 1),
+            Token(TokenType.NUMBER_TYPE, "80", 11, 2),
+            Token(TokenType.STRING_TYPE, "Hola", 12, 3),
+            Token(TokenType.IDENTIFIER, "x", 13, 4)
         )
 
         val parser = Parser(tokens)
@@ -116,13 +116,17 @@ class ParserTest {
         val expected = listOf(
             DeclarationNode("x", "number"),
             BinaryOperationNode("+",
-            NumberOperatorNode(5.0),
-            BinaryOperationNode(
-                "*",
-                NumberOperatorNode(3.0),
-                NumberOperatorNode(2.0)
-            )
-        ))
+                NumberOperatorNode(5.0),
+                BinaryOperationNode(
+                    "*",
+                    NumberOperatorNode(3.0),
+                    NumberOperatorNode(2.0)
+                ),
+            ),
+            NumberOperatorNode(80.0),
+            StringOperatorNode("Hola"),
+            IdentifierOperatorNode("x")
+        )
 
         assertEquals(expected, result)
     }
