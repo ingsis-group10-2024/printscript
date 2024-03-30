@@ -82,29 +82,30 @@ class Parser(private val tokens: List<Token>) {
     fun parseDeclaration(): DeclarationNode {
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            throw RuntimeException("Expected identifier after 'let' but found: " + getCurrentToken().value)
+            throwParseException(getCurrentToken().value, "identifier", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         val identifier = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.COLON)) {
-            throw RuntimeException("Expected ':' after identifier")
+            throwParseException(getCurrentToken().value, "':'", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         getTokenAndAdvance()
 
         if (!isCurrentToken(TokenType.NUMERIC_LITERAL) && !isCurrentToken(TokenType.STRING_TYPE)) {
-            throw RuntimeException("Expected type after ':'")
+            throwParseException(getCurrentToken().value, "type", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         val type = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.SEMICOLON)) {
-            throw RuntimeException("Expected ';' at the end of the declaration")
+            throwParseException(getCurrentToken().value, "';'", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         getTokenAndAdvance()
 
         return DeclarationNode(identifier, type)
     }
 
-    fun parseAssignation(): AssignationNode {   // x=5
+
+    fun parseAssignation(): AssignationNode {
         val initialToken = getTokenAndAdvance()
 
         if (isCurrentToken(TokenType.EQUALS)) {
@@ -114,12 +115,14 @@ class Parser(private val tokens: List<Token>) {
                 val rightNode = parseExpression()
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
-                throw RuntimeException("Expected a numeric literal after '=' in line: ${initialToken.lineNumber} and position: ${initialToken.position}")
+                throw RuntimeException("Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
             }
         } else {
-            throw RuntimeException("Expected '=' after an identifier in line: ${initialToken.lineNumber} and position: ${initialToken.position}")
+            throw RuntimeException("Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
         }
     }
+
+
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentToken().type == type
@@ -134,6 +137,11 @@ class Parser(private val tokens: List<Token>) {
     private fun getCurrentToken(): Token {
         return tokens[currentTokenIndex]
     }
+
+    fun throwParseException(found: String, expected: String, lineNumber: Int, position: Int) {
+        throw RuntimeException("Expected $expected but found $found in line $lineNumber column $position")
+    }
+
 }
 
 

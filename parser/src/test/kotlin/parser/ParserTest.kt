@@ -132,11 +132,11 @@ class ParserTest {
     }
 
     @Test
-    fun testParseAssignation() {
+    fun testParseNumericAssignation() {
         val tokens = listOf(
             Token(TokenType.IDENTIFIER, "x", 1, 0),
             Token(TokenType.EQUALS, "=", 2, 0),
-            Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 4, 0)
             )
 
         val parser = Parser(tokens)
@@ -147,5 +147,35 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
+    @Test
+    fun testParseComplexNumericAssignation(){
+        val tokens = listOf(
+            Token(TokenType.IDENTIFIER, "x", 1, 0),
+            Token(TokenType.EQUALS, "=", 2, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
+            Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
+            Token(TokenType.PLUS, "+", 2, 1),
+            Token(TokenType.NUMERIC_LITERAL, "3", 3, 1),
+            Token(TokenType.MULTIPLY, "*", 4, 1),
+            Token(TokenType.NUMERIC_LITERAL, "2", 5, 1)
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected = listOf(
+            AssignationNode("x",  NumberOperatorNode(5.0)),
+            BinaryOperationNode(
+                "+",
+                NumberOperatorNode(5.0),
+                BinaryOperationNode(
+                    "*",
+                    NumberOperatorNode(3.0),
+                    NumberOperatorNode(2.0)
+            )
+        ))
+
+        assertEquals(expected, result)
+    }
 
 }
