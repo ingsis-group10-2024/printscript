@@ -20,7 +20,7 @@ class InterpreterImpl() : Interpreter {
     }
 
     private fun interpretMethod(ast: MethodNode) {
-        TODO("Not yet implemented")
+
     }
 
     private fun interpretAssignation(ast: Assignation) {
@@ -28,7 +28,7 @@ class InterpreterImpl() : Interpreter {
     }
 
     private fun interpretDeclarationNode(ast: DeclarationNode) {
-        variableMap.put(ast.identifier , ast.type)
+        variableMap[ast.identifier] = ast.type
     }
 
 
