@@ -1,61 +1,62 @@
 package parser
 
-import ast.BinaryNode
-import ast.BinaryOperationNode
-import ast.DeclarationNode
-import ast.NumberOperatorNode
-import ast.StringOperatorNode
+import ast.*
 import common.token.Token
 import common.token.TokenType
 
 class Parser(private val tokens: List<Token>) {
+
     private var currentTokenIndex = 0
 
-    fun generateAST(): BinaryNode? {
-        if (tokens.isEmpty()) {
-            return null
+    fun generateAST(): List<ASTNode> {
+        val nodes = mutableListOf<ASTNode>()
+        while (currentTokenIndex < tokens.size) {
+            val node = parseExpression()
+            if (node != null) {
+                nodes.add(node)
+            }
         }
-        return parseExpression()
+        return nodes
     }
 
-    private fun parseExpression(): BinaryNode? {
+    private fun parseExpression(): ASTNode? {
         return parseAddition()
     }
 
-    fun parseAddition(): BinaryNode? {
-        var node: BinaryNode? = parseMultiplication()
-
+    fun parseAddition(): ASTNode? {
+        var node: ASTNode? = parseMultiplication()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))
-        ) {
+            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
             val token = getTokenAndAdvance()
             val rightNode = parseMultiplication()
             node = BinaryOperationNode(token.value, node, rightNode)
         }
-
         return node
     }
 
-    fun parseMultiplication(): BinaryNode? {
-        var node: BinaryNode? = parseContent()
-
+    fun parseMultiplication(): ASTNode? {
+        var node: ASTNode? = parseContent()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))
-        ) {
+            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))) {
             val token = getTokenAndAdvance()
             val rightNode = parseContent()
 
-            node = BinaryOperationNode(token.value, node, rightNode)
+            if (node != null && rightNode != null) {
+                node = BinaryOperationNode(token.value, node, rightNode as BinaryNode)
+            } else {
+                throw RuntimeException("Error parsing multiplication")
+            }
         }
-
         return node
     }
 
-    fun parseDeclaration(): BinaryNode? {
-        getTokenAndAdvance()
 
+
+
+    fun parseDeclaration(): DeclarationNode {
+        getTokenAndAdvance()
         if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            throw RuntimeException("Expected identifier after 'let' but found: ${getCurrentToken().value}")
+            throw RuntimeException("Expected identifier after 'let' but found: " + getCurrentToken().value)
         }
         val identifier = getTokenAndAdvance().value
 
@@ -77,7 +78,7 @@ class Parser(private val tokens: List<Token>) {
         return DeclarationNode(identifier, type)
     }
 
-    private fun parseContent(): BinaryNode? {
+    private fun parseContent(): ASTNode? {
         val currentToken = getCurrentToken()
 
         return when (currentToken.type) {
@@ -87,7 +88,7 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.IDENTIFIER -> {
                 getTokenAndAdvance()
-                StringOperatorNode(currentToken.value)
+                IdentifierOperatorNode(currentToken.value)
             }
             TokenType.STRING_TYPE -> {
                 getTokenAndAdvance()
@@ -96,7 +97,7 @@ class Parser(private val tokens: List<Token>) {
             TokenType.OPEN_PARENTHESIS -> {
                 getTokenAndAdvance()
                 val node = parseExpression()
-                getTokenAndAdvance()
+                this.getTokenAndAdvance()
                 node
             }
             TokenType.LET -> {
@@ -120,3 +121,6 @@ class Parser(private val tokens: List<Token>) {
         return tokens[currentTokenIndex]
     }
 }
+
+
+
