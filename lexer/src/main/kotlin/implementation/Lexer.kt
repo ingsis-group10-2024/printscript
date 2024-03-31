@@ -2,10 +2,39 @@ package implementation
 
 import common.token.Token
 import common.token.TokenType
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.text.PDFTextStripper
+import java.io.File
+import java.io.IOException
+import java.util.regex.Pattern
 
-class Lexer(private val input: String) {
+class Lexer(private val file: File) {
     private var position: Int = 0 // position in the input
     private var lineNumber: Int = 1
+    private var input: String = ""
+
+    init {
+        try {
+            val text = extractTextFromPdf(file)
+            //REMOVE IMAGES AND REPLACE THEM WITH WHITESPACES
+            input = removeUrls(text)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+    private fun removeUrls(text: String): String {
+        // Simple regex to match URLs
+        val urlPattern = Pattern.compile("http[s]?://\\S+")
+        return urlPattern.matcher(text).replaceAll("")
+    }
+
+    private fun extractTextFromPdf(file: File): String {
+        val document = PDDocument.load(file)
+        val stripper = PDFTextStripper()
+        val text = stripper.getText(document)
+        document.close()
+        return text
+    }
 
     fun convertToToken(): List<Token> {
         val tokens = mutableListOf<Token>()

@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation(project(":common"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation("org.apache.pdfbox:pdfbox:2.0.29")
 }
 
 repositories {
