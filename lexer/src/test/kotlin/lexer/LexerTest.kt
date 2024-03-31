@@ -8,7 +8,6 @@ import java.nio.file.Files
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
 class LexerTest {
     @Test
     fun `test lexer with simple file`() {
@@ -40,7 +39,6 @@ class LexerTest {
     @Test
     fun `test lexer with large file`() {
         // Path to your large test file
-        val largeFilePath = "src/test/resources/TheLittlePrince.pdf"
         val largeFilePath2 = "src/test/resources/test2.pdf"
         val largeFile = File(largeFilePath2)
 
@@ -62,8 +60,7 @@ class LexerTest {
         // based on the content of your large test file.
         assertTrue(tokens.isNotEmpty(), "The token list should not be empty.")
         assertTrue(tokens.any { it.type == TokenType.IDENTIFIER }, "The token list should contain at least one identifier.")
-        //assertTrue(tokens.any { it.type == TokenType.NUMERIC_LITERAL }, "The token list should contain at least one numeric literal.")
+        // assertTrue(tokens.any { it.type == TokenType.NUMERIC_LITERAL }, "The token list should contain at least one numeric literal.")
         // Add more assertions as needed
     }
-
 }

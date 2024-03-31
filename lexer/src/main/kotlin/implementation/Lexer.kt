@@ -16,12 +16,13 @@ class Lexer(private val file: File) {
     init {
         try {
             val text = extractTextFromPdf(file)
-            //REMOVE IMAGES AND REPLACE THEM WITH WHITESPACES
+            // REMOVE IMAGES AND REPLACE THEM WITH WHITESPACES
             input = removeUrls(text)
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
+
     private fun removeUrls(text: String): String {
         // Simple regex to match URLs
         val urlPattern = Pattern.compile("http[s]?://\\S+")
@@ -29,6 +30,12 @@ class Lexer(private val file: File) {
     }
 
     private fun extractTextFromPdf(file: File): String {
+        // Check if the file is a PDF
+        if (!file.name.endsWith(".pdf", ignoreCase = true)) {
+            println("File is not a PDF: ${file.absolutePath}")
+            // Handle non-PDF files appropriately, e.g., by reading the file as plain text
+            return file.readText()
+        }
         val document = PDDocument.load(file)
         val stripper = PDFTextStripper()
         val text = stripper.getText(document)
