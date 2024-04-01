@@ -1,8 +1,9 @@
+package parser
+
 import ast.*
 import common.token.Token
 import common.token.TokenType
 import org.junit.Test
-import parser.Parser
 import kotlin.test.assertEquals
 
 class ParserTest {
