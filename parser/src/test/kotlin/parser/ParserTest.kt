@@ -178,4 +178,27 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
+    @Test
+    fun testParseDeclarationAssignation() {
+        val tokens = listOf(
+            Token(TokenType.LET, "let", 1, 1),
+            Token(TokenType.IDENTIFIER, "x", 1, 1),
+            Token(TokenType.COLON, ":", 1, 1),
+            Token(TokenType.NUMERIC_LITERAL, "number", 1, 1),
+            Token(TokenType.EQUALS, "=", 1, 1),
+            Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
+            Token(TokenType.SEMICOLON, ";", 1, 1)
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.parseDeclarationAssignation()
+
+        val expected = DeclarationAssignationNode(
+            DeclarationNode("x", "number"),
+            NumberOperatorNode(5.0)
+        )
+
+        assertEquals(expected, result)
+    }
+
 }

@@ -73,7 +73,7 @@ class Parser(private val tokens: List<Token>) {
                 node
             }
             TokenType.LET -> {
-                parseDeclaration()
+                parseDeclarationAssignation()
             }
             else -> null
         }
@@ -97,12 +97,16 @@ class Parser(private val tokens: List<Token>) {
         val type = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.SEMICOLON)) {
+            if(isCurrentToken(TokenType.EQUALS)){
+                return DeclarationNode(identifier, type)
+            }
             throwParseException(getCurrentToken().value, "';'", getCurrentToken().lineNumber, getCurrentToken().position)
         }
-        getTokenAndAdvance()
 
+        getTokenAndAdvance()
         return DeclarationNode(identifier, type)
     }
+
 
 
     fun parseAssignation(): AssignationNode {
@@ -122,6 +126,16 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
+    fun parseDeclarationAssignation(): ASTNode {
+        val declaration = parseDeclaration()
+        if (isCurrentToken(TokenType.EQUALS)) {
+            getTokenAndAdvance()
+            val assignation = parseExpression() as BinaryNode
+            return DeclarationAssignationNode(declaration, assignation)
+        } else {
+            return declaration
+        }
+    }
 
 
     private fun isCurrentToken(type: TokenType): Boolean {
