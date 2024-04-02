@@ -5,7 +5,6 @@ import common.token.Token
 import common.token.TokenType
 
 class Parser(private val tokens: List<Token>) {
-
     private var currentTokenIndex = 0
 
     fun generateAST(): List<ASTNode> {
@@ -26,7 +25,8 @@ class Parser(private val tokens: List<Token>) {
     fun parseAddition(): ASTNode? {
         var node: ASTNode? = parseMultiplication()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
+            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))
+        ) {
             val token = getTokenAndAdvance()
             val rightNode = parseMultiplication()
             node = BinaryOperationNode(token.value, node, rightNode)
@@ -37,7 +37,8 @@ class Parser(private val tokens: List<Token>) {
     fun parseMultiplication(): ASTNode? {
         var node: ASTNode? = parseContent()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))) {
+            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))
+        ) {
             val token = getTokenAndAdvance()
             val rightNode = parseContent()
 
@@ -56,7 +57,7 @@ class Parser(private val tokens: List<Token>) {
         return when (currentToken.type) {
             TokenType.NUMERIC_LITERAL -> {
                 getTokenAndAdvance()
-                NumberOperatorNode(currentToken.value.toDouble())
+                NumberOperatorNode(currentToken.value.toInt())
             }
             TokenType.IDENTIFIER -> {
                 // Es una assignation:  x=5
@@ -97,7 +98,7 @@ class Parser(private val tokens: List<Token>) {
         val type = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.SEMICOLON)) {
-            if(isCurrentToken(TokenType.EQUALS)){
+            if (isCurrentToken(TokenType.EQUALS)) {
                 return DeclarationNode(identifier, type)
             }
             throwParseException(getCurrentToken().value, "';'", getCurrentToken().lineNumber, getCurrentToken().position)
@@ -106,8 +107,6 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
         return DeclarationNode(identifier, type)
     }
-
-
 
     fun parseAssignation(): AssignationNode {
         val initialToken = getTokenAndAdvance()
@@ -119,10 +118,14 @@ class Parser(private val tokens: List<Token>) {
                 val rightNode = parseExpression()
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
-                throw RuntimeException("Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
+                throw RuntimeException(
+                    "Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
+                )
             }
         } else {
-            throw RuntimeException("Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
+            throw RuntimeException(
+                "Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
+            )
         }
     }
 
@@ -136,7 +139,6 @@ class Parser(private val tokens: List<Token>) {
             return declaration
         }
     }
-
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentToken().type == type
@@ -152,11 +154,12 @@ class Parser(private val tokens: List<Token>) {
         return tokens[currentTokenIndex]
     }
 
-    fun throwParseException(found: String, expected: String, lineNumber: Int, position: Int) {
+    fun throwParseException(
+        found: String,
+        expected: String,
+        lineNumber: Int,
+        position: Int,
+    ) {
         throw RuntimeException("Expected $expected but found $found in line $lineNumber column $position")
     }
-
 }
-
-
-
