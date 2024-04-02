@@ -1,5 +1,5 @@
-import ast.BinaryNode
+import ast.ASTNode
 
 interface Interpreter {
-    fun interpret(astList: List<BinaryNode>) : Any?
+    fun interpret(astList: List<ASTNode>): Any?
 }
