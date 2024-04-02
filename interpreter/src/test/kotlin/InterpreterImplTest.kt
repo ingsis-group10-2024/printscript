@@ -37,7 +37,7 @@ class InterpreterImplTest {
     }
 
     @Test
-    fun shouldInterpretDeclarationNode() {
+    fun test003_shouldInterpretDeclarationNode() {
         val ast = DeclarationNode("x", "Int")
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
@@ -45,7 +45,7 @@ class InterpreterImplTest {
     }
 
     @Test
-    fun shouldInterpretAssignationNode() {
+    fun test004_shouldInterpretAssignationNode() {
         val ast = AssignationNode("x", NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
@@ -53,7 +53,7 @@ class InterpreterImplTest {
     }
 
     @Test
-    fun shouldInterpretMethodNode() {
+    fun test005_shouldInterpretMethodNode() {
         val ast = MethodNode("println", StringOperatorNode("Hello, World!"))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
@@ -69,7 +69,7 @@ class InterpreterImplTest {
 //    }
 
     @Test
-    fun shouldReturnFailedResponseForInvalidMethod() {
+    fun test006_shouldReturnFailedResponseForInvalidMethod() {
         val ast = MethodNode("invalidMethod", StringOperatorNode("Hello, World!"))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
@@ -77,7 +77,7 @@ class InterpreterImplTest {
     }
 
     @Test
-    fun shouldReturnFailedResponseForInvalidOperation() {
+    fun test007_shouldReturnFailedResponseForInvalidOperation() {
         val ast = BinaryOperationNode("invalidOperation", NumberOperatorNode(5.0), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
@@ -85,14 +85,14 @@ class InterpreterImplTest {
     }
 
     @Test
-    fun shouldReturnNullForEmptyAstList() {
+    fun test008_shouldReturnNullForEmptyAstList() {
         val astList = emptyList<ASTNode>()
         val response = interpreter.interpret(astList)
         assertNull(response)
     }
 
     @Test
-    fun whenNeededToInterpretANumberOperatorNodeInterpreterShouldReturnItsValue() {
+    fun test009_whenNeededToInterpretANumberOperatorNodeInterpreterShouldReturnItsValue() {
         // Arrange
         val ast = NumberOperatorNode(5.0)
         val astList = listOf(ast)
