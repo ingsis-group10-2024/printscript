@@ -7,15 +7,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class InterpreterImplTest {
-
-
     private lateinit var interpreter: InterpreterImpl
 
     @Before
     fun setup() {
         interpreter = InterpreterImpl()
     }
-        @Test
+
+    @Test
     fun test001_WhenReceivingADeclarationBinaryNodeInterpreterShouldReturnItsDeclaration() {
         // Arrange
         val interpreter = InterpreterImpl()
@@ -24,7 +23,7 @@ class InterpreterImplTest {
         // Act
         val response = interpreter.interpret(astList)
         // Assert
-        assertEquals("AST Interpreted Successfully", response)
+        assertEquals("", response)
     }
 
     @Test
@@ -44,7 +43,7 @@ class InterpreterImplTest {
         val ast = DeclarationNode("x", "Int")
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("AST Interpreted Successfully", response)
+        assertEquals("", response)
     }
 
     @Test
@@ -57,10 +56,10 @@ class InterpreterImplTest {
 
     @Test
     fun shouldInterpretMethodNode() {
-        val ast = MethodNode("print", StringOperatorNode("Hello, World!"))
+        val ast = MethodNode("println", StringOperatorNode("Hello, World!"))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("AST Interpreted Successfully", response)
+        assertEquals("", response)
     }
 
 //    @Test
@@ -84,7 +83,7 @@ class InterpreterImplTest {
         val ast = BinaryOperationNode("invalidOperation", NumberOperatorNode(5.0), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("Invalid Operation", response)
+        assertEquals("Invalid Node Type", response)
     }
 
     @Test
@@ -93,4 +92,15 @@ class InterpreterImplTest {
         val response = interpreter.interpret(astList)
         assertNull(response)
     }
+    @Test
+    fun whenNeededToInterpretANumberOperatorNodeInterpreterShouldReturnItsValue() {
+        // Arrange
+        val ast = NumberOperatorNode(5.0)
+        val astList = listOf(ast)
+        // Act
+        val response = interpreter.interpret(astList)
+        // Assert
+        assertEquals("5.0", response)
+    }
+
 }

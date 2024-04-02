@@ -8,13 +8,13 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 
-class InterpreterImpl() : Interpreter {
+class InterpreterImpl : Interpreter {
     private val variableMap = mutableMapOf<Variable, String?>()
 
     override fun interpret(astList: List<ASTNode>): String? {
         if (astList.isEmpty()) return null
         for (ast in astList) {
-            when (ast) {
+            return when (ast) {
                 is DeclarationNode -> {
                     interpretDeclarationNode(ast)
                 }
@@ -24,24 +24,30 @@ class InterpreterImpl() : Interpreter {
                 is MethodNode -> {
                     interpretMethod(ast)
                 }
-                else -> FailedResponse("Invalid Node Type")
+                is NumberOperatorNode ->{
+                    interpretBinaryNode(ast)
+                }
+                is StringOperatorNode ->{
+                    interpretBinaryNode(ast)
+                }
+                else -> FailedResponse("Invalid Node Type").message
             }
         }
-        return SuccessfulResponse("AST Interpreted Successfully").message
+        return ""
     }
 
-    private fun interpretMethod(ast: MethodNode) {
-        when (ast.identifier) {
-            "println" -> {
-                val value = interpretBinaryNode(ast.value)
-                println(value)
-            }
-            else -> FailedResponse("Invalid Method")
+    private fun interpretMethod(ast: MethodNode): String? {
+
+        if(ast.identifier == "println"){
+            val value = interpretBinaryNode(ast.value)
+            println(value)
+            return ""
         }
+        else return FailedResponse("Invalid Method").message
     }
 
 // this function will interpret the assignation node and assign the value to the variable
-    private fun interpretAssignation(ast: Assignation) {
+    private fun interpretAssignation(ast: Assignation) : String?{
         when (ast) {
             is DeclarationAssignationNode -> {
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -54,6 +60,7 @@ class InterpreterImpl() : Interpreter {
                 variableMap[variable] = value
             }
         }
+        return "AST Interpreted Successfully"
     }
 
 // this function will interpret the binary node and return the value of the node
@@ -72,12 +79,13 @@ class InterpreterImpl() : Interpreter {
                     else -> return FailedResponse("Invalid Operation").message
                 }
             }
-            else -> return FailedResponse("Invalid Node Type").message
+            else -> return FailedResponse("Invalid Operation").message
         }
     }
 
-    private fun interpretDeclarationNode(ast: DeclarationNode) {
+    private fun interpretDeclarationNode(ast: DeclarationNode) : String?{
         // declare a variable with the given type initialized as null
         variableMap[Variable(ast.identifier, ast.type)] = null
+        return ""
     }
 }
