@@ -90,6 +90,7 @@ class InterpreterImplTest {
         val response = interpreter.interpret(astList)
         assertNull(response)
     }
+
     @Test
     fun whenNeededToInterpretANumberOperatorNodeInterpreterShouldReturnItsValue() {
         // Arrange
@@ -100,5 +101,4 @@ class InterpreterImplTest {
         // Assert
         assertEquals("5.0", response)
     }
-
 }

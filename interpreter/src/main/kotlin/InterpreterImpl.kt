@@ -24,10 +24,10 @@ class InterpreterImpl : Interpreter {
                 is MethodNode -> {
                     interpretMethod(ast)
                 }
-                is NumberOperatorNode ->{
+                is NumberOperatorNode -> {
                     interpretBinaryNode(ast)
                 }
-                is StringOperatorNode ->{
+                is StringOperatorNode -> {
                     interpretBinaryNode(ast)
                 }
                 else -> FailedResponse("Invalid Node Type").message
@@ -37,17 +37,17 @@ class InterpreterImpl : Interpreter {
     }
 
     private fun interpretMethod(ast: MethodNode): String? {
-
-        if(ast.identifier == "println"){
+        if (ast.identifier == "println") {
             val value = interpretBinaryNode(ast.value)
             println(value)
             return ""
+        } else {
+            return FailedResponse("Invalid Method").message
         }
-        else return FailedResponse("Invalid Method").message
     }
 
 // this function will interpret the assignation node and assign the value to the variable
-    private fun interpretAssignation(ast: Assignation) : String?{
+    private fun interpretAssignation(ast: Assignation): String? {
         when (ast) {
             is DeclarationAssignationNode -> {
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -83,7 +83,7 @@ class InterpreterImpl : Interpreter {
         }
     }
 
-    private fun interpretDeclarationNode(ast: DeclarationNode) : String?{
+    private fun interpretDeclarationNode(ast: DeclarationNode): String? {
         // declare a variable with the given type initialized as null
         variableMap[Variable(ast.identifier, ast.type)] = null
         return ""
