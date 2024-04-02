@@ -1,8 +1,6 @@
 import ast.*
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.DefaultAsserter.assertEquals
-import kotlin.test.DefaultAsserter.assertNull
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
