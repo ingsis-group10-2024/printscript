@@ -1,11 +1,18 @@
 package parser
 
-import ast.*
-import common.token.Token
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import common.token.TokenType
+import token.Token
 
 class Parser(private val tokens: List<Token>) {
-
     private var currentTokenIndex = 0
 
     fun generateAST(): List<ASTNode> {
@@ -26,7 +33,8 @@ class Parser(private val tokens: List<Token>) {
     fun parseAddition(): ASTNode? {
         var node: ASTNode? = parseMultiplication()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))) {
+            (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))
+        ) {
             val token = getTokenAndAdvance()
             val rightNode = parseMultiplication()
             node = BinaryOperationNode(token.value, node, rightNode)
@@ -37,7 +45,8 @@ class Parser(private val tokens: List<Token>) {
     fun parseMultiplication(): ASTNode? {
         var node: ASTNode? = parseContent()
         while (currentTokenIndex < tokens.size &&
-            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))) {
+            (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))
+        ) {
             val token = getTokenAndAdvance()
             val rightNode = parseContent()
 
@@ -58,6 +67,10 @@ class Parser(private val tokens: List<Token>) {
                 getTokenAndAdvance()
                 NumberOperatorNode(currentToken.value.toDouble())
             }
+            TokenType.STRING_LITERAL -> {
+                getTokenAndAdvance()
+                StringOperatorNode(currentToken.value)
+            }
             TokenType.IDENTIFIER -> {
                 // Es una assignation:  x=5
                 parseAssignation()
@@ -74,6 +87,10 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.LET -> {
                 parseDeclarationAssignation()
+            }
+            TokenType.PRINTLN -> {
+                parsePrintln()
+                null
             }
             else -> null
         }
@@ -97,7 +114,7 @@ class Parser(private val tokens: List<Token>) {
         val type = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.SEMICOLON)) {
-            if(isCurrentToken(TokenType.EQUALS)){
+            if (isCurrentToken(TokenType.EQUALS)) {
                 return DeclarationNode(identifier, type)
             }
             throwParseException(getCurrentToken().value, "';'", getCurrentToken().lineNumber, getCurrentToken().position)
@@ -106,8 +123,6 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
         return DeclarationNode(identifier, type)
     }
-
-
 
     fun parseAssignation(): AssignationNode {
         val initialToken = getTokenAndAdvance()
@@ -119,10 +134,14 @@ class Parser(private val tokens: List<Token>) {
                 val rightNode = parseExpression()
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
-                throw RuntimeException("Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
+                throw RuntimeException(
+                    "Expected num after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
+                )
             }
         } else {
-            throw RuntimeException("Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}")
+            throw RuntimeException(
+                "Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
+            )
         }
     }
 
@@ -137,6 +156,27 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
+    fun parsePrintln(): MethodNode {
+        val methodName = getTokenAndAdvance()
+        if (!isCurrentToken(TokenType.OPEN_PARENTHESIS)) {
+            throwParseException(getCurrentToken().value, "'('", getCurrentToken().lineNumber, getCurrentToken().position)
+        }
+        getTokenAndAdvance()
+        if(!isCurrentToken(TokenType.STRING_LITERAL)) {
+            throwParseException(getCurrentToken().value, "string", getCurrentToken().lineNumber, getCurrentToken().position)
+        }
+        val content = parseExpression()
+        if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
+            throwParseException(getCurrentToken().value, "')'", getCurrentToken().lineNumber, getCurrentToken().position)
+        }
+        getTokenAndAdvance()
+        if (!isCurrentToken(TokenType.SEMICOLON)) {
+            throwParseException(getCurrentToken().value, "';'", getCurrentToken().lineNumber, getCurrentToken().position)
+        }
+        getTokenAndAdvance()
+
+        return MethodNode(methodName.value, content as BinaryNode)
+    }
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentToken().type == type
@@ -152,11 +192,12 @@ class Parser(private val tokens: List<Token>) {
         return tokens[currentTokenIndex]
     }
 
-    fun throwParseException(found: String, expected: String, lineNumber: Int, position: Int) {
+    private fun throwParseException(
+        found: String,
+        expected: String,
+        lineNumber: Int,
+        position: Int,
+    ) {
         throw RuntimeException("Expected $expected but found $found in line $lineNumber column $position")
     }
-
 }
-
-
-
