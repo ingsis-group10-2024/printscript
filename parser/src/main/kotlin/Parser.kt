@@ -57,7 +57,7 @@ class Parser(private val tokens: List<Token>) {
         return when (currentToken.type) {
             TokenType.NUMERIC_LITERAL -> {
                 getTokenAndAdvance()
-                NumberOperatorNode(currentToken.value.toDouble())
+                NumberOperatorNode(currentToken.value.toInt())
             }
             TokenType.IDENTIFIER -> {
                 // Es una assignation:  x=5
@@ -119,14 +119,12 @@ class Parser(private val tokens: List<Token>) {
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
                 throw RuntimeException(
-                    "Expected a number after an identifier in line: ${getCurrentToken().lineNumber} " +
-                        "and position: ${getCurrentToken().position}",
+                    "Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
                 )
             }
         } else {
             throw RuntimeException(
-                "Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} " +
-                    "and position: ${getCurrentToken().position}",
+                "Expected '=' after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
             )
         }
     }
