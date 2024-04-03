@@ -205,19 +205,19 @@ class ParserTest {
         val tokens =
             listOf(
                 Token(TokenType.LET, "let", 1, 1),
-                Token(TokenType.IDENTIFIER, "x", 1, 1),
-                Token(TokenType.COLON, ":", 1, 1),
-                Token(TokenType.NUMBER_TYPE, "number", 1, 1),
-                Token(TokenType.EQUALS, "=", 1, 1),
-                Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
-                Token(TokenType.SEMICOLON, ";", 1, 1),
-                Token(TokenType.LET, "let", 1, 1),
-                Token(TokenType.IDENTIFIER, "y", 1, 1),
-                Token(TokenType.COLON, ":", 1, 1),
-                Token(TokenType.NUMBER_TYPE, "string", 1, 1),
-                Token(TokenType.EQUALS, "=", 1, 1),
-                Token(TokenType.NUMERIC_LITERAL, "Hello", 1, 1),
-                Token(TokenType.SEMICOLON, ";", 1, 1),
+                Token(TokenType.IDENTIFIER, "x", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.NUMBER_TYPE, "int", 4, 1),
+                Token(TokenType.EQUALS, "=", 5, 1),
+                Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
+                Token(TokenType.SEMICOLON, ";", 7, 1),/*
+                Token(TokenType.LET, "let", 1, 2),
+                Token(TokenType.IDENTIFIER, "y", 2, 2),
+                Token(TokenType.COLON, ":", 3, 2),
+                Token(TokenType.NUMBER_TYPE, "string", 4, 2),
+                Token(TokenType.EQUALS, "=", 5, 2),
+                Token(TokenType.NUMERIC_LITERAL, "Hello", 6, 2),
+                Token(TokenType.SEMICOLON, ";", 7, 2),*/
             )
 
         val parser = Parser(tokens)
@@ -225,8 +225,65 @@ class ParserTest {
         // val result = parser.generateAST()
 
         val expected = DeclarationAssignationNode(
-                       DeclarationNode("x", "number"),
+                       DeclarationNode("x", "int"),
                        NumberOperatorNode(5.0),)
+
+        assertEquals(expected, result)
+        // assertEquals(listOf(expected), result)
+    }
+
+    @Test
+    fun testParseComplexNumberDeclarationAssignation() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 2),
+                Token(TokenType.IDENTIFIER, "y", 2, 2),
+                Token(TokenType.COLON, ":", 3, 2),
+                Token(TokenType.NUMBER_TYPE, "int", 4, 2),
+                Token(TokenType.EQUALS, "=", 5, 2),
+                Token(TokenType.NUMERIC_LITERAL, "5", 6, 2),
+                Token(TokenType.PLUS, "+", 7, 2),
+                Token(TokenType.NUMERIC_LITERAL, " 3", 8, 2),
+                Token(TokenType.SEMICOLON, ";", 9, 2),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.parseDeclarationAssignation()
+        // val result = parser.generateAST()
+
+        val expected = DeclarationAssignationNode(
+            DeclarationNode("y", "int"),
+            // BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
+            BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
+        )
+
+        assertEquals(expected, result)
+        // assertEquals(listOf(expected), result)
+    }
+
+    @Test
+    fun testParseComplexStringDeclarationAssignation(){
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "x", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.STRING_TYPE, "string", 4, 1),
+                Token(TokenType.EQUALS, "=", 5, 1),
+                Token(TokenType.STRING_LITERAL, "Hello", 6, 1),
+                Token(TokenType.PLUS, "+", 7, 1),
+                Token(TokenType.STRING_LITERAL, " world", 8, 1),
+                Token(TokenType.SEMICOLON, ";", 9, 1),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.parseDeclarationAssignation()
+        // val result = parser.generateAST()
+
+        val expected = DeclarationAssignationNode(
+            DeclarationNode("x", "string"),
+            BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
+        )
 
         assertEquals(expected, result)
         // assertEquals(listOf(expected), result)
