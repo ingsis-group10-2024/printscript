@@ -33,7 +33,7 @@ class InterpreterImplTest {
         // Act
         val response = interpreter.interpret(astList)
         // Assert
-        assertEquals("AST Interpreted Successfully", response)
+        assertEquals("5.0", response)
     }
 
     @Test
@@ -49,7 +49,7 @@ class InterpreterImplTest {
         val ast = AssignationNode("x", NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("AST Interpreted Successfully", response)
+        assertEquals("5.0" , response)
     }
 
     @Test
@@ -57,7 +57,8 @@ class InterpreterImplTest {
         val ast = MethodNode("println", StringOperatorNode("Hello, World!"))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("", response)
+
+        assertEquals("Hello, World!", response)
     }
 
 //    @Test
@@ -101,4 +102,26 @@ class InterpreterImplTest {
         // Assert
         assertEquals("5.0", response)
     }
+    @Test
+    fun test010_WhenGivenTwoAssignationNodesAndAMethodNodeThatRunsBothOfThemTogetherShouldReturnThePrintedString(){
+        val firstAssignation = AssignationNode("name" ,StringOperatorNode("Joe") )
+        val secondAssignation = AssignationNode("lastName" ,StringOperatorNode("Doe") )
+//        val firstAssignation = StringOperatorNode("Joe")
+//        val secondAssignation = StringOperatorNode("Doe")
+        val binaryOperationNode = BinaryOperationNode("+" , firstAssignation , secondAssignation)
+        val methodNode = MethodNode("println" , binaryOperationNode)
+        val response = interpreter.interpret(listOf(methodNode))
+
+        assertEquals("Joe Doe" , response)
+    }
+    @Test
+    fun `test interpretBinaryNode with BinaryOperationNode`() {
+        val leftNode = NumberOperatorNode(value = 5.0)
+        val rightNode = NumberOperatorNode(value = 3.0)
+        val binaryNode = BinaryOperationNode(symbol = "+", left = leftNode, right = rightNode)
+        val methodNode = MethodNode("println" , binaryNode)
+        val result = interpreter.interpret(listOf(methodNode))
+        assertEquals("8.0", result)
+    }
+
 }
