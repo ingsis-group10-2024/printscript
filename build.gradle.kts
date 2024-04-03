@@ -42,7 +42,4 @@ tasks.register<Copy>("copyPreCommitHook") {
     fileMode = 777
 }
 
-tasks.build {
-    // hola
-    dependsOn("copyPreCommitHook")
-}
+tasks.getByName("build").dependsOn("copyPreCommitHook")
