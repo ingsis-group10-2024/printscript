@@ -41,6 +41,6 @@ tasks.register<Copy>("copyPreCommitHook") {
     into(File(rootProject.rootDir, ".git/hooks"))
 }
 
-tasks.named("build") {
+tasks.assemble {
     dependsOn("copyPreCommitHook")
 }
