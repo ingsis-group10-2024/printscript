@@ -88,14 +88,20 @@ class ParserTest {
                 Token(TokenType.LET, "let", 1, 0),
                 Token(TokenType.IDENTIFIER, "x", 2, 0),
                 Token(TokenType.COLON, ":", 3, 0),
-                Token(TokenType.NUMERIC_LITERAL, "number", 4, 0),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 0),
                 Token(TokenType.SEMICOLON, ";", 5, 0),
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "y", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.STRING_TYPE, "string", 4, 1),
+                Token(TokenType.SEMICOLON, ";", 5, 1),
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseDeclaration()
+        val result = parser.generateAST()
 
-        val expected = DeclarationNode("x", "number")
+        val expected = listOf(DeclarationNode("x", "number"), DeclarationNode("y", "string"))
+        //val expected = listOf(DeclarationNode("y", "string"))
 
         assertEquals(expected, result)
     }
@@ -107,7 +113,7 @@ class ParserTest {
                 Token(TokenType.LET, "let", 1, 0),
                 Token(TokenType.IDENTIFIER, "x", 2, 0),
                 Token(TokenType.COLON, ":", 3, 0),
-                Token(TokenType.NUMERIC_LITERAL, "number", 4, 0),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 0),
                 Token(TokenType.SEMICOLON, ";", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
                 Token(TokenType.PLUS, "+", 7, 1),
@@ -193,6 +199,7 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
+    // todo: correr usando parser.generateAST()
     @Test
     fun testParseDeclarationAssignation() {
         val tokens =
@@ -200,22 +207,29 @@ class ParserTest {
                 Token(TokenType.LET, "let", 1, 1),
                 Token(TokenType.IDENTIFIER, "x", 1, 1),
                 Token(TokenType.COLON, ":", 1, 1),
-                Token(TokenType.NUMERIC_LITERAL, "number", 1, 1),
+                Token(TokenType.NUMBER_TYPE, "number", 1, 1),
                 Token(TokenType.EQUALS, "=", 1, 1),
                 Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
+                Token(TokenType.SEMICOLON, ";", 1, 1),
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "y", 1, 1),
+                Token(TokenType.COLON, ":", 1, 1),
+                Token(TokenType.NUMBER_TYPE, "string", 1, 1),
+                Token(TokenType.EQUALS, "=", 1, 1),
+                Token(TokenType.NUMERIC_LITERAL, "Hello", 1, 1),
                 Token(TokenType.SEMICOLON, ";", 1, 1),
             )
 
         val parser = Parser(tokens)
         val result = parser.parseDeclarationAssignation()
+        // val result = parser.generateAST()
 
-        val expected =
-            DeclarationAssignationNode(
-                DeclarationNode("x", "number"),
-                NumberOperatorNode(5.0),
-            )
+        val expected = DeclarationAssignationNode(
+                       DeclarationNode("x", "number"),
+                       NumberOperatorNode(5.0),)
 
         assertEquals(expected, result)
+        // assertEquals(listOf(expected), result)
     }
 
     @Test

@@ -59,7 +59,7 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-    private fun parseContent(): ASTNode? {
+     fun parseContent(): ASTNode? {
         val currentToken = getCurrentToken()
 
         return when (currentToken.type) {
@@ -108,7 +108,7 @@ class Parser(private val tokens: List<Token>) {
         }
         getTokenAndAdvance()
 
-        if (!isCurrentToken(TokenType.NUMERIC_LITERAL) && !isCurrentToken(TokenType.STRING_TYPE)) {
+        if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
             throwParseException(getCurrentToken().value, "type", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         val type = getTokenAndAdvance().value
@@ -145,9 +145,9 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    fun parseDeclarationAssignation(): ASTNode {
+    fun parseDeclarationAssignation(): ASTNode? {
         val declaration = parseDeclaration()
-        if (isCurrentToken(TokenType.EQUALS)) {
+        if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as BinaryNode
             return DeclarationAssignationNode(declaration, assignation)
