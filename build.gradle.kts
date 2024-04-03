@@ -35,3 +35,10 @@ dependencies {
 tasks.test {
     useJUnit()
 }
+
+ktlint {
+    filter {
+        include("**/kotlin/**")
+        exclude("**/generated/**")
+    }
+}
