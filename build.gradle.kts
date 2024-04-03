@@ -43,5 +43,6 @@ tasks.register<Copy>("copyPreCommitHook") {
 }
 
 tasks.build {
+    // hola
     dependsOn("copyPreCommitHook")
 }
