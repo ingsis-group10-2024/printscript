@@ -1,1 +1,1 @@
-data class FailedResponse(val message : String): InterpreterResponse
+data class FailedResponse(val message: String) : InterpreterResponse
