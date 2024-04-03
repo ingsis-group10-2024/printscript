@@ -2,18 +2,17 @@
 
 echo "*****formatean2******"
 
-stash_commit="$(git stash create)"
-git reset —-hard
 
-./gradlew ktlintCheck
-./gradlew ktlintFormat
 
-status=$?
 
-if [[ -n "${stash_commit}" ]]
-then git stash apply "${stash_commit}"
-fi
 
-echo "*****Done with unit tests******"
 
-exit $status
+
+
+
+
+
+
+
+
+
