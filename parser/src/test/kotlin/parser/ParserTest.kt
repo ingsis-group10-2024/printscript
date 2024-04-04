@@ -159,8 +159,10 @@ class ParserTest {
         val tokens =
             listOf(
                 Token(TokenType.IDENTIFIER, "x", 1, 0),
-                Token(TokenType.EQUALS, "=", 2, 0),
-                Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
+                // Token(TokenType.WHITESPACE, " ", 2, 0),
+                Token(TokenType.EQUALS, "=", 3, 0),
+                // Token(TokenType.WHITESPACE, " ", 2, 0),
+                Token(TokenType.NUMERIC_LITERAL, "5", 5, 0),
             )
 
         val parser = Parser(tokens)
