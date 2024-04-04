@@ -1,4 +1,12 @@
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 
 class Formatter {
     fun format(nodes: List<ASTNode>): String {
@@ -26,6 +34,8 @@ class Formatter {
                     builder.append(formatNode(node.assignation))
                     builder.append("\n")
                 }
+                is IdentifierOperatorNode -> TODO()
+                is MethodNode -> TODO()
             }
         }
 
