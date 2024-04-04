@@ -18,10 +18,10 @@ class InterpreterImpl : Interpreter {
                     interpretMethod(ast)
                 }
                 is NumberOperatorNode -> {
-                    interpretBinaryNode(ast)
+                    stringBuffer.append(interpretBinaryNode(ast))
                 }
                 is StringOperatorNode -> {
-                    interpretBinaryNode(ast)
+                    stringBuffer.append(interpretBinaryNode(ast))
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
@@ -33,6 +33,7 @@ class InterpreterImpl : Interpreter {
         when (ast.identifier) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
+                println(value)
                 stringBuffer.append(value)
             }
             else -> stringBuffer.append("Invalid Method")
@@ -63,14 +64,13 @@ class InterpreterImpl : Interpreter {
 // this function will interpret the binary node and return the value of the node
     private fun interpretBinaryNode(ast: ASTNode): String {
     return when (ast) {
-        is NumberOperatorNode -> ast.value.toString()
+        is NumberOperatorNode -> (ast.value).toString()
         is StringOperatorNode -> ast.value
         is IdentifierOperatorNode -> {
-            variableMap.keys.find { it.identifier == ast.identifier }.let{
-               return  variableMap[it]!!
-            }
+            val variable = variableMap.keys.find { it.identifier == ast.identifier }
+                ?: throw Exception("Variable ${ast.identifier} not declared")
+            return variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
         }
-
         is BinaryOperationNode -> {
             val left = ast.left!!
             val right = ast.right!!
@@ -78,13 +78,40 @@ class InterpreterImpl : Interpreter {
                 "+" -> when {
                     left is StringOperatorNode && right is StringOperatorNode -> return (left.value + right.value)
 
-
                     left is NumberOperatorNode && right is NumberOperatorNode -> return (left.value + right.value).toString()
-
 
                     left is StringOperatorNode && right is NumberOperatorNode -> return (left.value + right.value.toString())
 
                     left is NumberOperatorNode && right is StringOperatorNode -> return (left.value.toString() + right.value)
+
+
+                    left is IdentifierOperatorNode && right is NumberOperatorNode -> {
+                        val leftValue = interpretBinaryNode(left)
+                        return leftValue + right.value
+                    }
+                    left is IdentifierOperatorNode && right is StringOperatorNode -> {
+                        val leftValue = interpretBinaryNode(left)
+                        return leftValue + right.value
+                    }
+                    left is StringOperatorNode && right is IdentifierOperatorNode -> {
+                        val rightValue = interpretBinaryNode(right)
+                        return  left.value + rightValue
+                    }
+                    left is NumberOperatorNode && right is IdentifierOperatorNode -> {
+                        val rightValue = interpretBinaryNode(right)
+                        return rightValue + left.value
+                    }
+                    left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
+                        val leftValue = interpretBinaryNode(left)
+                        val rightValue = interpretBinaryNode(right)
+                        return if (leftValue.toDoubleOrNull() != null && rightValue.toDoubleOrNull() != null) {
+                            // Both are numbers, perform addition
+                            (leftValue.toDouble() + rightValue.toDouble()).toString()
+                        } else {
+                            // At least one is a string, perform concatenation
+                            leftValue + rightValue
+                        }
+                    }
 
                     else -> return "invalid operation"
                 }
@@ -110,10 +137,11 @@ class InterpreterImpl : Interpreter {
     }
 
 }
-
-
-
-
+private fun interpretIdentifierNode(node : IdentifierOperatorNode) : Any{
+    variableMap.keys.find { it.identifier == node.identifier }.let {
+        return variableMap[it]!!
+    }
+}
     private fun interpretDeclarationNode(ast: DeclarationNode){
         // declare a variable with the given type initialized as null
         variableMap[Variable(ast.identifier, ast.type)] = null

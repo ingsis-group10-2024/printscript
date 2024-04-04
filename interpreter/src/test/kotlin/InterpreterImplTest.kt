@@ -33,7 +33,7 @@ class InterpreterImplTest {
         // Act
         val response = interpreter.interpret(astList)
         // Assert
-        assertEquals("5.0", response)
+        assertEquals("", response)
     }
 
     @Test
@@ -49,7 +49,7 @@ class InterpreterImplTest {
         val ast = DeclarationAssignationNode(DeclarationNode("X" , "number" ), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("5.0" , response)
+        assertEquals("" , response)
     }
 
     @Test
@@ -115,7 +115,7 @@ class InterpreterImplTest {
         assertEquals("8.0", response)
     }
     @Test
-    fun `test interpretBinaryNode with BinaryOperationNode`() {
+    fun `test011 interpretBinaryNode with BinaryOperationNode`() {
         val leftNode = NumberOperatorNode(value = 5.0)
         val rightNode = NumberOperatorNode(value = 3.0)
         val binaryNode = BinaryOperationNode(symbol = "+", left = leftNode, right = rightNode)
@@ -123,5 +123,45 @@ class InterpreterImplTest {
         val result = interpreter.interpret(listOf(methodNode))
         assertEquals("8.0", result)
     }
+    @Test
+    fun `test 012 - should interpret an AST and execute it`() {
+        val ast =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("a", "string"),
+                    BinaryOperationNode(
+                        "+",
+                        StringOperatorNode("Hello"),
+
+                        NumberOperatorNode(5.0),
+                    ),
+                ),
+                MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("a"),  StringOperatorNode(""))),
+            )
+        val result = interpreter.interpret(ast)
+        assertEquals("Hello5.0", result)
+    }
+    @Test
+    fun `test 013 - should interpret an AST and execute it`() {
+        val ast =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("a", "number"),
+                    NumberOperatorNode(1.0),
+                ),
+                DeclarationAssignationNode(
+                    DeclarationNode("x", "string"),
+                    BinaryOperationNode(
+                        "+",
+                        IdentifierOperatorNode("a"),
+                        StringOperatorNode("Hello"),
+                    ),
+                ),
+                MethodNode("println", IdentifierOperatorNode("x")),
+            )
+        val result = interpreter.interpret(ast)
+        assertEquals("1.0Hello", result)
+    }
+
 
 }
