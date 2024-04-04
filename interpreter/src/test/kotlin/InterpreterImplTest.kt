@@ -1,4 +1,12 @@
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -28,7 +36,7 @@ class InterpreterImplTest {
     fun test002_WhenReceivingAnAssignationBinaryNodeInterpreterShouldReturnItsAssignation() {
         // Arrange
         val interpreter = InterpreterImpl()
-        val ast = DeclarationAssignationNode(DeclarationNode("x" , "number"), NumberOperatorNode(5.0))
+        val ast = DeclarationAssignationNode(DeclarationNode("x", "number"), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         // Act
         val response = interpreter.interpret(astList)
@@ -46,10 +54,10 @@ class InterpreterImplTest {
 
     @Test
     fun test004_shouldInterpretAssignationNode() {
-        val ast = DeclarationAssignationNode(DeclarationNode("X" , "number" ), NumberOperatorNode(5.0))
+        val ast = DeclarationAssignationNode(DeclarationNode("X", "number"), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("" , response)
+        assertEquals("", response)
     }
 
     @Test
@@ -102,11 +110,12 @@ class InterpreterImplTest {
         // Assert
         assertEquals("5.0", response)
     }
+
     @Test
-    fun test010_WhenGivenTwoAssignationNodesAndAMethodNodeThatRunsBothOfThemTogetherShouldReturnThePrintedString(){
+    fun test010_WhenGivenTwoAssignationNodesAndAMethodNodeThatRunsBothOfThemTogetherShouldReturnThePrintedString() {
         // Arrange
-        val ast1 = DeclarationAssignationNode(DeclarationNode("x" , "number"), NumberOperatorNode(5.0))
-        val ast2 = DeclarationAssignationNode(DeclarationNode("y" , "number"), NumberOperatorNode(3.0))
+        val ast1 = DeclarationAssignationNode(DeclarationNode("x", "number"), NumberOperatorNode(5.0))
+        val ast2 = DeclarationAssignationNode(DeclarationNode("y", "number"), NumberOperatorNode(3.0))
         val method = MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("x"), IdentifierOperatorNode("y")))
         val astList = listOf(ast1, ast2, method)
         // Act
@@ -114,15 +123,17 @@ class InterpreterImplTest {
         // Assert
         assertEquals("8.0", response)
     }
+
     @Test
     fun `test011 interpretBinaryNode with BinaryOperationNode`() {
         val leftNode = NumberOperatorNode(value = 5.0)
         val rightNode = NumberOperatorNode(value = 3.0)
         val binaryNode = BinaryOperationNode(symbol = "+", left = leftNode, right = rightNode)
-        val methodNode = MethodNode("println" , binaryNode)
+        val methodNode = MethodNode("println", binaryNode)
         val result = interpreter.interpret(listOf(methodNode))
         assertEquals("8.0", result)
     }
+
     @Test
     fun `test 012 - should interpret an AST and execute it`() {
         val ast =
@@ -132,15 +143,15 @@ class InterpreterImplTest {
                     BinaryOperationNode(
                         "+",
                         StringOperatorNode("Hello"),
-
                         NumberOperatorNode(5.0),
                     ),
                 ),
-                MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("a"),  StringOperatorNode(""))),
+                MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("a"), StringOperatorNode(""))),
             )
         val result = interpreter.interpret(ast)
         assertEquals("Hello5.0", result)
     }
+
     @Test
     fun `test 013 - should interpret an AST and execute it`() {
         val ast =
@@ -181,9 +192,9 @@ class InterpreterImplTest {
 
     @Test
     fun test016_interpretBinaryNodeWithIdentifierOperands() {
-        val ast1 = DeclarationAssignationNode(DeclarationNode("x" , "number"), NumberOperatorNode(5.0))
-        val ast2 = DeclarationAssignationNode(DeclarationNode("y" , "number"), NumberOperatorNode(3.0))
-        val ast3 = MethodNode("println" , BinaryOperationNode("+", IdentifierOperatorNode("x"), IdentifierOperatorNode("y")))
+        val ast1 = DeclarationAssignationNode(DeclarationNode("x", "number"), NumberOperatorNode(5.0))
+        val ast2 = DeclarationAssignationNode(DeclarationNode("y", "number"), NumberOperatorNode(3.0))
+        val ast3 = MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("x"), IdentifierOperatorNode("y")))
         val astList = listOf(ast1, ast2, ast3)
         val response = interpreter.interpret(astList)
         assertEquals("8.0", response)
@@ -196,6 +207,7 @@ class InterpreterImplTest {
         val response = interpreter.interpret(astList)
         assertEquals("Invalid Method", response)
     }
+
     @Test
     fun test018_interpretBinaryNodeWithDivisionOperation() {
         val ast = BinaryOperationNode("/", NumberOperatorNode(10.0), NumberOperatorNode(2.0))
