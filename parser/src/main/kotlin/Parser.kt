@@ -8,8 +8,8 @@ import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import common.token.Token
 import common.token.TokenType
+import token.Token
 
 class Parser(private val tokens: List<Token>) {
     private var currentTokenIndex = 0
@@ -64,7 +64,7 @@ class Parser(private val tokens: List<Token>) {
         return when (currentToken.type) {
             TokenType.NUMERIC_LITERAL -> {
                 getTokenAndAdvance()
-                NumberOperatorNode(currentToken.value.toInt())
+                NumberOperatorNode(currentToken.value.toInt().toDouble())
             }
             TokenType.IDENTIFIER -> {
                 // Es una assignation:  x=5

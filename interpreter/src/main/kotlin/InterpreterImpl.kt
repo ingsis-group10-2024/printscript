@@ -30,15 +30,12 @@ class InterpreterImpl : Interpreter {
     }
 
     private fun interpretMethod(ast: MethodNode) {
-        if (ast.identifier == "println") {
-            // I would need this method to check whether the node inside the binary node are assignation or just values.
-//            val value = interpretBinaryNode(ast.value)
-//            println(value)
-//            return value
-            stringBuffer.append(interpretBinaryNode(ast.value))
-            stringBuffer.append("\n")
-        } else {
-            stringBuffer.append("Invalid Method")
+        when (ast.identifier) {
+            "println" -> {
+                val value = interpretBinaryNode(ast.value)
+                stringBuffer.append(value)
+            }
+            else -> stringBuffer.append("Invalid Method")
         }
     }
 
@@ -66,12 +63,12 @@ class InterpreterImpl : Interpreter {
 // this function will interpret the binary node and return the value of the node
     private fun interpretBinaryNode(ast: ASTNode): String {
     return when (ast) {
-        is NumberOperatorNode -> stringBuffer.append(ast.value).toString()
-        is StringOperatorNode -> stringBuffer.append(ast.value).toString()
+        is NumberOperatorNode -> ast.value.toString()
+        is StringOperatorNode -> ast.value
         is IdentifierOperatorNode -> {
-            variableMap.keys.find { it.identifier == ast.identifier }?.let {
-                stringBuffer.append(variableMap[it]).toString()
-            } ?: stringBuffer.append("Variable ${ast.identifier} not declared").toString()
+            variableMap.keys.find { it.identifier == ast.identifier }.let{
+               return  variableMap[it]!!
+            }
         }
 
         is BinaryOperationNode -> {
@@ -79,18 +76,17 @@ class InterpreterImpl : Interpreter {
             val right = ast.right!!
             when(ast.symbol) {
                 "+" -> when {
-                    left is StringOperatorNode && right is StringOperatorNode -> return stringBuffer.append(left.value + right.value)
-                        .toString()
+                    left is StringOperatorNode && right is StringOperatorNode -> return (left.value + right.value)
 
-                    left is NumberOperatorNode && right is NumberOperatorNode -> return stringBuffer.append(left.value + right.value)
-                        .toString()
 
-                    left is StringOperatorNode && right is NumberOperatorNode -> return stringBuffer.append(left.value + right.value.toString())
-                        .toString()
-                    left is NumberOperatorNode && right is StringOperatorNode -> return stringBuffer.append(left.value.toString() + right.value)
-                        .toString()
+                    left is NumberOperatorNode && right is NumberOperatorNode -> return (left.value + right.value).toString()
 
-                    else -> return stringBuffer.append("Invalid Method").toString()
+
+                    left is StringOperatorNode && right is NumberOperatorNode -> return (left.value + right.value.toString())
+
+                    left is NumberOperatorNode && right is StringOperatorNode -> return (left.value.toString() + right.value)
+
+                    else -> return "invalid operation"
                 }
                 "-" , "*" ,"/" -> when {
                     left is NumberOperatorNode && right is NumberOperatorNode -> {

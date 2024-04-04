@@ -105,8 +105,8 @@ class InterpreterImplTest {
     @Test
     fun test010_WhenGivenTwoAssignationNodesAndAMethodNodeThatRunsBothOfThemTogetherShouldReturnThePrintedString(){
         // Arrange
-        val ast1 = AssignationNode("x", NumberOperatorNode(5.0))
-        val ast2 = AssignationNode("y", NumberOperatorNode(3.0))
+        val ast1 = DeclarationAssignationNode(DeclarationNode("x" , "number"), NumberOperatorNode(5.0))
+        val ast2 = DeclarationAssignationNode(DeclarationNode("y" , "number"), NumberOperatorNode(3.0))
         val method = MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("x"), IdentifierOperatorNode("y")))
         val astList = listOf(ast1, ast2, method)
         // Act

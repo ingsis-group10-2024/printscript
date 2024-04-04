@@ -6,9 +6,9 @@ import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import common.token.Token
 import common.token.TokenType
 import org.junit.Test
+import token.Token
 import kotlin.test.assertEquals
 
 class ParserTest {
