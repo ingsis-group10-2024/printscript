@@ -6,9 +6,9 @@ import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import common.token.Token
 import common.token.TokenType
 import org.junit.Test
+import token.Token
 import kotlin.test.assertEquals
 
 class ParserTest {
@@ -27,8 +27,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "+",
-                NumberOperatorNode(5),
-                NumberOperatorNode(3),
+                NumberOperatorNode(5.0),
+                NumberOperatorNode(3.0),
             )
 
         assertEquals(expected, result)
@@ -49,8 +49,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "*",
-                NumberOperatorNode(2),
-                NumberOperatorNode(8),
+                NumberOperatorNode(2.0),
+                NumberOperatorNode(8.0),
             )
 
         assertEquals(expected, result)
@@ -75,11 +75,11 @@ class ParserTest {
             listOf(
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5),
+                    NumberOperatorNode(5.0),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3),
-                        NumberOperatorNode(2),
+                        NumberOperatorNode(3.0),
+                        NumberOperatorNode(2.0),
                     ),
                 ),
             )
@@ -133,14 +133,14 @@ class ParserTest {
                 DeclarationNode("x", "number"),
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5),
+                    NumberOperatorNode(5.0),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3),
-                        NumberOperatorNode(2),
+                        NumberOperatorNode(3.0),
+                        NumberOperatorNode(2.0),
                     ),
                 ),
-                NumberOperatorNode(80),
+                NumberOperatorNode(80.0),
                 StringOperatorNode("Hola"),
                 // IdentifierOperatorNode("x")
             )
@@ -160,7 +160,7 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(AssignationNode("x", NumberOperatorNode(5)))
+        val expected = listOf(AssignationNode("x", NumberOperatorNode(5.0)))
 
         assertEquals(expected, result)
     }
@@ -184,14 +184,14 @@ class ParserTest {
 
         val expected =
             listOf(
-                AssignationNode("x", NumberOperatorNode(5)),
+                AssignationNode("x", NumberOperatorNode(5.0)),
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5),
+                    NumberOperatorNode(5.0),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3),
-                        NumberOperatorNode(2),
+                        NumberOperatorNode(3.0),
+                        NumberOperatorNode(2.0),
                     ),
                 ),
             )
@@ -218,7 +218,7 @@ class ParserTest {
         val expected =
             DeclarationAssignationNode(
                 DeclarationNode("x", "number"),
-                NumberOperatorNode(5),
+                NumberOperatorNode(5.0),
             )
 
         assertEquals(expected, result)

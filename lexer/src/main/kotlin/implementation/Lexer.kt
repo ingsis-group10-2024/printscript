@@ -1,9 +1,9 @@
 package implementation
 
-import common.token.Token
 import common.token.TokenType
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
+import token.Token
 import java.io.File
 import java.io.IOException
 import java.util.regex.Pattern
