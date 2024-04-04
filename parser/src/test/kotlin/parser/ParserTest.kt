@@ -1,4 +1,10 @@
-import ast.*
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import common.token.TokenType
 import org.junit.Test
 import parser.Parser
@@ -101,7 +107,7 @@ class ParserTest {
         val result = parser.generateAST()
 
         val expected = listOf(DeclarationNode("x", "number"), DeclarationNode("y", "string"))
-        //val expected = listOf(DeclarationNode("y", "string"))
+        // val expected = listOf(DeclarationNode("y", "string"))
 
         assertEquals(expected, result)
     }
@@ -210,8 +216,8 @@ class ParserTest {
                 Token(TokenType.NUMBER_TYPE, "int", 4, 1),
                 Token(TokenType.EQUALS, "=", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
-                Token(TokenType.SEMICOLON, ";", 7, 1),/*
-                Token(TokenType.LET, "let", 1, 2),
+                Token(TokenType.SEMICOLON, ";", 7, 1),
+                /* Token(TokenType.LET, "let", 1, 2),
                 Token(TokenType.IDENTIFIER, "y", 2, 2),
                 Token(TokenType.COLON, ":", 3, 2),
                 Token(TokenType.NUMBER_TYPE, "string", 4, 2),
@@ -224,9 +230,11 @@ class ParserTest {
         val result = parser.parseDeclarationAssignation()
         // val result = parser.generateAST()
 
-        val expected = DeclarationAssignationNode(
-                       DeclarationNode("x", "int"),
-                       NumberOperatorNode(5.0),)
+        val expected =
+            DeclarationAssignationNode(
+                DeclarationNode("x", "int"),
+                NumberOperatorNode(5.0),
+            )
 
         assertEquals(expected, result)
         // assertEquals(listOf(expected), result)
@@ -251,18 +259,19 @@ class ParserTest {
         val result = parser.parseDeclarationAssignation()
         // val result = parser.generateAST()
 
-        val expected = DeclarationAssignationNode(
-            DeclarationNode("y", "int"),
-            // BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
-            BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
-        )
+        val expected =
+            DeclarationAssignationNode(
+                DeclarationNode("y", "int"),
+                // BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
+                BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+            )
 
         assertEquals(expected, result)
         // assertEquals(listOf(expected), result)
     }
 
     @Test
-    fun testParseComplexStringDeclarationAssignation(){
+    fun testParseComplexStringDeclarationAssignation() {
         val tokens =
             listOf(
                 Token(TokenType.LET, "let", 1, 1),
@@ -280,10 +289,11 @@ class ParserTest {
         val result = parser.parseDeclarationAssignation()
         // val result = parser.generateAST()
 
-        val expected = DeclarationAssignationNode(
-            DeclarationNode("x", "string"),
-            BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
-        )
+        val expected =
+            DeclarationAssignationNode(
+                DeclarationNode("x", "string"),
+                BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world")),
+            )
 
         assertEquals(expected, result)
         // assertEquals(listOf(expected), result)
@@ -307,5 +317,4 @@ class ParserTest {
 
         assertEquals(expected, result)
     }
-
 }

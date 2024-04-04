@@ -59,7 +59,7 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-     fun parseContent(): ASTNode? {
+    fun parseContent(): ASTNode? {
         val currentToken = getCurrentToken()
 
         return when (currentToken.type) {
@@ -162,7 +162,7 @@ class Parser(private val tokens: List<Token>) {
             throwParseException(getCurrentToken().value, "'('", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         getTokenAndAdvance()
-        if(!isCurrentToken(TokenType.STRING_LITERAL)) {
+        if (!isCurrentToken(TokenType.STRING_LITERAL)) {
             throwParseException(getCurrentToken().value, "string", getCurrentToken().lineNumber, getCurrentToken().position)
         }
         val content = parseExpression()
