@@ -183,7 +183,11 @@ class Parser(private val tokens: List<Token>) {
     }
 
     private fun getTokenAndAdvance(): Token {
-        val currentToken = getCurrentToken()
+        var currentToken = getCurrentToken()
+        while (currentToken.type == TokenType.WHITESPACE) {
+            currentTokenIndex++
+            currentToken = getCurrentToken()
+        }
         currentTokenIndex++
         return currentToken
     }
