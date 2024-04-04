@@ -23,6 +23,9 @@ class InterpreterImpl : Interpreter {
                 is StringOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+                 is BinaryOperationNode -> {
+                     interpretBinaryNode(ast)
+                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }

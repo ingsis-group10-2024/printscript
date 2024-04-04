@@ -162,6 +162,11 @@ class InterpreterImplTest {
         val result = interpreter.interpret(ast)
         assertEquals("1.0Hello", result)
     }
-
-
+    @Test
+    fun test015_interpretBinaryNodeWithSubtractionOperation() {
+        val ast = BinaryOperationNode("-", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
+        val astList = listOf(ast)
+        val response = interpreter.interpret(astList)
+        assertEquals("2.0", response)
+    }
 }
