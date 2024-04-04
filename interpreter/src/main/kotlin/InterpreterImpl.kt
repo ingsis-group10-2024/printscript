@@ -1,12 +1,4 @@
-import ast.ASTNode
-import ast.Assignation
-import ast.AssignationNode
-import ast.BinaryOperationNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
-import ast.MethodNode
-import ast.NumberOperatorNode
-import ast.StringOperatorNode
+import ast.*
 
 class InterpreterImpl : Interpreter {
     private val variableMap = mutableMapOf<Variable, String?>()
@@ -31,20 +23,22 @@ class InterpreterImpl : Interpreter {
                 is StringOperatorNode -> {
                     interpretBinaryNode(ast)
                 }
-                else -> return FailedResponse("Invalid Node Type").message
+                else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }
         return stringBuffer.toString()
     }
 
-    private fun interpretMethod(ast: MethodNode): String? {
+    private fun interpretMethod(ast: MethodNode) {
         if (ast.identifier == "println") {
             // I would need this method to check whether the node inside the binary node are assignation or just values.
-            val value = interpretBinaryNode(ast.value)
-            println(value)
-            return value
+//            val value = interpretBinaryNode(ast.value)
+//            println(value)
+//            return value
+            stringBuffer.append(interpretBinaryNode(ast.value))
+            stringBuffer.append("\n")
         } else {
-            return stringBuffer.append("Invalid Method").toString()
+            stringBuffer.append("Invalid Method")
         }
     }
 
@@ -52,82 +46,77 @@ class InterpreterImpl : Interpreter {
     private fun interpretAssignation(ast: Assignation) {
         when (ast) {
             is DeclarationAssignationNode -> {
+                if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
+                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
+                    return
+                }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
                 val value = interpretBinaryNode(ast.assignation)
                 variableMap[variable] = value
             }
             is AssignationNode -> {
-                val variable = Variable(ast.identifier, "")
-                val value = interpretBinaryNode(ast.assignation)
-                variableMap[variable] = value
+                variableMap.keys.find { it.identifier == ast.identifier }?.let {
+                    val value = interpretBinaryNode(ast.assignation)
+                    variableMap[it] = value
+                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
             }
         }
     }
 
 // this function will interpret the binary node and return the value of the node
-//    private fun interpretBinaryNode(assignation: ASTNode): String? {
-//         return when (assignation) {
-//            is NumberOperatorNode ->  stringBuffer.append(assignation.value).toString()
-//            is StringOperatorNode ->  stringBuffer.append(assignation.value).toString()
-//            is BinaryOperationNode -> {
-//                val left = interpretBinaryNode(assignation.left!!)
-//                val right = interpretBinaryNode(assignation.right!!)
-//                when (assignation.symbol) {
-//                    "+" -> (left!!.toDouble() + right!!.toDouble()).toString()
-//                    "-" -> (left!!.toDouble() - right!!.toDouble()).toString()
-//                    "*" -> (left!!.toDouble() * right!!.toDouble()).toString()
-//                    "/" -> (left!!.toDouble() / right!!.toDouble()).toString()
-//                    else -> return stringBuffer.append( "Invalid Operation").toString()
-//                }
-//            }
-//           else -> return stringBuffer.append( "Invalid Operation").toString()
-//        }
-//    }
+    private fun interpretBinaryNode(ast: ASTNode): String {
+    return when (ast) {
+        is NumberOperatorNode -> stringBuffer.append(ast.value).toString()
+        is StringOperatorNode -> stringBuffer.append(ast.value).toString()
+        is IdentifierOperatorNode -> {
+            variableMap.keys.find { it.identifier == ast.identifier }?.let {
+                stringBuffer.append(variableMap[it]).toString()
+            } ?: stringBuffer.append("Variable ${ast.identifier} not declared").toString()
+        }
 
-    private fun interpretBinaryNode(assignation: ASTNode): String? {
-        return when (assignation) {
-            is NumberOperatorNode -> stringBuffer.append(assignation.value).toString()
-            is StringOperatorNode -> {
-                // For StringOperatorNode, directly append the value to the buffer
-                stringBuffer.append(assignation.value).toString()
-                // Return null or an empty string if you don't want to perform any operation here
-            }
+        is BinaryOperationNode -> {
+            val left = ast.left!!
+            val right = ast.right!!
+            when(ast.symbol) {
+                "+" -> when {
+                    left is StringOperatorNode && right is StringOperatorNode -> return stringBuffer.append(left.value + right.value)
+                        .toString()
 
-            is BinaryOperationNode -> {
-                val left = interpretBinaryNode(assignation.left!!)
-                val right = interpretBinaryNode(assignation.right!!)
-                when (assignation.symbol) {
-                    "+" -> {
-                        // Check if either operand is a string to handle string concatenation
-                        if (left.isNullOrEmpty() || right.isNullOrEmpty()) {
-                            // If either operand is null or empty, return the other operand
-                            left ?: right
-                        } else {
-                            // Concatenate the operands
-                            stringBuffer.append(left).append(right).toString()
-                        }
-                    }
-                    "-", "*", "/" -> {
-                        // For these operations, ensure both operands are numbers
-                        if (left.isNullOrEmpty() || right.isNullOrEmpty()) {
-                            // If either operand is null or empty, return an error message
-                            stringBuffer.append("Invalid Operation").toString()
-                        } else {
-                            // Perform the operation
-                            when (assignation.symbol) {
-                                "-" -> (left.toDouble() - right.toDouble()).toString()
-                                "*" -> (left.toDouble() * right.toDouble()).toString()
-                                "/" -> (left.toDouble() / right.toDouble()).toString()
-                                else -> stringBuffer.append("Invalid Operation").toString()
-                            }
-                        }
-                    }
-                    else -> stringBuffer.append("Invalid Operation").toString()
+                    left is NumberOperatorNode && right is NumberOperatorNode -> return stringBuffer.append(left.value + right.value)
+                        .toString()
+
+                    left is StringOperatorNode && right is NumberOperatorNode -> return stringBuffer.append(left.value + right.value.toString())
+                        .toString()
+                    left is NumberOperatorNode && right is StringOperatorNode -> return stringBuffer.append(left.value.toString() + right.value)
+                        .toString()
+
+                    else -> return stringBuffer.append("Invalid Method").toString()
                 }
+                "-" , "*" ,"/" -> when {
+                    left is NumberOperatorNode && right is NumberOperatorNode -> {
+                        val result = when (ast.symbol) {
+                            "-" -> left.value - right.value
+                            "*" -> left.value * right.value
+                            "/" -> left.value / right.value
+                            else -> return stringBuffer.append("Invalid Operation").toString()
+                        }
+                        return stringBuffer.append(result).toString()
+                    }
+                    else -> return stringBuffer.append("Invalid Operation").toString()
+                }
+                else -> return stringBuffer.append("Invalid Operation").toString()
             }
-            else -> stringBuffer.append("Invalid Operation").toString()
+        }
+
+        else -> {
+            stringBuffer.append("Invalid Node Type").toString()
         }
     }
+
+}
+
+
+
 
     private fun interpretDeclarationNode(ast: DeclarationNode){
         // declare a variable with the given type initialized as null

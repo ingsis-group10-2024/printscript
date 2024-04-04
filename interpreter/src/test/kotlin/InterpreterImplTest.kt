@@ -28,7 +28,7 @@ class InterpreterImplTest {
     fun test002_WhenReceivingAnAssignationBinaryNodeInterpreterShouldReturnItsAssignation() {
         // Arrange
         val interpreter = InterpreterImpl()
-        val ast = AssignationNode("x", NumberOperatorNode(5.0))
+        val ast = DeclarationAssignationNode(DeclarationNode("x" , "number"), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         // Act
         val response = interpreter.interpret(astList)
@@ -46,7 +46,7 @@ class InterpreterImplTest {
 
     @Test
     fun test004_shouldInterpretAssignationNode() {
-        val ast = AssignationNode("x", NumberOperatorNode(5.0))
+        val ast = DeclarationAssignationNode(DeclarationNode("X" , "number" ), NumberOperatorNode(5.0))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
         assertEquals("5.0" , response)
@@ -104,15 +104,15 @@ class InterpreterImplTest {
     }
     @Test
     fun test010_WhenGivenTwoAssignationNodesAndAMethodNodeThatRunsBothOfThemTogetherShouldReturnThePrintedString(){
-        val firstAssignation = AssignationNode("name" ,StringOperatorNode("Joe") )
-        val secondAssignation = AssignationNode("lastName" ,StringOperatorNode("Doe") )
-//        val firstAssignation = StringOperatorNode("Joe")
-//        val secondAssignation = StringOperatorNode("Doe")
-        val binaryOperationNode = BinaryOperationNode("+" , firstAssignation , secondAssignation)
-        val methodNode = MethodNode("println" , binaryOperationNode)
-        val response = interpreter.interpret(listOf(methodNode))
-
-        assertEquals("Joe Doe" , response)
+        // Arrange
+        val ast1 = AssignationNode("x", NumberOperatorNode(5.0))
+        val ast2 = AssignationNode("y", NumberOperatorNode(3.0))
+        val method = MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("x"), IdentifierOperatorNode("y")))
+        val astList = listOf(ast1, ast2, method)
+        // Act
+        val response = interpreter.interpret(astList)
+        // Assert
+        assertEquals("8.0", response)
     }
     @Test
     fun `test interpretBinaryNode with BinaryOperationNode`() {
