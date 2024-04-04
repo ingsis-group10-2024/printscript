@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-gradle-project:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # construye y prueba un proyecto de gradle en un entorno de ubuntu
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
