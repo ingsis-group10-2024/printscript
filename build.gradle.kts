@@ -35,11 +35,3 @@ dependencies {
 tasks.test {
     useJUnit()
 }
-
-tasks.register<Copy>("copyPreCommitHook") {
-    from(File(rootProject.rootDir, "scripts/pre-commit"))
-    into(File(rootProject.rootDir, ".git/hooks"))
-    fileMode = 777
-}
-
-tasks.getByName("build").dependsOn("copyPreCommitHook")
