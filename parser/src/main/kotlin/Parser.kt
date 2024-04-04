@@ -1,6 +1,13 @@
 package parser
 
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import common.token.Token
 import common.token.TokenType
 
@@ -119,7 +126,8 @@ class Parser(private val tokens: List<Token>) {
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
                 throw RuntimeException(
-                    "Expected a number after an identifier in line: ${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
+                    "Expected a number after an identifier in line: " +
+                        "${getCurrentToken().lineNumber} and position: ${getCurrentToken().position}",
                 )
             }
         } else {
