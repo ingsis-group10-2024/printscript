@@ -4,14 +4,13 @@ class LinterImpl() : Linter {
     private val errors = mutableListOf<String>()
 
     override fun lint(astNodes: List<ASTNode>): List<String> {
-
         checkSyntax(astNodes)
-        //checkStyle(astNodes)
+        // checkStyle(astNodes)
 
         return errors
     }
 
-    private fun checkSyntax(astNodes: List<ASTNode>){
+    private fun checkSyntax(astNodes: List<ASTNode>) {
         astNodes.forEach { node ->
             when (node) {
                 is DeclarationNode -> {
@@ -20,8 +19,7 @@ class LinterImpl() : Linter {
                     }
                     if (node.type.isEmpty()) {
                         errors.add("Empty type")
-                    }
-                    else {
+                    } else {
                         checkDeclarationSyntax(node)
                     }
                 }
@@ -51,7 +49,6 @@ class LinterImpl() : Linter {
         }
     }
 
-
     private fun checkDeclarationSyntax(node: DeclarationNode) {
         // Check if the type is valid
         if (node.type !in listOf("number", "string")) {
@@ -70,13 +67,10 @@ class LinterImpl() : Linter {
         }
     }
 
-
     private fun checkAssignationSyntax(node: AssignationNode) {
         // Check for missing identifier in assignation
         if (node.identifier.isEmpty()) {
             errors.add("Missing identifier in assignation.")
         }
-
     }
-
 }
