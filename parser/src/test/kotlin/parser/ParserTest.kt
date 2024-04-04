@@ -1,6 +1,11 @@
 package parser
 
-import ast.*
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import common.token.Token
 import common.token.TokenType
 import org.junit.Test
