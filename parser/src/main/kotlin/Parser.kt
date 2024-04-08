@@ -99,17 +99,32 @@ class Parser(private val tokens: List<Token>) {
     fun parseDeclaration(): DeclarationNode {
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            throwParseException(getCurrentSignificantToken().value, "identifier", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "identifier",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         val identifier = getTokenAndAdvance().value
 
         if (!isCurrentToken(TokenType.COLON)) {
-            throwParseException(getCurrentSignificantToken().value, "':'", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "':'",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         getTokenAndAdvance()
 
         if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
-            throwParseException(getCurrentSignificantToken().value, "type", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "type",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         val type = getTokenAndAdvance().value
 
@@ -117,7 +132,12 @@ class Parser(private val tokens: List<Token>) {
             if (isCurrentToken(TokenType.EQUALS)) {
                 return DeclarationNode(identifier, type)
             }
-            throwParseException(getCurrentSignificantToken().value, "';'", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "';'",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
 
         getTokenAndAdvance()
@@ -161,19 +181,39 @@ class Parser(private val tokens: List<Token>) {
     fun parsePrintln(): MethodNode {
         val methodName = getTokenAndAdvance()
         if (!isCurrentToken(TokenType.OPEN_PARENTHESIS)) {
-            throwParseException(getCurrentSignificantToken().value, "'('", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "'('",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.STRING_LITERAL)) {
-            throwParseException(getCurrentSignificantToken().value, "string", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "string",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         val content = parseExpression()
         if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
-            throwParseException(getCurrentSignificantToken().value, "')'", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "')'",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.SEMICOLON)) {
-            throwParseException(getCurrentSignificantToken().value, "';'", getCurrentSignificantToken().lineNumber, getCurrentSignificantToken().position)
+            throwParseException(
+                getCurrentSignificantToken().value,
+                "';'",
+                getCurrentSignificantToken().lineNumber,
+                getCurrentSignificantToken().position,
+            )
         }
         getTokenAndAdvance()
 
@@ -210,7 +250,6 @@ class Parser(private val tokens: List<Token>) {
 
         throw RuntimeException("Todos los siguientes tokens son espacios.")
     }
-
 
     private fun throwParseException(
         found: String,
