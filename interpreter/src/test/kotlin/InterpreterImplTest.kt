@@ -68,15 +68,6 @@ class InterpreterImplTest {
 
         assertEquals("Hello, World!", response)
     }
-
-//    @Test
-//    fun shouldReturnFailedResponseForInvalidNodeType() {
-//        val ast = object : ASTNode {}
-//        val astList = listOf(ast)
-//        val response = interpreter.interpret(astList)
-//        assertEquals("Invalid Node Type", response)
-//    }
-
     @Test
     fun test006_shouldReturnFailedResponseForInvalidMethod() {
         val ast = MethodNode("invalidMethod", StringOperatorNode("Hello, World!"))
@@ -222,5 +213,48 @@ class InterpreterImplTest {
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
         assertEquals("15.0", response)
+    }
+    @Test
+    fun test022_GivenBinaryOperationNodeWithAddition_WhenInterpreted_ShouldReturnResultOfAddition() {
+        val binaryOperationNode = BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
+        val response = interpreter.interpret(listOf(binaryOperationNode))
+
+        assertEquals("8.0", response)
+    }
+
+    @Test
+    fun test023_GivenBinaryOperationNodeWithSubtraction_WhenInterpreted_ShouldReturnResultOfSubtraction() {
+        val binaryOperationNode = BinaryOperationNode("-", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
+        val response = interpreter.interpret(listOf(binaryOperationNode))
+        assertEquals("2.0", response)
+    }
+
+    @Test
+    fun test024_GivenBinaryOperationNodeWithMultiplication_WhenInterpreted_ShouldReturnResultOfMultiplication() {
+        val binaryOperationNode = BinaryOperationNode("*", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
+        val response = interpreter.interpret(listOf(binaryOperationNode))
+        assertEquals("15.0", response)
+    }
+
+    @Test
+    fun test025_GivenBinaryOperationNodeWithDivision_WhenInterpreted_ShouldReturnResultOfDivision() {
+        val binaryOperationNode = BinaryOperationNode("/", NumberOperatorNode(10.0), NumberOperatorNode(2.0))
+        val response = interpreter.interpret(listOf(binaryOperationNode))
+        assertEquals("5.0", response)
+    }
+
+    @Test
+    fun test026_GivenMethodNodeWithPrintln_WhenInterpreted_ShouldReturnPrintedString() {
+        val methodNode = MethodNode("println", StringOperatorNode("Hello, World!"))
+        val response = interpreter.interpret(listOf(methodNode))
+        assertEquals("Hello, World!", response)
+    }
+    @Test
+    fun test027_GivenMethodNodeWithInvalidMethod_WhenInterpreted_ShouldReturnInvalidMethod() {
+        val declarationNode = DeclarationNode("x", "number")
+        val assignationNode = AssignationNode("x", NumberOperatorNode(5.0))
+        interpreter.interpret(listOf(declarationNode))
+        val response = interpreter.interpret(listOf(assignationNode))
+        assertEquals("x = 5.0", response)
     }
 }
