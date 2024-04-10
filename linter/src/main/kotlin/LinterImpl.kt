@@ -24,13 +24,29 @@ class LinterImpl() : Linter {
                     }
                 }
                 is AssignationNode -> checkAssignationSyntax(node)
-                is DeclarationAssignationNode -> TODO()
+                is DeclarationAssignationNode -> checkDeclarationAssignationSyntax(node)
                 is BinaryOperationNode -> checkBinaryOperationSyntax(node)
-                is IdentifierOperatorNode -> TODO()
-                is NumberOperatorNode -> TODO()
-                is StringOperatorNode -> TODO()
+                is IdentifierOperatorNode -> checkIdentifierOperatorSyntax(node)
                 is MethodNode -> checkMethodSyntax(node)
+                else -> {}
             }
+        }
+    }
+
+    // let x: number = "hola" -> error
+    // let y: boolean = 5 -> error
+    private fun checkDeclarationAssignationSyntax(node: DeclarationAssignationNode) {
+        if (node.declaration.type == "number" && node.assignation !is NumberOperatorNode) {
+            errors.add("Invalid assignation for number type")
+        }
+        if (node.declaration.type == "string" && node.assignation !is StringOperatorNode) {
+            errors.add("Invalid assignation for string type")
+        }
+    }
+
+    private fun checkIdentifierOperatorSyntax(node: IdentifierOperatorNode) {
+        if (node.identifier.matches(Regex("^[a-zA-Z][a-zA-Z0-9]*$"))) {
+            errors.add("Invalid identifier")
         }
     }
 
