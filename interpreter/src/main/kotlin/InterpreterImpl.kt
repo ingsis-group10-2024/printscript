@@ -33,7 +33,7 @@ class InterpreterImpl : Interpreter {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
                 is BinaryOperationNode -> {
-                   stringBuffer.append(interpretBinaryNode(ast))
+                    stringBuffer.append(interpretBinaryNode(ast))
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
@@ -144,7 +144,7 @@ class InterpreterImpl : Interpreter {
                             else -> return stringBuffer.append("Invalid Operation").toString()
                         }
                     else -> return "Invalid Operation"
-                        }
+                }
             }
 
             else -> {

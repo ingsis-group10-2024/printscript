@@ -68,6 +68,7 @@ class InterpreterImplTest {
 
         assertEquals("Hello, World!", response)
     }
+
     @Test
     fun test006_shouldReturnFailedResponseForInvalidMethod() {
         val ast = MethodNode("invalidMethod", StringOperatorNode("Hello, World!"))
@@ -214,6 +215,7 @@ class InterpreterImplTest {
         val response = interpreter.interpret(astList)
         assertEquals("15.0", response)
     }
+
     @Test
     fun test022_GivenBinaryOperationNodeWithAddition_WhenInterpreted_ShouldReturnResultOfAddition() {
         val binaryOperationNode = BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
@@ -249,6 +251,7 @@ class InterpreterImplTest {
         val response = interpreter.interpret(listOf(methodNode))
         assertEquals("Hello, World!", response)
     }
+
     @Test
     fun test027_GivenMethodNodeWithInvalidMethod_WhenInterpreted_ShouldReturnInvalidMethod() {
         val declarationNode = DeclarationNode("x", "number")
