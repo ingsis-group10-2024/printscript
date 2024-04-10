@@ -8,6 +8,7 @@ import java.nio.file.Files
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+
 class LexerTest {
     @Test
     fun `test lexer with simple file`() {
