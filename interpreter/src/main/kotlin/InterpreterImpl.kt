@@ -33,7 +33,7 @@ class InterpreterImpl : Interpreter {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
                 is BinaryOperationNode -> {
-                    interpretBinaryNode(ast)
+                    stringBuffer.append(interpretBinaryNode(ast))
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
@@ -68,6 +68,7 @@ class InterpreterImpl : Interpreter {
                 variableMap.keys.find { it.identifier == ast.identifier }?.let {
                     val value = interpretBinaryNode(ast.assignation)
                     variableMap[it] = value
+                    stringBuffer.append("${it.identifier} = $value")
                 } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
             }
         }
@@ -138,11 +139,11 @@ class InterpreterImpl : Interpreter {
                                         "/" -> left.value / right.value
                                         else -> return stringBuffer.append("Invalid Operation").toString()
                                     }
-                                return stringBuffer.append(result).toString()
+                                return result.toString()
                             }
                             else -> return stringBuffer.append("Invalid Operation").toString()
                         }
-                    else -> return stringBuffer.append("Invalid Operation").toString()
+                    else -> return "Invalid Operation"
                 }
             }
 
