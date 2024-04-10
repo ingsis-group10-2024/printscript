@@ -170,8 +170,6 @@ class Parser(private val tokens: List<Token>) {
     }
 
     fun parseDeclarationAssignation(): ASTNode? {
-
-
         val declaration = parseDeclaration()
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
