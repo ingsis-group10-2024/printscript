@@ -157,17 +157,21 @@ class Parser(private val tokens: List<Token>) {
                 return AssignationNode(initialToken.value, rightNode as BinaryNode)
             } else {
                 throw RuntimeException(
-                    "Expected num after an equals in line: ${getCurrentSignificantToken().lineNumber} and position: ${getCurrentSignificantToken().position}",
+                    "Expected num after an equals in line: ${getCurrentSignificantToken().lineNumber} " +
+                        "and position: ${getCurrentSignificantToken().position}",
                 )
             }
         } else {
             throw RuntimeException(
-                "Expected '=' after an identifier in line: ${getCurrentSignificantToken().lineNumber} and position: ${getCurrentSignificantToken().position}",
+                "Expected '=' after an identifier in line: ${getCurrentSignificantToken().lineNumber} " +
+                    "and position: ${getCurrentSignificantToken().position}",
             )
         }
     }
 
     fun parseDeclarationAssignation(): ASTNode? {
+
+
         val declaration = parseDeclaration()
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
