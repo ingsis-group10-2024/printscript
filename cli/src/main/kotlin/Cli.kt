@@ -11,25 +11,25 @@ class Cli(val file: File) : CliktCommand() {
     val formatter: Formatter = Formatter()
 
     override fun run() {
-        val sentencesList = getSentenceList()
-        when (operation) {
-            "execute" -> {
-                executeCode(sentencesList)
-            }
-
-            "format" -> {
-                formatCode(sentencesList)
-            }
-
-            "analyze" -> {
-                analyzeCode(sentencesList)
-                // TODO
-            }
-
-            "validate" -> {
-                // TODO
-            }
-        }
+//        val sentencesList = getSentenceList()
+//        when (operation) {
+//            "execute" -> {
+//                executeCode(sentencesList)
+//            }
+//
+//            "format" -> {
+//                formatCode(sentencesList)
+//            }
+//
+//            "analyze" -> {
+//                analyzeCode(sentencesList)
+//                // TODO
+//            }
+//
+//            "validate" -> {
+//                // TODO
+//            }
+//        }
     }
 
     private fun formatCode(sentencesList: List<String>) {
@@ -44,11 +44,11 @@ class Cli(val file: File) : CliktCommand() {
         TODO("Not yet implemented")
     }
 
-    private fun analyzeCode(sentencesList: List<String>) {
-        val ast = parser.generateAST()
-        val errors = linter.lint(ast)
-        errors.forEach {
-            println(it)
-        }
-    }
+//    private fun analyzeCode(sentencesList: List<String>) {
+//        val ast = parser.generateAST()
+//        val errors = linter.lint(ast)
+//        errors.forEach {
+//            println(it)
+//        }
+//    }
 }
