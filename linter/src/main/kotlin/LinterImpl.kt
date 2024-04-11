@@ -1,4 +1,12 @@
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 
 class LinterImpl() : Linter {
     private val errors = mutableListOf<String>()

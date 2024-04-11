@@ -1,7 +1,14 @@
-
-import ast.*
-
-//TODO preguntarle a tomi lo de los estados
+import ast.ASTNode
+import ast.Assignation
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
+// TODO preguntarle a tomi lo de los estados
 
 class InterpreterImpl : Interpreter {
     private val variableMap = mutableMapOf<Variable, String?>()
