@@ -3,7 +3,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FormatterTest {
-    private val config = loadConfig("C:/Users/maxim/faculty/printscript/formatter/src/main/resources/config.json")
+    private val config = loadConfig("config.json")
     private val formatter = Formatter(config)
 
     @Test

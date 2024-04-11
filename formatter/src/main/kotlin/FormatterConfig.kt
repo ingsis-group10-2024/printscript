@@ -1,6 +1,6 @@
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import java.io.File
+import com.fasterxml.jackson.databind.ObjectMapper
+import java.nio.file.Files
+import java.nio.file.Paths
 
 data class FormatterConfig(
     val indent: Int = 4,
@@ -16,6 +16,8 @@ data class FormatterConfig(
 
 
 fun loadConfig(filePath: String): FormatterConfig {
-    val mapper = jacksonObjectMapper()
-    return mapper.readValue(File(filePath))
+    val mapper = ObjectMapper()
+    val path = Paths.get("src/main/resources/$filePath")
+    val bytes = Files.readAllBytes(path)
+    return mapper.readValue(bytes, FormatterConfig::class.java)
 }
