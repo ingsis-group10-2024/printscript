@@ -114,6 +114,7 @@ class Lexer(private val file: File) {
                         }
                         when (val word = input.substring(start, position)) {
                             "let" -> tokens.add(Token(TokenType.LET, word, lineNumber, start + 1))
+                            "const" -> tokens.add(Token(TokenType.CONST, word, lineNumber, start + 1))
                             "println" -> tokens.add(Token(TokenType.PRINTLN, word, lineNumber, start + 1))
                             "if" -> tokens.add(Token(TokenType.IF, word, lineNumber, start + 1))
                             "else" -> tokens.add(Token(TokenType.ELSE, word, lineNumber, start + 1))
@@ -125,6 +126,9 @@ class Lexer(private val file: File) {
                             "protected" -> tokens.add(Token(TokenType.PROTECTED, word, lineNumber, start + 1))
                             "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, lineNumber, start + 1))
                             "Int" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
+                            "Boolean" -> tokens.add(Token(TokenType.BOOLEAN_TYPE, word, lineNumber, start + 1))
+                            "true" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
+                            "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, lineNumber, start + 1))
                         }
                     } else if (currentChar.isDigit()) {

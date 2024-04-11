@@ -1,4 +1,11 @@
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

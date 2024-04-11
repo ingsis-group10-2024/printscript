@@ -1,9 +1,17 @@
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 
 class Formatter(private val config: FormatterConfig) {
     fun format(nodes: List<ASTNode>): String {
         val builder = StringBuilder()
-
         nodes.forEach { node ->
             when (node) {
                 is StringOperatorNode -> builder.append("\"${node.value}\"")
@@ -23,12 +31,12 @@ class Formatter(private val config: FormatterConfig) {
                     val colonWithSpaces = if (config.spaceBeforeColon && config.spaceAfterColon) " : " else ":"
                     builder.append("let ${node.declaration.identifier}$colonWithSpaces${node.declaration.type} = ")
                     builder.append(formatNode(node.assignation))
-                    //builder.append("\n")
+                    // builder.append("\n")
                 }
                 is AssignationNode -> {
                     builder.append("${node.identifier} = ")
                     builder.append(formatNode(node.assignation))
-                    //builder.append("\n")
+                    // builder.append("\n")
                 }
                 is IdentifierOperatorNode -> builder.append(node.identifier)
                 is MethodNode -> {
@@ -37,11 +45,28 @@ class Formatter(private val config: FormatterConfig) {
                     builder.append(formatNode(node.value))
                     builder.append(")")
                 }
+
+                is BooleanOperatorNode -> {
+                    builder.append(node.value)
+                }
             }
         }
 
         return builder.toString()
     }
+
+//    private fun formatIfNode(node: IfNode, builder: StringBuilder) {
+//        // La llave que abre el bloque if debe estar en la misma línea que el "if"
+//        builder.append("if (${node.condition}) {")
+//        // Aplica la indentación al contenido dentro del bloque if
+//        val indent = " ".repeat(config.ifBlockIndent)
+//        node.body.forEach { bodyNode ->
+//            builder.append("\n$indent")
+//            builder.append(formatNode(bodyNode))
+//        }
+//        builder.append("\n}")
+//    }
+//
 
     private fun formatNode(node: ASTNode?): String {
         return when (node) {

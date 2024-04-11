@@ -5,6 +5,7 @@ enum class TokenType {
 
     // keywords
     LET,
+    CONST,
     PRINTLN,
     IF,
     ELSE,
@@ -18,11 +19,13 @@ enum class TokenType {
     // types
     STRING_TYPE,
     NUMBER_TYPE,
+    BOOLEAN_TYPE,
     TYPE, // type of variable: int, string, float, etc.
 
     // declarations (values)
     NUMERIC_LITERAL,
     STRING_LITERAL,
+    BOOLEAN_LITERAL,
 
     // operators
     EQUALS,
