@@ -24,10 +24,11 @@ class FormatterTest {
 
     @Test
     fun `formats multiple nodes`() {
-        val nodes = listOf(
-            DeclarationNode("x", "number"),
-            BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
-        )
+        val nodes =
+            listOf(
+                DeclarationNode("x", "number"),
+                BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+            )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number\n5.0 + 3.0", result)
@@ -43,22 +44,24 @@ class FormatterTest {
 
     @Test
     fun `formats assignation node`() {
-        val nodes = listOf(
-            AssignationNode("x", BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))),
-        )
+        val nodes =
+            listOf(
+                AssignationNode("x", BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))),
+            )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("x = 5.0 + 3.0", result)
     }
 
-
     @Test
     fun `formats declaration assignation node`() {
-        val nodes = listOf(
-            DeclarationAssignationNode(
-            DeclarationNode("x", "number"),
-            BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))
-        ))
+        val nodes =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("x", "number"),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                ),
+            )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number = 5.0 + 3.0", result)
@@ -66,12 +69,12 @@ class FormatterTest {
 
     @Test
     fun `formats method node`() {
-        val nodes = listOf(
-            MethodNode("print", StringOperatorNode("Hello"))
-        )
+        val nodes =
+            listOf(
+                MethodNode("print", StringOperatorNode("Hello")),
+            )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("\n print(\"Hello\")", result)
     }
-
 }

@@ -11,9 +11,8 @@ data class FormatterConfig(
     val spaceBeforeColon: Boolean = true,
     val spaceAfterColon: Boolean = true,
     val newlineAfterSemicolon: Boolean = true,
-    val spaceBeforePrintln: Int = 1
+    val spaceBeforePrintln: Int = 1,
 )
-
 
 fun loadConfig(filePath: String): FormatterConfig {
     val mapper = ObjectMapper()
