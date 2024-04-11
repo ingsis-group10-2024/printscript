@@ -7,7 +7,11 @@ data class FormatterConfig(
     val maxLineLength: Int = 240,
     val indentString: String = " ".repeat(indent),
     val useSpaces: Boolean = true,
-    val maxLineLengthString: String = " ".repeat(maxLineLength)
+    val maxLineLengthString: String = " ".repeat(maxLineLength),
+    val spaceBeforeColon: Boolean = true,
+    val spaceAfterColon: Boolean = true,
+    val newlineAfterSemicolon: Boolean = true,
+    val spaceBeforePrintln: Int = 1
 )
 
 
