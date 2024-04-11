@@ -38,7 +38,6 @@ class Formatter {
                 is MethodNode -> TODO()
             }
         }
-
         return builder.toString()
     }
 
