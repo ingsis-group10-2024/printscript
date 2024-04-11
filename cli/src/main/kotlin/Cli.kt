@@ -7,8 +7,8 @@ class Cli(val file: File) : CliktCommand() {
     val lexer: Lexer = Lexer(file)
     var lexerTokens = lexer.convertToToken()
     val parser: Parser = Parser(lexerTokens)
-    val interpreter : Interpreter = InterpreterImpl()
-    val formatter : Formatter = Formatter()
+    val interpreter: Interpreter = InterpreterImpl()
+    val formatter: Formatter = Formatter()
 
     override fun run() {
         val sentencesList = getSentenceList()
@@ -22,7 +22,7 @@ class Cli(val file: File) : CliktCommand() {
             }
 
             "analyze" -> {
-                  analyzeCode(sentencesList)
+                analyzeCode(sentencesList)
                 // TODO
             }
 
@@ -50,6 +50,5 @@ class Cli(val file: File) : CliktCommand() {
         errors.forEach {
             println(it)
         }
-
     }
 }
