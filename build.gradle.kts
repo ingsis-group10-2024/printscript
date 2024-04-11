@@ -30,6 +30,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.8.10")
+    implementation("com.github.ajalt.clikt:clikt:4.3.0")
 }
 
 tasks.test {
