@@ -1,0 +1,9 @@
+{
+  "maxLineLength": 240,
+  "indent": 4,
+  "useSpaces": true,
+  "spaceBeforeColon": true,
+  "spaceAfterColon": true,
+  "newlineAfterSemicolon": true,
+  "spaceBeforePrintln": 1
+}
