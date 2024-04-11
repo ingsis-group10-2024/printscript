@@ -1,10 +1,11 @@
 plugins {
     kotlin("jvm") version "1.9.21"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("maven-publish")
 }
 
 group = "com.example"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-SNAPSHOT" // -snapshot para que sea una versión pisable
 
 repositories {
     mavenCentral()
@@ -50,3 +51,22 @@ tasks.register<Copy>("copyPreCommitHook") {
 }
 
 tasks.getByName("build").dependsOn("copyPreCommitHook")
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ingsis-group10-2024/printscript")
+            version = "1.0.0-SNAPSHOT"
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
