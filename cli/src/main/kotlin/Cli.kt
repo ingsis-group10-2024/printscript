@@ -1,11 +1,7 @@
 import com.github.ajalt.clikt.core.CliktCommand
-import implementation.Lexer
-import parser.Parser
-import java.io.File
 
 class Cli() : CliktCommand() {
-
-//    val lexer: Lexer = Lexer()
+    //    val lexer: Lexer = Lexer()
 //    var lexerTokens = lexer.convertToToken()
 //    val parser: Parser = Parser(lexerTokens)
     val interpreter: Interpreter = InterpreterImpl()

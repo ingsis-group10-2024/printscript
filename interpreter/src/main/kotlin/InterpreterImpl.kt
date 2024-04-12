@@ -11,21 +11,22 @@ import ast.StringOperatorNode
 // TODO preguntarle a tomi lo de los estados
 
 class InterpreterImpl : Interpreter {
-    private val variableMap = mutableMapOf<Variable, String?>()
+    private val variableMap = HashMap<Variable, String?>()
     private val stringBuffer = StringBuffer()
 
-    override fun interpret(astList: List<ASTNode>): String? {
-        if (astList.isEmpty()) return null
+    override fun interpret(astList: List<ASTNode>): Pair <HashMap<Variable , String?> , String?> {
+        if (astList.isEmpty()) return Pair(variableMap, "Empty AST")
         for (ast in astList) {
-            when (ast) {
+            val s = when (ast) {
                 is DeclarationNode -> {
                     interpretDeclarationNode(ast)
                 }
                 is Assignation -> {
-                    interpretAssignation(ast)
-                }
+                    interpretAssignation(ast) //va a tener que recibir un variablemap, modificarlo y devolverlo
+                }//TODO: terminar de hacer que este interpreter sea inmutable.
                 is MethodNode -> {
                     interpretMethod(ast)
+                    variableMap
                 }
                 is NumberOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
@@ -38,8 +39,10 @@ class InterpreterImpl : Interpreter {
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
+            val result = stringBuffer.toString()
+//            return Pair(s , result)
         }
-        return stringBuffer.toString()
+        return Pair(variableMap, stringBuffer.toString())
     }
 
     private fun interpretMethod(ast: MethodNode) {
@@ -54,6 +57,7 @@ class InterpreterImpl : Interpreter {
     }
 
 // this function will interpret the assignation node and assign the value to the variable
+    // cambiar para que devuelva un pair
     private fun interpretAssignation(ast: Assignation) {
         when (ast) {
             is DeclarationAssignationNode -> {
@@ -154,11 +158,6 @@ class InterpreterImpl : Interpreter {
         }
     }
 
-    private fun interpretIdentifierNode(node: IdentifierOperatorNode): Any {
-        variableMap.keys.find { it.identifier == node.identifier }.let {
-            return variableMap[it]!!
-        }
-    }
 
     private fun interpretDeclarationNode(ast: DeclarationNode) {
         // declare a variable with the given type initialized as null
