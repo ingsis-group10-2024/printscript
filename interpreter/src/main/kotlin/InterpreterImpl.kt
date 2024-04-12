@@ -14,31 +14,32 @@ class InterpreterImpl : Interpreter {
     private val variableMap = HashMap<Variable, String?>()
     private val stringBuffer = StringBuffer()
 
-    override fun interpret(astList: List<ASTNode>): Pair <HashMap<Variable , String?> , String?> {
+    override fun interpret(astList: List<ASTNode>): Pair<HashMap<Variable, String?>, String?> {
         if (astList.isEmpty()) return Pair(variableMap, "Empty AST")
         for (ast in astList) {
-            val s = when (ast) {
-                is DeclarationNode -> {
-                    interpretDeclarationNode(ast)
+            val s =
+                when (ast) {
+                    is DeclarationNode -> {
+                        interpretDeclarationNode(ast)
+                    }
+                    is Assignation -> {
+                        interpretAssignation(ast) // va a tener que recibir un variablemap, modificarlo y devolverlo
+                    } // TODO: terminar de hacer que este interpreter sea inmutable.
+                    is MethodNode -> {
+                        interpretMethod(ast)
+                        variableMap
+                    }
+                    is NumberOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(ast))
+                    }
+                    is StringOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(ast))
+                    }
+                    is BinaryOperationNode -> {
+                        stringBuffer.append(interpretBinaryNode(ast))
+                    }
+                    else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
                 }
-                is Assignation -> {
-                    interpretAssignation(ast) //va a tener que recibir un variablemap, modificarlo y devolverlo
-                }//TODO: terminar de hacer que este interpreter sea inmutable.
-                is MethodNode -> {
-                    interpretMethod(ast)
-                    variableMap
-                }
-                is NumberOperatorNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                is StringOperatorNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                is BinaryOperationNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
-            }
             val result = stringBuffer.toString()
 //            return Pair(s , result)
         }
@@ -157,7 +158,6 @@ class InterpreterImpl : Interpreter {
             }
         }
     }
-
 
     private fun interpretDeclarationNode(ast: DeclarationNode) {
         // declare a variable with the given type initialized as null
