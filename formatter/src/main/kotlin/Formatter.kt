@@ -5,10 +5,10 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import ast.IfNode
 
 class Formatter(private val config: FormatterConfig) {
     fun format(nodes: List<ASTNode>): String {
@@ -63,8 +63,6 @@ class Formatter(private val config: FormatterConfig) {
                         builder.append(formatNode(it))
                         builder.append("}")
                     }
-
-
                 }
             }
         }
@@ -101,8 +99,8 @@ class Formatter(private val config: FormatterConfig) {
             is IfNode -> {
                 val ifBlockIndent = "\n".repeat(config.ifBlockIndent)
                 "if (${formatNode(node.condition)}) {" +
-                        "${ifBlockIndent}${formatNode(node.trueBranch)}" +
-                        " }${node.falseBranch?.let { "} else {${ifBlockIndent}${formatNode(it)}" } ?: ""}"
+                    "${ifBlockIndent}${formatNode(node.trueBranch)}" +
+                    " }${node.falseBranch?.let { "} else {${ifBlockIndent}${formatNode(it)}" } ?: ""}"
             }
             else -> ""
         }
