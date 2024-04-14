@@ -9,9 +9,10 @@ class YamlConfigLoader(private val filePath: String) : ConfigLoader {
         println("Ruta del archivo: ${file.absolutePath}")
 
         val yamlData = Yaml().load<Map<String, List<Map<String, Any>>>>(file.readText())
-        val activeRules = yamlData["activeRules"]?.map {
-            ConfigRule(it["name"] as String, it["enabled"] as Boolean)
-        } ?: emptyList()
+        val activeRules =
+            yamlData["activeRules"]?.map {
+                ConfigRule(it["name"] as String, it["enabled"] as Boolean)
+            } ?: emptyList()
 
         return VerificationConfig(activeRules)
     }
