@@ -5,6 +5,6 @@
   "spaceBeforeColon": true,
   "spaceAfterColon": true,
   "newlineAfterSemicolon": true,
-  "spaceBeforePrintln": 1,
-  "ifBlockIndent": 1
+  "spaceBeforePrintln": 0,
+  "ifBlockIndent": 0
 }

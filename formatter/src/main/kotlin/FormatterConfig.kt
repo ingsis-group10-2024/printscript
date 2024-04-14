@@ -12,7 +12,7 @@ data class FormatterConfig(
     val spaceAfterColon: Boolean = true,
     val newlineAfterSemicolon: Boolean = true,
     val spaceBeforePrintln: Int = 1,
-    val ifBlockIndent: Int = 4,
+    val ifBlockIndent: Int = 2,
 )
 
 fun loadConfig(filePath: String): FormatterConfig {
