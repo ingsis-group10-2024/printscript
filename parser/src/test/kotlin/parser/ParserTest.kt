@@ -5,7 +5,7 @@ import ast.DeclarationNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import common.token.TokenType
+import token.TokenType
 import org.junit.Test
 import parser.Parser
 import token.Token
