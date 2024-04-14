@@ -37,6 +37,36 @@ class LexerTest {
     }
 
     @Test
+    fun `test lexer with boolean`() {
+        // Create a temporary file with some simple content
+        val tempFile = Files.createTempFile("test", ".txt").toFile()
+        tempFile.writeText("let x: Boolean = false;")
+
+        // Initialize the Lexer with the temporary file
+        val lexer = Lexer(tempFile)
+
+        // Convert the file content to tokens
+        val tokens = lexer.convertToToken()
+
+        // Assert that the tokens are as expected
+        println(tokens)
+        assertEquals(11, tokens.size)
+        assertEquals(TokenType.LET, tokens[0].type)
+        assertEquals(TokenType.WHITESPACE, tokens[1].type)
+        assertEquals(TokenType.IDENTIFIER, tokens[2].type)
+        assertEquals(TokenType.COLON, tokens[3].type)
+        assertEquals(TokenType.WHITESPACE, tokens[4].type)
+        assertEquals(TokenType.BOOLEAN_TYPE, tokens[5].type)
+        assertEquals(TokenType.WHITESPACE, tokens[6].type)
+        assertEquals(TokenType.EQUALS, tokens[7].type)
+        assertEquals(TokenType.WHITESPACE, tokens[8].type)
+        assertEquals(TokenType.BOOLEAN_LITERAL, tokens[9].type)
+
+        // Clean up the temporary file
+        tempFile.delete()
+    }
+
+    @Test
     fun `test lexer with large file`() {
         // Path to your large test file
         val largeFilePath2 = "src/test/resources/test2.pdf"
