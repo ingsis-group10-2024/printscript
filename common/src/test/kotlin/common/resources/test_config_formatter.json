@@ -1,0 +1,13 @@
+{
+  "activeRules": [
+    {
+      "name": "indent",
+      "enabled": true,
+      "value": 2
+    },
+    {
+      "name": "useSpaces",
+      "enabled": true
+    }
+  ]
+}
