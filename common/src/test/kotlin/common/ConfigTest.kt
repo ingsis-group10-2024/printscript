@@ -21,6 +21,18 @@ class ConfigTest {
     }
 
     @Test
+    fun `test VerificationConfig creation with numbers`() {
+        val rule1 = ConfigRule(name = "indent", enabled = true, 4)
+        val rule2 = ConfigRule(name = "useSpaces", enabled = true)
+
+        val config = VerificationConfig(listOf(rule1, rule2))
+
+        assertEquals(2, config.activeRules.size)
+        assertEquals(rule1, config.activeRules[0])
+        assertEquals(rule2, config.activeRules[1])
+    }
+
+    @Test
     fun `test JsonConfigLoader loading`() {
         val filePath = "src/test/kotlin/common/resources/test_config.json"
         val jsonConfigLoader = JsonConfigLoader(filePath)
@@ -55,4 +67,5 @@ class ConfigTest {
 
         assertFailsWith<FileNotFoundException> { yamlConfigLoader.loadConfig() }
     }
+
 }
