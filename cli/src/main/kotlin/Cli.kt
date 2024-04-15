@@ -1,33 +1,38 @@
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.help
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.prompt
+import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.clikt.parameters.types.int
+import implementation.Lexer
+import parser.Parser
 
 class Cli() : CliktCommand() {
-    //    val lexer: Lexer = Lexer()
-//    var lexerTokens = lexer.convertToToken()
-//    val parser: Parser = Parser(lexerTokens)
-    val interpreter: Interpreter = InterpreterImpl()
-    val formatter: Formatter = Formatter()
-    val linter: Linter = LinterImpl()
+    private val option: String by option().prompt("Option").help("which option do you want to choose?")
+    private val file by option().file(mustExist = true, canBeDir = false).prompt("\nFile path")
+    val version = "1.0"
+    private val validVersionList = listOf("1.0")
+
 
     override fun run() {
-        val sentencesList = getSentenceList()
-        for (sentence in sentencesList) {
-            when (sentence) {
-                "execute" -> {
-                    executeCode(sentence)
-                }
-
-                "format" -> {
-                    formatCode(sentence)
-                }
-
-                "analyze" -> {
-                    analyzeCode(sentencesList)
-                }
-                "validate" -> {
-                    validateCode(sentence)
-                }
-            }
-        }
+//            when (option) {
+//                "execute" -> {
+//                    executeCode()
+//                }
+//
+//                "format" -> {
+//                    formatCode()
+//                }
+//
+//                "analyze" -> {
+//                    analyzeCode()
+//                }
+//                "validate" -> {
+//                    validateCode()
+//                }
+//                else -> echo("Invalid option")
+//            }
+//        }
     }
 
     private fun validateCode(sentences: String) {
