@@ -7,13 +7,12 @@ import config.ConfigLoader
 import config.VerificationConfig
 
 class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
-
     fun analyze(astNodes: List<ASTNode>): List<StaticCodeAnalyzerError> {
         val config = configLoader.loadConfig()
         val errors = mutableListOf<StaticCodeAnalyzerError>()
 
-        for(node in astNodes) {
-            when(node) {
+        for (node in astNodes) {
+            when (node) {
                 is DeclarationAssignationNode -> {
                     if (isCamelCaseRequired(config) && !isLowerCamelCase(node.declaration.identifier)) {
                         errors.add(StaticCodeAnalyzerError("Variable name '${node.declaration.identifier}' is not in lower camel case"))

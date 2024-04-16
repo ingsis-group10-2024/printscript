@@ -3,6 +3,7 @@ plugins {
 }
 dependencies {
     implementation(project(":common"))
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
 }
 repositories {
     mavenCentral()

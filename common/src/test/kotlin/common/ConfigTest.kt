@@ -65,7 +65,6 @@ class ConfigTest {
         assertEquals(2, config.activeRules.size)
         assertEquals(rule1, config.activeRules[0])
         assertEquals(rule2, config.activeRules[1])
-
     }
 
     @Test
@@ -83,5 +82,4 @@ class ConfigTest {
 
         assertFailsWith<FileNotFoundException> { yamlConfigLoader.loadConfig() }
     }
-
 }
