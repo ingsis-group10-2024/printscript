@@ -1,11 +1,21 @@
 
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.IfNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import config.JsonConfigLoader
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FormatterTest {
-    private val filePath = "/test_config_formatter.json"
+    private val filePath = "src/main/resources/test_config_formatter.json"
     private val jsonConfigLoader = JsonConfigLoader(filePath)
     private val formatter = Formatter(jsonConfigLoader)
 

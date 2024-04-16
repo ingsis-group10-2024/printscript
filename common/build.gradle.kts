@@ -1,6 +1,7 @@
 
 plugins {
     id("jacoco")
+    java
 }
 
 dependencies {
