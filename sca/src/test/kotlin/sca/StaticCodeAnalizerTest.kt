@@ -11,6 +11,7 @@ import config.ConfigLoader
 import config.ConfigRule
 import config.VerificationConfig
 import junit.framework.TestCase.assertEquals
+import org.yaml.snakeyaml.Yaml
 
 class StaticCodeAnalizerTest {
     @Test
