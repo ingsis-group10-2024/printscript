@@ -9,7 +9,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
     implementation("org.yaml:snakeyaml:1.28")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
-
 }
 
 repositories {
