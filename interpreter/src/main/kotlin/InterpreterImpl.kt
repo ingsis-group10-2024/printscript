@@ -10,40 +10,38 @@ import ast.NumberOperatorNode
 import ast.StringOperatorNode
 // TODO preguntarle a tomi lo de los estados
 
-class InterpreterImpl : Interpreter {
-    private val variableMap = HashMap<Variable, String?>()
+class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
+    private val nonGlobalVariables = VariableMap(HashMap())
 
-    override fun interpret(astList: List<ASTNode>): Pair<HashMap<Variable, String?>, String?> {
-        if (astList.isEmpty()) return Pair(variableMap, "Empty AST")
+// the Pair it returns are the variableMap and the result of the interpretation
+    override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
+        if (astList.isEmpty()) return Pair(variableMap, null)
+        var varMap = variableMap
         for (ast in astList) {
-            val s =
-                when (ast) {
-                    is DeclarationNode -> {
-                        interpretDeclarationNode(ast)
-                    }
-                    is Assignation -> {
-                        interpretAssignation(ast) // va a tener que recibir un variablemap, modificarlo y devolverlo
-                    } // TODO: terminar de hacer que este interpreter sea inmutable.
-                    is MethodNode -> {
-                        interpretMethod(ast)
-                        variableMap
-                    }
-                    is NumberOperatorNode -> {
-                        stringBuffer.append(interpretBinaryNode(ast))
-                    }
-                    is StringOperatorNode -> {
-                        stringBuffer.append(interpretBinaryNode(ast))
-                    }
-                    is BinaryOperationNode -> {
-                        stringBuffer.append(interpretBinaryNode(ast))
-                    }
-                    else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
+            when (ast) {
+                is DeclarationNode -> {
+                    varMap = interpretDeclarationNode(ast)
                 }
-            val result = stringBuffer.toString()
-//            return Pair(s , result)
+                is Assignation -> {
+                    varMap = interpretAssignation(ast) // va a tener que recibir un variablemap, modificarlo y devolverlo
+                }
+                is MethodNode -> {
+                    interpretMethod(ast)
+                }
+                is NumberOperatorNode -> {
+                    stringBuffer.append(interpretBinaryNode(ast))
+                }
+                is StringOperatorNode -> {
+                    stringBuffer.append(interpretBinaryNode(ast))
+                }
+                is BinaryOperationNode -> {
+                    stringBuffer.append(interpretBinaryNode(ast))
+                }
+                else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
+            }
         }
-        return Pair(variableMap, stringBuffer.toString())
+        return Pair(varMap, stringBuffer.toString())
     }
 
     private fun interpretMethod(ast: MethodNode) {
@@ -58,26 +56,28 @@ class InterpreterImpl : Interpreter {
     }
 
 // this function will interpret the assignation node and assign the value to the variable
-    // cambiar para que devuelva un pair
-    private fun interpretAssignation(ast: Assignation) {
+    private fun interpretAssignation(ast: Assignation): VariableMap {
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
                     stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
-                    return
+                    return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
                 val value = interpretBinaryNode(ast.assignation)
-                variableMap[variable] = value
+                val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
+                return newMap
             }
             is AssignationNode -> {
-                variableMap.keys.find { it.identifier == ast.identifier }?.let {
+                variableMap.findKey(ast.identifier)?.let {
                     val value = interpretBinaryNode(ast.assignation)
-                    variableMap[it] = value
+                    val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
+                    return newMap
                 } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
             }
         }
+        return variableMap
     }
 
 // this function will interpret the binary node and return the value of the node
@@ -87,9 +87,9 @@ class InterpreterImpl : Interpreter {
             is StringOperatorNode -> ast.value
             is IdentifierOperatorNode -> {
                 val variable =
-                    variableMap.keys.find { it.identifier == ast.identifier }
+                    variableMap.findKey(ast.identifier)
                         ?: throw Exception("Variable ${ast.identifier} not declared")
-                return variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
+                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
             }
             is BinaryOperationNode -> {
                 val left = ast.left!!
@@ -159,8 +159,9 @@ class InterpreterImpl : Interpreter {
         }
     }
 
-    private fun interpretDeclarationNode(ast: DeclarationNode) {
+    private fun interpretDeclarationNode(ast: DeclarationNode): VariableMap {
         // declare a variable with the given type initialized as null
-        variableMap[Variable(ast.identifier, ast.type)] = null
+        val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
+        return newMap
     }
 }
