@@ -196,7 +196,8 @@ class ParserTest {
 
         val expected =
             listOf(
-                AssignationNode("x",
+                AssignationNode(
+                    "x",
                     BinaryOperationNode(
                         "+",
                         NumberOperatorNode(5.0),
@@ -206,7 +207,7 @@ class ParserTest {
                             NumberOperatorNode(2.0),
                         ),
                     ),
-                )
+                ),
             )
 
         assertEquals(expected, result)
@@ -323,13 +324,13 @@ class ParserTest {
 
         val parser = Parser(tokens)
 
-        val exception = assertThrows(
-            RuntimeException::class.java
-        ) {
-            parser.generateAST()
-        }
+        val exception =
+            assertThrows(
+                RuntimeException::class.java,
+            ) {
+                parser.generateAST()
+            }
 
         assertEquals("La línea no finaliza con punto y coma", exception.message)
     }
-
 }

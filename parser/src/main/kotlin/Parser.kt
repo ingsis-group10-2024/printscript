@@ -155,23 +155,24 @@ class Parser(private val tokens: List<Token>) {
                     getTokenAndAdvance()
                     return AssignationNode(initialToken.value, rightNode as BinaryNode)
                 } else {
-                    throw RuntimeException("Expected ';' after assignment in line: ${getCurrentSignificantToken().lineNumber} " +
-                            "and position: ${getCurrentSignificantToken().position}")
+                    throw RuntimeException(
+                        "Expected ';' after assignment in line: ${getCurrentSignificantToken().lineNumber} " +
+                            "and position: ${getCurrentSignificantToken().position}",
+                    )
                 }
             } else {
                 throw RuntimeException(
                     "Expected num after an equals in line: ${getCurrentSignificantToken().lineNumber} " +
-                            "and position: ${getCurrentSignificantToken().position}",
+                        "and position: ${getCurrentSignificantToken().position}",
                 )
             }
         } else {
             throw RuntimeException(
                 "Expected '=' after an identifier in line: ${getCurrentSignificantToken().lineNumber} " +
-                        "and position: ${getCurrentSignificantToken().position}",
+                    "and position: ${getCurrentSignificantToken().position}",
             )
         }
     }
-
 
     fun parseDeclarationAssignation(): ASTNode {
         val declaration = parseDeclaration()
@@ -182,14 +183,15 @@ class Parser(private val tokens: List<Token>) {
                 getTokenAndAdvance()
                 DeclarationAssignationNode(declaration, assignation)
             } else {
-                throw RuntimeException("Expected ';' after declaration assignment in line: ${getCurrentSignificantToken().lineNumber} " +
-                        "and position: ${getCurrentSignificantToken().position}")
+                throw RuntimeException(
+                    "Expected ';' after declaration assignment in line: ${getCurrentSignificantToken().lineNumber} " +
+                        "and position: ${getCurrentSignificantToken().position}",
+                )
             }
         } else {
             declaration
         }
     }
-
 
     fun parsePrintln(): MethodNode {
         val methodName = getTokenAndAdvance()

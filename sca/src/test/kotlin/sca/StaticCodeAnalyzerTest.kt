@@ -10,7 +10,7 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.io.File
 
-class StaticCodeAnalizerCamelCaseTest {
+class StaticCodeAnalyzerTest {
     @Test
     fun `test analyze with camel case configuration`() {
         val astNodes =
