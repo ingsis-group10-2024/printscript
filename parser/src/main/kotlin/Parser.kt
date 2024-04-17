@@ -147,29 +147,33 @@ class Parser(private val tokens: List<Token>) {
     fun parseAssignation(): AssignationNode {
         val initialToken = getTokenAndAdvance()
 
-        val thisToken = getCurrentSignificantToken()
-
         if (isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
-            val tokenHere = getCurrentSignificantToken()
             if (isCurrentToken(TokenType.NUMERIC_LITERAL)) {
                 val rightNode = parseExpression()
-                return AssignationNode(initialToken.value, rightNode as BinaryNode)
+                if (isCurrentToken(TokenType.SEMICOLON)) {
+                    getTokenAndAdvance()
+                    return AssignationNode(initialToken.value, rightNode as BinaryNode)
+                } else {
+                    throw RuntimeException("Expected ';' after assignment in line: ${getCurrentSignificantToken().lineNumber} " +
+                            "and position: ${getCurrentSignificantToken().position}")
+                }
             } else {
                 throw RuntimeException(
                     "Expected num after an equals in line: ${getCurrentSignificantToken().lineNumber} " +
-                        "and position: ${getCurrentSignificantToken().position}",
+                            "and position: ${getCurrentSignificantToken().position}",
                 )
             }
         } else {
             throw RuntimeException(
                 "Expected '=' after an identifier in line: ${getCurrentSignificantToken().lineNumber} " +
-                    "and position: ${getCurrentSignificantToken().position}",
+                        "and position: ${getCurrentSignificantToken().position}",
             )
         }
     }
 
-    fun parseDeclarationAssignation(): ASTNode? {
+
+    fun parseDeclarationAssignation(): ASTNode {
         val declaration = parseDeclaration()
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
@@ -250,7 +254,7 @@ class Parser(private val tokens: List<Token>) {
             index++
         }
 
-        throw RuntimeException("Todos los siguientes tokens son espacios.")
+        throw RuntimeException("La línea no finaliza con punto y coma")
     }
 
     private fun throwParseException(
