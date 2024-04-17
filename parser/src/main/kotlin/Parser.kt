@@ -175,14 +175,21 @@ class Parser(private val tokens: List<Token>) {
 
     fun parseDeclarationAssignation(): ASTNode {
         val declaration = parseDeclaration()
-        if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
+        return if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as BinaryNode
-            return DeclarationAssignationNode(declaration, assignation)
+            if (isCurrentToken(TokenType.SEMICOLON)) {
+                getTokenAndAdvance()
+                DeclarationAssignationNode(declaration, assignation)
+            } else {
+                throw RuntimeException("Expected ';' after declaration assignment in line: ${getCurrentSignificantToken().lineNumber} " +
+                        "and position: ${getCurrentSignificantToken().position}")
+            }
         } else {
-            return declaration
+            declaration
         }
     }
+
 
     fun parsePrintln(): MethodNode {
         val methodName = getTokenAndAdvance()
