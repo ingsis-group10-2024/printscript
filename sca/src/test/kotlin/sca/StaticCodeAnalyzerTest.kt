@@ -19,7 +19,7 @@ class StaticCodeAnalyzerTest {
                 DeclarationAssignationNode(DeclarationNode("myVariable", "int"), NumberOperatorNode(10.0)),
             )
 
-        val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalizerRules.json"
+        val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
 
         val configLoader =
             object : ConfigLoader {
