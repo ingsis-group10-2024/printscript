@@ -91,7 +91,6 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.PRINTLN -> {
                 parsePrintln()
-                
             }
             else -> null
         }
