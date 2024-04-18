@@ -1,6 +1,7 @@
 import ast.ASTNode
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -44,11 +45,14 @@ class LinterImpl() : Linter {
     // let x: number = "hola" -> error
     // let y: boolean = 5 -> error
     private fun checkDeclarationAssignationSyntax(node: DeclarationAssignationNode) {
-        if (node.declaration.type == "number" && node.assignation !is NumberOperatorNode) {
+        if (node.declaration.type.lowercase() == "number" && node.assignation !is NumberOperatorNode) {
             errors.add("Invalid assignation for number type")
         }
-        if (node.declaration.type == "string" && node.assignation !is StringOperatorNode) {
+        if (node.declaration.type.lowercase() == "string" && node.assignation !is StringOperatorNode) {
             errors.add("Invalid assignation for string type")
+        }
+        if (node.declaration.type.lowercase() == "boolean" && node.assignation !is BooleanOperatorNode) {
+            errors.add("Invalid assignation for boolean type")
         }
     }
 
