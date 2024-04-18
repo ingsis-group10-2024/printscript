@@ -41,7 +41,7 @@ class Formatter(private val config: FormatterConfig) {
                 is IdentifierOperatorNode -> builder.append(node.identifier)
                 is MethodNode -> {
                     // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println si la configuración lo permite
-                    builder.append("\n${" ".repeat(config.spaceBeforePrintln)}${node.identifier}(")
+                    builder.append("\n${" ".repeat(config.spaceBeforePrintln)}${node.name}(")
                     builder.append(formatNode(node.value))
                     builder.append(")")
                 }
@@ -89,7 +89,7 @@ class Formatter(private val config: FormatterConfig) {
             is IdentifierOperatorNode -> node.identifier
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
-                "\n${" ".repeat(config.spaceBeforePrintln)}${node.identifier}(${formatNode(node.value)})"
+                "\n${" ".repeat(config.spaceBeforePrintln)}${node.name}(${formatNode(node.value)})"
             }
             else -> ""
         }
