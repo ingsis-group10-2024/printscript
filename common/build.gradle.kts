@@ -2,6 +2,7 @@
 plugins {
     id("jacoco")
     java
+    id("printscript.v1.kotlin-application-conventions")
 }
 
 dependencies {

@@ -10,8 +10,8 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 import config.JsonConfigLoader
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class FormatterTest {
     private val filePath = "src/main/resources/test_config_formatter.json"

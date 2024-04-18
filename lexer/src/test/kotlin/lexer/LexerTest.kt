@@ -1,7 +1,8 @@
 package lexer
 
 import implementation.Lexer
-import org.junit.Test
+import org.junit.jupiter.api.Test
+
 import token.TokenType
 import java.io.File
 import java.nio.file.Files

@@ -1,0 +1,42 @@
+plugins {
+    // Support convention plugins written in Groovy. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.
+    id 'groovy-gradle-plugin'
+    id 'jacoco'
+}
+
+repositories {
+    // Use the plugin portal to apply community plugins in convention plugins.
+    gradlePluginPortal()
+}
+
+dependencies {
+    // Ensure compatibility with Java 12 and Gradle 5.5.1
+    implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.9' // Use Groovy 3.x for compatibility
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.8.10'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.8.10'
+}
+
+java {
+    // Set source and target compatibility to Java 12
+    sourceCompatibility = JavaVersion.VERSION_12
+    targetCompatibility = JavaVersion.VERSION_12
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+//allprojects {
+//    apply plugin: "org.jlleitschuh.gradle.ktlint"
+//}

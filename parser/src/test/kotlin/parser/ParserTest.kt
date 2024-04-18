@@ -6,7 +6,8 @@ import ast.DeclarationNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import org.junit.Test
+import org.junit.jupiter.api.Test
+
 import parser.Parser
 import token.Token
 import token.TokenType
