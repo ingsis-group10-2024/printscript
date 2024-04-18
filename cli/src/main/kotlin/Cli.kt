@@ -13,7 +13,7 @@ import java.io.File
 
 class Cli() : CliktCommand() {
     private val option: String by option().prompt("Option").help("which option do you want to choose?")
-    private val version : String by option().prompt("Version").help("which version do you want to use?")
+    private val version: String by option().prompt("Version").help("which version do you want to use?")
     private val file by option().file(mustExist = true, canBeDir = false).prompt("\nFile path").validate { file ->
         if (!file.extension.equals("txt", ignoreCase = true)) {
             fail("File is not a text file: ${file.path}")
@@ -38,14 +38,17 @@ class Cli() : CliktCommand() {
             "validate" -> {
                 validateCode(file, version)
             }
-            "analyze" ->{
+            "analyze" -> {
                 analyzeCode(file, version)
             }
             else -> echo("Invalid option")
         }
     }
 
-    private fun analyzeCode(file: File, version: String) {
+    private fun analyzeCode(
+        file: File,
+        version: String,
+    ) {
         val lexer = Lexer(file)
         val tokens = lexer.convertToToken()
         val parser = Parser(tokens)

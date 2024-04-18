@@ -16,8 +16,14 @@ class StaticCodeAnalyzerTest {
     fun `test analyze with camel case configuration`() {
         val astNodes =
             listOf(
-                DeclarationAssignationNode(DeclarationNode("x", Position(1, 1),"int" , Position(2, 1)), NumberOperatorNode(5.0 , Position(3, 1))),
-                DeclarationAssignationNode(DeclarationNode("myVariable",Position(1 , 2), "int" , Position(2,2)), NumberOperatorNode(10.0 , Position(6, 2))),
+                DeclarationAssignationNode(
+                    DeclarationNode("x", Position(1, 1), "int", Position(2, 1)),
+                    NumberOperatorNode(5.0, Position(3, 1)),
+                ),
+                DeclarationAssignationNode(
+                    DeclarationNode("myVariable", Position(1, 2), "int", Position(2, 2)),
+                    NumberOperatorNode(10.0, Position(6, 2)),
+                ),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
