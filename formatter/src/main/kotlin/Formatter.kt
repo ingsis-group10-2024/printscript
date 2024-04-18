@@ -1,19 +1,9 @@
 
-import ast.ASTNode
-import ast.AssignationNode
-import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
-import ast.IdentifierOperatorNode
-import ast.IfNode
-import ast.MethodNode
-import ast.NumberOperatorNode
-import ast.StringOperatorNode
+import ast.*
 import config.ConfigRule
 import config.JsonConfigLoader
 
-class Formatter(private val jsonConfigLoader: JsonConfigLoader) {
+class Formatter(jsonConfigLoader: JsonConfigLoader) {
     private val config = jsonConfigLoader.loadConfig()
     private val rules: List<ConfigRule> = config.activeRules
 
@@ -101,12 +91,6 @@ class Formatter(private val jsonConfigLoader: JsonConfigLoader) {
             }
             is BooleanOperatorNode -> {
                 "${node.value}"
-            }
-            is IfNode -> {
-                val ifBlockIndent = "\n".repeat(rules[7].value!!)
-                "if (${formatNode(node.condition)}) {" +
-                    "${ifBlockIndent}${formatNode(node.trueBranch)}" +
-                    " }${node.falseBranch?.let { "} else {${ifBlockIndent}${formatNode(it)}" } ?: ""}"
             }
             else -> ""
         }

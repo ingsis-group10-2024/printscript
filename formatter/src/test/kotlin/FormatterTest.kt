@@ -1,15 +1,5 @@
 
-import ast.ASTNode
-import ast.AssignationNode
-import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
-import ast.IdentifierOperatorNode
-import ast.IfNode
-import ast.MethodNode
-import ast.NumberOperatorNode
-import ast.StringOperatorNode
+import ast.*
 import config.JsonConfigLoader
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -151,4 +141,54 @@ class FormatterTest {
         println(result)
         assertEquals("true", result)
     }
+
+    @Test
+    fun `format declaration node with spaces`() {
+        val nodes = listOf(DeclarationNode("x", "number"))
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("let x : number\n", result)
+    }
+
+    @Test
+    fun `format declaration assignation node with spaces`() {
+        val nodes =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("x", "number"),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("let x : number = 5.0 + 3.0", result)
+    }
+
+    @Test
+    fun `format assignation node with spaces`() {
+        val nodes =
+            listOf(
+                AssignationNode("x", BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("x = 5.0 + 3.0", result)
+    }
+
+    @Test
+    fun `format if node with spaces`() {
+        val nodes =
+            listOf(
+                IfNode(
+                    BooleanOperatorNode(true),
+                    MethodNode("print", StringOperatorNode("Hello")),
+                    null,
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("if (true) {\nprint(\"Hello\")\n}", result)
+    }
+
+
 }
