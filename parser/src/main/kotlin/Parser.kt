@@ -91,15 +91,18 @@ class Parser(private val tokens: List<Token>) {
     fun parseDeclaration(): DeclarationNode {
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            throwParseException("identifier")
+            val currentToken = getCurrentSignificantToken()
+            throwParseException("identifier", currentToken.value, currentToken.column, currentToken.line)
         }
         val identifierToken = getTokenAndAdvance()
         if (!isCurrentToken(TokenType.COLON)) {
-            throwParseException("':'")
+            val currentToken = getCurrentSignificantToken()
+            throwParseException("':'", currentToken.value, currentToken.column, currentToken.line)
         }
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
-            throwParseException("type")
+            val currentToken = getCurrentSignificantToken()
+            throwParseException("type", currentToken.value, currentToken.column, currentToken.line)
         }
         val typeToken = getTokenAndAdvance()
         return DeclarationNode(
@@ -110,7 +113,6 @@ class Parser(private val tokens: List<Token>) {
         )
     }
 
-
     fun parseAssignation(): AssignationNode {
         val identifierToken = getTokenAndAdvance()
         if (isCurrentToken(TokenType.EQUALS)) {
@@ -119,15 +121,15 @@ class Parser(private val tokens: List<Token>) {
             if (expression != null) {
                 if (isCurrentToken(TokenType.SEMICOLON)) {
                     getTokenAndAdvance()
-                    return AssignationNode(identifierToken.value,Position(identifierToken.column, identifierToken.line), expression as BinaryNode)
+                    return AssignationNode(identifierToken.value, Position(identifierToken.column, identifierToken.line), expression as BinaryNode)
                 } else {
-                    throwParseException("';'")
+                    throwParseException("';'", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
                 }
             } else {
-                throwParseException("expression")
+                throwParseException("expression", "", getCurrentSignificantToken().column, getCurrentSignificantToken().line)
             }
         }
-        throwParseException("'='")
+        throwParseException("'='", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         return AssignationNode("", Position(0, 0), StringOperatorNode(" ", Position(0,0)))
     }
 
@@ -143,37 +145,37 @@ class Parser(private val tokens: List<Token>) {
                     assignation
                 )
             } else {
-                throwParseException("';'")
+                throwParseException("';'", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
             }
         }
         if (isCurrentToken(TokenType.SEMICOLON)) {
             getTokenAndAdvance()
             return declaration
         } else {
-            throwParseException("';'")
+            throwParseException("';'", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         }
         return DeclarationNode("", Position(0, 0), "", Position(0, 0))
     }
 
-
     fun parsePrintln(): MethodNode {
         val printlnToken = getTokenAndAdvance()
         if (!isCurrentToken(TokenType.OPEN_PARENTHESIS)) {
-            throwParseException("'('")
+            throwParseException("'('", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         }
         getTokenAndAdvance()
         val content = parseExpression()
         if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
-            throwParseException("')'")
+            throwParseException("')'", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         }
         getTokenAndAdvance()
         if (!isCurrentToken(TokenType.SEMICOLON)) {
-            throwParseException("';'")
+            throwParseException("';'", getCurrentSignificantToken().value, getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         }
         getTokenAndAdvance()
 
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
     }
+
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentSignificantToken().type == type
@@ -206,8 +208,13 @@ class Parser(private val tokens: List<Token>) {
         throw RuntimeException("La línea no finaliza con punto y coma")
     }
 
-    private fun throwParseException(expected: String) {
+    /*private fun throwParseException(expected: String) {
         val currentToken = getCurrentSignificantToken()
         throw RuntimeException("Expected $expected but found '${currentToken.value}' at ${currentToken.column}")
+    }*/
+
+    private fun throwParseException(expected: String, found: String, column: Int, line: Int) {
+        throw RuntimeException("Expected $expected but found $found at column $column, line $line")
     }
+
 }
