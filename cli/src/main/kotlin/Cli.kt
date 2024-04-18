@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
+import config.JsonConfigLoader
 import implementation.Lexer
 import parser.Parser
 import java.io.File
@@ -63,10 +64,11 @@ private fun formatCode(
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val config = FormatterConfig()
-    val formatter = Formatter(config)
+    val filePath = "src/main/resources/test_config_formatter.json"
+    val jsonConfigLoader = JsonConfigLoader(filePath)
+    val formatter = Formatter(jsonConfigLoader)
     val formattedCode = formatter.format(ast)
-    println("File formatted")
+    println("File formatted$formattedCode")
 }
 
 private fun executeCode(
@@ -81,6 +83,7 @@ private fun executeCode(
     val result = interpreter.interpret(ast)
     println(result.second)
 }
+
 /*
 primero pedir un file, si el file no existe tiro error
 si el file existe: elige que quiere hacer.
@@ -102,7 +105,6 @@ fun main(args: Array<String>) {
 |    validate
 |    execute
 |    format
-|    analyze
 |
     """,
     )
