@@ -1,9 +1,9 @@
 package implementation
 
-import common.token.TokenType
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import token.Token
+import token.TokenType
 import java.io.File
 import java.io.IOException
 import java.util.regex.Pattern
@@ -96,6 +96,14 @@ class Lexer(private val file: File) {
                     tokens.add(Token(TokenType.CLOSE_PARENTHESIS, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
+                '{' -> {
+                    tokens.add(Token(TokenType.OPEN_BRACKET, currentChar.toString(), lineNumber, position + 1))
+                    position++
+                }
+                '}' -> {
+                    tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), lineNumber, position + 1))
+                    position++
+                }
                 '"', '\'' -> { // this checks for string literals
                     val start = position
                     position++ // moves past the opening quote
@@ -129,6 +137,9 @@ class Lexer(private val file: File) {
                             "Boolean" -> tokens.add(Token(TokenType.BOOLEAN_TYPE, word, lineNumber, start + 1))
                             "true" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
                             "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
+                            "<=" -> tokens.add(Token(TokenType.LESSER_THAN_EQUAL, word, lineNumber, start + 1))
+                            ">=" -> tokens.add(Token(TokenType.GREATER_THAN_EQUAL, word, lineNumber, start + 1))
+                            "==" -> tokens.add(Token(TokenType.EQUAL_EQUAL, word, lineNumber, start + 1))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, lineNumber, start + 1))
                         }
                     } else if (currentChar.isDigit()) {
