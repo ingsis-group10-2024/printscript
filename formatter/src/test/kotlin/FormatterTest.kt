@@ -1,5 +1,15 @@
 
-import ast.*
+import ast.ASTNode
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.IfNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.StringOperatorNode
 import config.JsonConfigLoader
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -189,6 +199,4 @@ class FormatterTest {
         println(result)
         assertEquals("if (true) {\nprint(\"Hello\")\n}", result)
     }
-
-
 }
