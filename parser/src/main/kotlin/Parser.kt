@@ -9,8 +9,8 @@ import ast.DeclarationNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import common.token.TokenType
 import token.Token
+import token.TokenType
 
 class Parser(private val tokens: List<Token>) {
     private var currentTokenIndex = 0

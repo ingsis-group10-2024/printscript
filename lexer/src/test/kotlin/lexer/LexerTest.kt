@@ -1,8 +1,8 @@
 package lexer
 
-import common.token.TokenType
 import implementation.Lexer
 import org.junit.Test
+import token.TokenType
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.assertEquals
@@ -31,6 +31,35 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, tokens[5].type)
         assertEquals(TokenType.NUMERIC_LITERAL, tokens[6].type)
         assertEquals(TokenType.SEMICOLON, tokens[7].type)
+
+        // Clean up the temporary file
+        tempFile.delete()
+    }
+
+    @Test
+    fun `test lexer with string`() {
+        // Create a temporary file with some simple content
+        val tempFile = Files.createTempFile("test", ".txt").toFile()
+        tempFile.writeText("let x: String = \"Hello\";")
+
+        // Initialize the Lexer with the temporary file
+        val lexer = Lexer(tempFile)
+
+        // Convert the file content to tokens
+        val tokens = lexer.convertToToken()
+
+        // Assert that the tokens are as expected
+        assertEquals(11, tokens.size)
+        assertEquals(TokenType.LET, tokens[0].type)
+        assertEquals(TokenType.WHITESPACE, tokens[1].type)
+        assertEquals(TokenType.IDENTIFIER, tokens[2].type)
+        assertEquals(TokenType.COLON, tokens[3].type)
+        assertEquals(TokenType.WHITESPACE, tokens[4].type)
+        assertEquals(TokenType.STRING_TYPE, tokens[5].type)
+        assertEquals(TokenType.WHITESPACE, tokens[6].type)
+        assertEquals(TokenType.EQUALS, tokens[7].type)
+        assertEquals(TokenType.WHITESPACE, tokens[8].type)
+        assertEquals(TokenType.STRING_LITERAL, tokens[9].type)
 
         // Clean up the temporary file
         tempFile.delete()
