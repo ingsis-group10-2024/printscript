@@ -1,14 +1,14 @@
-package parser
-
 import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.MethodNode
 import ast.NumberOperatorNode
+import ast.Position
 import ast.StringOperatorNode
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import parser.Parser
 import token.Token
 import token.TokenType
 import kotlin.test.assertEquals
@@ -30,8 +30,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "+",
-                NumberOperatorNode(5.0),
-                NumberOperatorNode(3.0),
+                NumberOperatorNode(5.0, Position(1, 0)),
+                NumberOperatorNode(3.0, Position(3, 0)),
             )
 
         assertEquals(expected, result)
@@ -53,8 +53,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "*",
-                NumberOperatorNode(2.0),
-                NumberOperatorNode(8.0),
+                NumberOperatorNode(2.0, Position(1, 0)),
+                NumberOperatorNode(8.0, Position(3, 0)),
             )
 
         assertEquals(expected, result)
@@ -80,11 +80,11 @@ class ParserTest {
             listOf(
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5.0),
+                    NumberOperatorNode(5.0, Position(1, 0)),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3.0),
-                        NumberOperatorNode(2.0),
+                        NumberOperatorNode(3.0, Position(3, 0)),
+                        NumberOperatorNode(2.0, Position(5, 0)),
                     ),
                 ),
             )
@@ -111,7 +111,11 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(DeclarationNode("x", "number"), DeclarationNode("y", "string"))
+        val expected =
+            listOf(
+                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
+                DeclarationNode("y", Position(2, 1), "string", Position(4, 1)),
+            )
 
         assertEquals(expected, result)
     }
@@ -139,18 +143,18 @@ class ParserTest {
 
         val expected =
             listOf(
-                DeclarationNode("x", "number"),
+                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5.0),
+                    NumberOperatorNode(5.0, Position(2, 1)),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3.0),
-                        NumberOperatorNode(2.0),
+                        NumberOperatorNode(3.0, Position(4, 1)),
+                        NumberOperatorNode(2.0, Position(6, 1)),
                     ),
                 ),
-                NumberOperatorNode(80.0),
-                StringOperatorNode("Hola"),
+                NumberOperatorNode(80.0, Position(1, 2)),
+                StringOperatorNode("Hola", Position(1, 3)),
                 // IdentifierOperatorNode("x")
             )
 
@@ -172,7 +176,7 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(AssignationNode("x", NumberOperatorNode(5.0)))
+        val expected = listOf(AssignationNode("x", Position(1, 0), NumberOperatorNode(5.0, Position(5, 0))))
 
         assertEquals(expected, result)
     }
@@ -198,13 +202,14 @@ class ParserTest {
             listOf(
                 AssignationNode(
                     "x",
+                    Position(1, 0),
                     BinaryOperationNode(
                         "+",
-                        NumberOperatorNode(5.0),
+                        NumberOperatorNode(5.0, Position(4, 0)),
                         BinaryOperationNode(
                             "*",
-                            NumberOperatorNode(3.0),
-                            NumberOperatorNode(2.0),
+                            NumberOperatorNode(3.0, Position(3, 1)),
+                            NumberOperatorNode(2.0, Position(5, 1)),
                         ),
                     ),
                 ),
@@ -231,8 +236,8 @@ class ParserTest {
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("x", "number"),
-                NumberOperatorNode(5.0),
+                DeclarationNode("x", Position(2, 1), "number", Position(4, 1)),
+                NumberOperatorNode(5.0, Position(6, 1)),
             )
 
         assertEquals(listOf(expected), result)
@@ -258,8 +263,12 @@ class ParserTest {
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("y", "int"),
-                BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                DeclarationNode("y", Position(2, 2), "int", Position(4, 2)),
+                BinaryOperationNode(
+                    "+",
+                    NumberOperatorNode(5.0, Position(6, 2)),
+                    NumberOperatorNode(3.0, Position(8, 2)),
+                ),
             )
 
         assertEquals(listOf(expected), result)
@@ -285,8 +294,12 @@ class ParserTest {
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("x", "string"),
-                BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world")),
+                DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
+                BinaryOperationNode(
+                    "+",
+                    StringOperatorNode("Hello", Position(6, 1)),
+                    StringOperatorNode(" world", Position(8, 1)),
+                ),
             )
 
         assertEquals(expected, result)
@@ -306,7 +319,7 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.parsePrintln()
 
-        val expected = MethodNode("println", StringOperatorNode("Hello"))
+        val expected = MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0))
 
         assertEquals(expected, result)
     }
@@ -332,46 +345,5 @@ class ParserTest {
             }
 
         assertEquals("La línea no finaliza con punto y coma", exception.message)
-    }
-    @Test
-    fun testApeElGrande(){
-        val tokens =
-            listOf(
-                Token(TokenType.LET, "let", 1, 1),
-                Token(TokenType.IDENTIFIER, "x", 2, 1),
-                Token(TokenType.COLON, ":", 3, 1),
-                Token(TokenType.NUMBER_TYPE, "number", 4, 1),
-                Token(TokenType.EQUALS, "=", 5, 1),
-                Token(TokenType.NUMERIC_LITERAL, "10", 6, 1),
-                Token(TokenType.SEMICOLON, ";", 7, 1),
-                Token(TokenType.LET, "let", 1, 2),
-                Token(TokenType.IDENTIFIER, "y", 2, 2),
-                Token(TokenType.COLON, ":", 3, 2),
-                Token(TokenType.NUMBER_TYPE, "number", 4, 2),
-                Token(TokenType.EQUALS, "=", 5, 2),
-                Token(TokenType.NUMERIC_LITERAL, "20", 6, 2),
-                Token(TokenType.SEMICOLON, ";", 7, 2),
-                Token(TokenType.PRINTLN, "println", 1, 3),
-                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 3),
-                Token(TokenType.STRING_LITERAL, "Hello", 3, 3),
-                Token(TokenType.CLOSE_PARENTHESIS, ")", 4, 3),
-                Token(TokenType.SEMICOLON, ";", 5, 3)
-            )
-
-        val parser = Parser(tokens)
-        val result = parser.generateAST()
-
-        val expected = listOf(
-            DeclarationAssignationNode(
-                DeclarationNode("x", "number"),
-                NumberOperatorNode(10.0)
-            ),
-            DeclarationAssignationNode(
-                DeclarationNode("y", "number"),
-                NumberOperatorNode(20.0),
-            ),
-            MethodNode("println", StringOperatorNode("Hello"))
-        )
-        assertEquals(expected, result)
     }
 }

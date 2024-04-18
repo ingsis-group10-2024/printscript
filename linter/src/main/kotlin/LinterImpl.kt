@@ -86,7 +86,7 @@ class LinterImpl() : Linter {
 
     private fun checkMethodSyntax(node: MethodNode) {
         // Check for missing method identifier
-        if (node.identifier.isEmpty()) {
+        if (node.name.isEmpty()) {
             errors.add("Missing method identifier.")
         }
     }

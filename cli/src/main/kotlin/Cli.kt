@@ -81,7 +81,7 @@ private fun executeCode(
     val ast = parser.generateAST()
     val interpreter = InterpreterImpl(VariableMap(HashMap()))
     val result = interpreter.interpret(ast)
-    println(result.second)
+//    println(result.second)
 }
 
 /*

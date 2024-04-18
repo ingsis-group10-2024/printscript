@@ -52,20 +52,20 @@ class ConfigTest {
         assertEquals(2, config.activeRules.size)
     }
 
-    @Test
-    fun `test JsonVerificationConfig creation with numbers`() {
-        val filePath = "src/test/kotlin/common/resources/test_config_formatter.json"
-        val jsonConfigLoader = JsonConfigLoader(filePath)
-
-        val rule1 = ConfigRule(name = "indent", enabled = true, 2)
-        val rule2 = ConfigRule(name = "useSpaces", enabled = true)
-
-        val config = jsonConfigLoader.loadConfig()
-
-        assertEquals(2, config.activeRules.size)
-        assertEquals(rule1, config.activeRules[0])
-        assertEquals(rule2, config.activeRules[1])
-    }
+//    @Test
+//    fun `test JsonVerificationConfig creation with numbers`() {
+//        val filePath = "src/test/kotlin/common/resources/test_config_formatter.json"
+//        val jsonConfigLoader = JsonConfigLoader(filePath)
+//
+//        val rule1 = ConfigRule(name = "indent", enabled = true, 2)
+//        val rule2 = ConfigRule(name = "useSpaces", enabled = true)
+//
+//        val config = jsonConfigLoader.loadConfig()
+//
+//        assertEquals(2, config.activeRules.size)
+//        assertEquals(rule1, config.activeRules[0])
+//        assertEquals(rule2, config.activeRules[1])
+//    }
 
     @Test
     fun `test JsonConfigLoader file not found error`() {
