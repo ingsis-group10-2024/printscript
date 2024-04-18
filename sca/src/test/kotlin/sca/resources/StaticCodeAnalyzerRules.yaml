@@ -1,0 +1,8 @@
+activeRules:
+  - name: camel_case
+    enabled: true
+  - name: snake_case
+    enabled: false
+  - name: printlnArgumentChecker
+    enabled: true
+
