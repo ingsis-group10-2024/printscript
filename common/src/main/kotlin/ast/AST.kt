@@ -19,7 +19,7 @@ data class BinaryOperationNode(val symbol: String, val left: ASTNode?, val right
 
 data class DeclarationNode(val identifier: String, val type: String) : ASTNode // Ej:  let x:number   let y:string
 
-// Ej: let x: number = 5   let y: string = "Hello"
+// Ej: let x: number = "hello";  let y: string = "Hello"
 data class DeclarationAssignationNode(val declaration: DeclarationNode, val assignation: BinaryNode) : Assignation
 
 // Ej: x=5       x=2+3*4       x="Hello"    x=y    x=y*2

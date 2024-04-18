@@ -64,11 +64,11 @@ private fun formatCode(
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val filePath = "src/main/resources/test_config_formatter.json"
+    val filePath = "formatter/src/main/resources/test_config_formatter.json"
     val jsonConfigLoader = JsonConfigLoader(filePath)
     val formatter = Formatter(jsonConfigLoader)
     val formattedCode = formatter.format(ast)
-    println("File formatted$formattedCode")
+    println("File formatted $formattedCode")
 }
 
 private fun executeCode(
