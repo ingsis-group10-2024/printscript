@@ -133,7 +133,7 @@ class Lexer(private val file: File) {
                             "private" -> tokens.add(Token(TokenType.PRIVATE, word, lineNumber, start + 1))
                             "protected" -> tokens.add(Token(TokenType.PROTECTED, word, lineNumber, start + 1))
                             "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, lineNumber, start + 1))
-                            "Int" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
+                            "number" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
                             "Boolean" -> tokens.add(Token(TokenType.BOOLEAN_TYPE, word, lineNumber, start + 1))
                             "true" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
                             "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
