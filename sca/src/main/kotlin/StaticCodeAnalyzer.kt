@@ -19,7 +19,7 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
                     }
                 }
                 is MethodNode -> {
-                    if (isPrintlnArgumentCheckerEnabled(config) && node.identifier == "println") {
+                    if (isPrintlnArgumentCheckerEnabled(config) && node.name == "println") {
                         if (!isValidPrintlnArgument(node.value.toString())) {
                             errors.add(StaticCodeAnalyzerError("Invalid argument '${node.value}' for println method"))
                         }

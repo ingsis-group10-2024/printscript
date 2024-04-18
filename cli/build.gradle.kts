@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":parser"))
     implementation(project(":interpreter"))
     implementation(project(":linter"))
+    implementation(project(":sca"))
     implementation("com.github.ajalt.clikt:clikt:4.3.0")
 }
 

@@ -3,6 +3,7 @@ package sca
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.NumberOperatorNode
+import ast.Position
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.ConfigLoader
 import config.VerificationConfig
@@ -15,8 +16,8 @@ class StaticCodeAnalyzerTest {
     fun `test analyze with camel case configuration`() {
         val astNodes =
             listOf(
-                DeclarationAssignationNode(DeclarationNode("x", "int"), NumberOperatorNode(5.0)),
-                DeclarationAssignationNode(DeclarationNode("myVariable", "int"), NumberOperatorNode(10.0)),
+                DeclarationAssignationNode(DeclarationNode("x", Position(1, 1),"int" , Position(2, 1)), NumberOperatorNode(5.0 , Position(3, 1))),
+                DeclarationAssignationNode(DeclarationNode("myVariable",Position(1 , 2), "int" , Position(2,2)), NumberOperatorNode(10.0 , Position(6, 2))),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
