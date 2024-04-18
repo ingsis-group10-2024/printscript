@@ -128,13 +128,13 @@ class ParserTest {
                 Token(TokenType.IDENTIFIER, "x", 2, 0),
                 Token(TokenType.COLON, ":", 3, 0),
                 Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-                Token(TokenType.SEMICOLON, ";", 1, 1),
-                Token(TokenType.NUMERIC_LITERAL, "5", 2, 1),
-                Token(TokenType.PLUS, "+", 3, 1),
-                Token(TokenType.NUMERIC_LITERAL, "3", 4, 1),
-                Token(TokenType.MULTIPLY, "*", 5, 1),
-                Token(TokenType.NUMERIC_LITERAL, "2", 6, 1),
-                Token(TokenType.NUMERIC_LITERAL, "80", 1, 2),
+                Token(TokenType.SEMICOLON, ";", 1, 0),
+                Token(TokenType.NUMERIC_LITERAL, "80", 1, 1),
+                Token(TokenType.NUMERIC_LITERAL, "5", 2, 2),
+                Token(TokenType.PLUS, "+", 3, 2),
+                Token(TokenType.NUMERIC_LITERAL, "3", 4, 2),
+                Token(TokenType.MULTIPLY, "*", 5, 2),
+                Token(TokenType.NUMERIC_LITERAL, "2", 6, 2),
                 Token(TokenType.STRING_TYPE, "Hola", 1, 3),
             )
 
@@ -144,16 +144,16 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
+                NumberOperatorNode(80.0, Position(1, 1)),
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5.0, Position(2, 1)),
+                    NumberOperatorNode(5.0, Position(2, 2)),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3.0, Position(4, 1)),
-                        NumberOperatorNode(2.0, Position(6, 1)),
+                        NumberOperatorNode(3.0, Position(4, 2)),
+                        NumberOperatorNode(2.0, Position(6, 2)),
                     ),
                 ),
-                NumberOperatorNode(80.0, Position(1, 2)),
                 StringOperatorNode("Hola", Position(1, 3)),
                 // IdentifierOperatorNode("x")
             )
@@ -317,9 +317,43 @@ class ParserTest {
             )
 
         val parser = Parser(tokens)
-        val result = parser.parsePrintln()
+        val result = parser.generateAST()
 
         val expected = MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0))
+
+        assertEquals(listOf(expected), result)
+    }
+
+    @Test
+    fun testNumberPrintln() {
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+                Token(TokenType.NUMERIC_LITERAL, "5", 3, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 4, 0),
+                Token(TokenType.SEMICOLON, ";", 5, 0),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected = MethodNode("println", NumberOperatorNode(5.0, Position(3, 0)), Position(1, 0))
+
+        assertEquals(listOf(expected), result)
+    }
+
+    @Test
+    fun testNumberParser(){
+        val tokens = listOf(
+            Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
+            Token(TokenType.SEMICOLON, ";", 2, 1)
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.parseExpression()
+
+        val expected = NumberOperatorNode(5.0, Position(1, 1))
 
         assertEquals(expected, result)
     }

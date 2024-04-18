@@ -27,7 +27,7 @@ class Parser(private val tokens: List<Token>) {
         return nodes
     }
 
-    private fun parseExpression(): ASTNode? {
+    fun parseExpression(): ASTNode? {
         return parseAddition()
     }
 
@@ -200,7 +200,7 @@ class Parser(private val tokens: List<Token>) {
             )
         }
         getTokenAndAdvance()
-        val content = parseExpression()
+        val content = parseExpression() // Ahora parsea correctamente los argumentos del método println
         if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
             throwParseException(
                 "')'",
@@ -250,14 +250,8 @@ class Parser(private val tokens: List<Token>) {
             }
             index++
         }
-
         throw RuntimeException("La línea no finaliza con punto y coma")
     }
-
-    /*private fun throwParseException(expected: String) {
-        val currentToken = getCurrentSignificantToken()
-        throw RuntimeException("Expected $expected but found '${currentToken.value}' at ${currentToken.column}")
-    }*/
 
     private fun throwParseException(
         expected: String,
