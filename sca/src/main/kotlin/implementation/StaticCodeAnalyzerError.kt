@@ -1,4 +1,4 @@
-package sca
+package sca.implementation
 
 // todo El error debería mostrar la posicion!
 // data class StaticCodeAnalyzerError(val message: String, val column: Int?, val line: Int?)

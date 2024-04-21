@@ -1,3 +1,5 @@
+package implementation
+
 import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
@@ -8,6 +10,10 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import `interface`.FailedResponse
+import `interface`.Interpreter
+
+
 // TODO preguntarle a tomi lo de los estados
 
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
@@ -60,7 +66,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
+                    stringBuffer.append("implementation.Variable ${ast.declaration.identifier} already declared")
                     return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -74,7 +80,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                     val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
                     return newMap
-                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
+                } ?: stringBuffer.append("implementation.Variable ${ast.identifier} not declared")
             }
         }
         return variableMap
@@ -88,8 +94,8 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
-                        ?: throw Exception("Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
+                        ?: throw Exception("implementation.Variable ${ast.identifier} not declared")
+                return variableMap.variableMap[variable] ?: throw Exception("implementation.Variable ${ast.identifier} not initialized")
             }
             is BinaryOperationNode -> {
                 val left = ast.left!!

@@ -8,6 +8,7 @@ import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
 import config.JsonConfigLoader
+import implementation.Formatter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

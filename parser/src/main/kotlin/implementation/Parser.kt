@@ -1,4 +1,4 @@
-package parser
+package parser.implementation
 
 import ast.ASTNode
 import ast.AssignationNode

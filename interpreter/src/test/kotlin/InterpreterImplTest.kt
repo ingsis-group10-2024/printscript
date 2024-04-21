@@ -1,19 +1,12 @@
-import ast.ASTNode
-import ast.BinaryOperationNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
-import ast.IdentifierOperatorNode
-import ast.MethodNode
-import ast.NumberOperatorNode
-import ast.StringOperatorNode
+import implementation.InterpreterImpl
 
 class InterpreterImplTest {
     private lateinit var interpreter: InterpreterImpl
 /*
     @Before
     fun setup() {
-        val variableMap = VariableMap(HashMap())
-        interpreter = InterpreterImpl(variableMap)
+        val variableMap = implementation.VariableMap(HashMap())
+        interpreter = implementation.InterpreterImpl(variableMap)
     }
 
     @Test
@@ -195,7 +188,7 @@ class InterpreterImplTest {
 //        val ast = AssignationNode("z", NumberOperatorNode(5.0, Position(1, 1)), Position(2, 1))
 //        val astList = listOf(ast)
 //        val response = interpreter.interpret(astList)
-//        assertEquals("Variable z not declared", response.second)
+//        assertEquals("implementation.Variable z not declared", response.second)
 //    }
 
     @Test

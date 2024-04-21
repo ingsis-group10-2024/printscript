@@ -1,3 +1,5 @@
+package `interface`
+
 import ast.ASTNode
 
 interface Interpreter {

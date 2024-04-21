@@ -9,6 +9,7 @@ import config.ConfigLoader
 import config.VerificationConfig
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import sca.implementation.StaticCodeAnalyzer
 import java.io.File
 
 class StaticCodeAnalyzerTest {

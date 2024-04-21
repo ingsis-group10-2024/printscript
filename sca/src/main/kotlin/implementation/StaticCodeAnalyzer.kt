@@ -1,4 +1,4 @@
-package sca
+package sca.implementation
 
 import ast.ASTNode
 import ast.DeclarationAssignationNode

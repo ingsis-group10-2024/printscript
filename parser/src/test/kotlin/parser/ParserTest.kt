@@ -10,7 +10,7 @@ import ast.StringOperatorNode
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
-import parser.Parser
+import parser.implementation.Parser
 import token.Token
 import token.TokenType
 import kotlin.test.assertEquals
