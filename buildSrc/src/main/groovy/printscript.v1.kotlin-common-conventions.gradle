@@ -34,7 +34,7 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ingsis-group10-2024/printscript")
-            version = "1.0.5-SNAPSHOT"
+            version = "1.0.6-SNAPSHOT"
             credentials {
                 username = System.getenv("GITHUB_USERNAME") ?: ""
                 password = System.getenv("GITHUB_TOKEN") ?: ""
