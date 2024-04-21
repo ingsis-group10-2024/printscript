@@ -24,7 +24,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                     varMap = interpretDeclarationNode(ast)
                 }
                 is Assignation -> {
-                    varMap = interpretAssignation(ast) // va a tener que recibir un variablemap, modificarlo y devolverlo
+                    varMap = interpretAssignation(ast)
                 }
                 is MethodNode -> {
                     interpretMethod(ast)
