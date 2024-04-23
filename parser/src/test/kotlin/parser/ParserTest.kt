@@ -344,7 +344,7 @@ class ParserTest {
     }
 
     @Test
-    fun testNumberParser()  {
+    fun testNumberParser() {
         val tokens =
             listOf(
                 Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
