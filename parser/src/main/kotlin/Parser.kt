@@ -6,6 +6,7 @@ import ast.BinaryNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
+import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -73,8 +74,12 @@ class Parser(private val tokens: List<Token>) {
                 StringOperatorNode(token.value, Position(token.column, token.line))
             }
             TokenType.IDENTIFIER -> {
-                // Es una assignation:  x=5
-                parseAssignation()
+                val token = getTokenAndAdvance()
+                if (isCurrentToken(TokenType.EQUALS)) {
+                    parseAssignation(token)
+                } else {
+                    IdentifierOperatorNode(token.value, Position(token.column, token.line))
+                }
             }
             TokenType.STRING_TYPE -> {
                 val token = getTokenAndAdvance()
@@ -83,7 +88,7 @@ class Parser(private val tokens: List<Token>) {
             TokenType.OPEN_PARENTHESIS -> {
                 getTokenAndAdvance()
                 val node = parseExpression()
-                this.getTokenAndAdvance()
+                getTokenAndAdvance() // Consume closing parenthesis
                 node
             }
             TokenType.LET -> {
@@ -121,8 +126,7 @@ class Parser(private val tokens: List<Token>) {
         )
     }
 
-    fun parseAssignation(): AssignationNode {
-        val identifierToken = getTokenAndAdvance()
+    fun parseAssignation(identifierToken: Token): AssignationNode {
         if (isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val expression = parseExpression()
@@ -200,7 +204,7 @@ class Parser(private val tokens: List<Token>) {
             )
         }
         getTokenAndAdvance()
-        val content = parseExpression() // Ahora parsea correctamente los argumentos del método println
+        val content = parseExpression()
         if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
             throwParseException(
                 "')'",
