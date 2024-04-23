@@ -344,11 +344,12 @@ class ParserTest {
     }
 
     @Test
-    fun testNumberParser(){
-        val tokens = listOf(
-            Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
-            Token(TokenType.SEMICOLON, ";", 2, 1)
-        )
+    fun testNumberParser()  {
+        val tokens =
+            listOf(
+                Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
+                Token(TokenType.SEMICOLON, ";", 2, 1),
+            )
 
         val parser = Parser(tokens)
         val result = parser.parseExpression()
