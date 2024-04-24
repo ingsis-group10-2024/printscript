@@ -106,7 +106,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
 
                             left is IdentifierOperatorNode && right is NumberOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
-                                return leftValue + right.value
+                                return if (leftValue.toDoubleOrNull() != null) {
+                                    (leftValue.toDouble() + right.value).toString()
+                                } else {
+                                    leftValue + right.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is StringOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
@@ -118,7 +122,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                             }
                             left is NumberOperatorNode && right is IdentifierOperatorNode -> {
                                 val rightValue = interpretBinaryNode(right)
-                                return rightValue + left.value
+                                return if (rightValue.toDoubleOrNull() != null) {
+                                    (left.value + rightValue.toDouble()).toString()
+                                } else {
+                                    rightValue + left.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
