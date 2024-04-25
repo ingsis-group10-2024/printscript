@@ -106,7 +106,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
 
                             left is IdentifierOperatorNode && right is NumberOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
-                                return leftValue + right.value
+                                return if (valueIsNumeric(leftValue)) {
+                                    (leftValue.toDouble() + right.value).toString()
+                                } else {
+                                    leftValue + right.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is StringOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
@@ -118,12 +122,27 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                             }
                             left is NumberOperatorNode && right is IdentifierOperatorNode -> {
                                 val rightValue = interpretBinaryNode(right)
-                                return rightValue + left.value
+                                return if (valueIsNumeric(rightValue)) {
+                                    (left.value + rightValue.toDouble()).toString()
+                                } else {
+                                    rightValue + left.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
                                 val rightValue = interpretBinaryNode(right)
-                                return if (leftValue.toDoubleOrNull() != null && rightValue.toDoubleOrNull() != null) {
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
+                                    // Both are numbers, perform addition
+                                    (leftValue.toDouble() + rightValue.toDouble()).toString()
+                                } else {
+                                    // At least one is a string, perform concatenation
+                                    leftValue + rightValue
+                                }
+                            }
+                            left is BinaryOperationNode || right is BinaryOperationNode -> {
+                                val leftValue = interpretBinaryNode(left)
+                                val rightValue = interpretBinaryNode(right)
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
                                     // Both are numbers, perform addition
                                     (leftValue.toDouble() + rightValue.toDouble()).toString()
                                 } else {
@@ -157,6 +176,8 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
             }
         }
     }
+
+    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
 
     private fun interpretDeclarationNode(ast: DeclarationNode): VariableMap {
         // declare a variable with the given type initialized as null
