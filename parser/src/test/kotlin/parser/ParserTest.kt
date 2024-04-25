@@ -346,102 +346,108 @@ class ParserTest {
 
     @Test
     fun testPrintNumericExpression() {
-        val tokens = listOf(
-            Token(TokenType.PRINTLN, "println", 1, 0),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
-            Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
-            Token(TokenType.PLUS, "+", 4, 0),
-            Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
-            Token(TokenType.MULTIPLY, "*", 6, 0),
-            Token(TokenType.NUMERIC_LITERAL, "4", 7, 0),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 8, 0),
-            Token(TokenType.SEMICOLON, ";", 9, 0),
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+                Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
+                Token(TokenType.PLUS, "+", 4, 0),
+                Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
+                Token(TokenType.MULTIPLY, "*", 6, 0),
+                Token(TokenType.NUMERIC_LITERAL, "4", 7, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 8, 0),
+                Token(TokenType.SEMICOLON, ";", 9, 0),
+            )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(
-            MethodNode(
-                "println",
-                BinaryOperationNode(
-                    "+",
-                    NumberOperatorNode(3.0, Position(3, 0)),
+        val expected =
+            listOf(
+                MethodNode(
+                    "println",
                     BinaryOperationNode(
-                        "*",
-                        NumberOperatorNode(2.0, Position(5, 0)),
-                        NumberOperatorNode(4.0, Position(7, 0)),
+                        "+",
+                        NumberOperatorNode(3.0, Position(3, 0)),
+                        BinaryOperationNode(
+                            "*",
+                            NumberOperatorNode(2.0, Position(5, 0)),
+                            NumberOperatorNode(4.0, Position(7, 0)),
+                        ),
                     ),
+                    Position(1, 0),
                 ),
-                Position(1, 0)
             )
-        )
 
         assertEquals(expected, result)
     }
 
     @Test
     fun testPrintExpressionWithVariable() {
-        val tokens = listOf(
-            Token(TokenType.PRINTLN, "println", 1, 0),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
-            Token(TokenType.IDENTIFIER, "x", 3, 0),
-            Token(TokenType.PLUS, "+", 4, 0),
-            Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
-            Token(TokenType.MULTIPLY, "*", 6, 0),
-            Token(TokenType.NUMERIC_LITERAL, "7", 7, 0),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 8, 0),
-            Token(TokenType.SEMICOLON, ";", 9, 0),
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+                Token(TokenType.IDENTIFIER, "x", 3, 0),
+                Token(TokenType.PLUS, "+", 4, 0),
+                Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
+                Token(TokenType.MULTIPLY, "*", 6, 0),
+                Token(TokenType.NUMERIC_LITERAL, "7", 7, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 8, 0),
+                Token(TokenType.SEMICOLON, ";", 9, 0),
+            )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(
-            MethodNode(
-                "println",
-                BinaryOperationNode(
-                    "+",
-                    IdentifierOperatorNode("x", Position(3, 0)),
+        val expected =
+            listOf(
+                MethodNode(
+                    "println",
                     BinaryOperationNode(
-                        "*",
-                        NumberOperatorNode(2.0, Position(5, 0)),
-                        NumberOperatorNode(7.0, Position(7, 0)),
+                        "+",
+                        IdentifierOperatorNode("x", Position(3, 0)),
+                        BinaryOperationNode(
+                            "*",
+                            NumberOperatorNode(2.0, Position(5, 0)),
+                            NumberOperatorNode(7.0, Position(7, 0)),
+                        ),
                     ),
+                    Position(1, 0),
                 ),
-                Position(1, 0)
             )
-        )
 
         assertEquals(expected, result)
     }
 
     @Test
     fun testPrintConcatenatedStrings() {
-        val tokens = listOf(
-            Token(TokenType.PRINTLN, "println", 1, 0),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
-            Token(TokenType.STRING_LITERAL, "Hello ", 3, 0),
-            Token(TokenType.PLUS, "+", 4, 0),
-            Token(TokenType.STRING_LITERAL, "world", 5, 0),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 6, 0),
-            Token(TokenType.SEMICOLON, ";", 7, 0),
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+                Token(TokenType.STRING_LITERAL, "Hello ", 3, 0),
+                Token(TokenType.PLUS, "+", 4, 0),
+                Token(TokenType.STRING_LITERAL, "world", 5, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 6, 0),
+                Token(TokenType.SEMICOLON, ";", 7, 0),
+            )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(
-            MethodNode(
-                "println",
-                BinaryOperationNode(
-                    "+",
-                    StringOperatorNode("Hello ", Position(3, 0)),
-                    StringOperatorNode("world", Position(5, 0)),
+        val expected =
+            listOf(
+                MethodNode(
+                    "println",
+                    BinaryOperationNode(
+                        "+",
+                        StringOperatorNode("Hello ", Position(3, 0)),
+                        StringOperatorNode("world", Position(5, 0)),
+                    ),
+                    Position(1, 0),
                 ),
-                Position(1, 0)
             )
-        )
 
         assertEquals(expected, result)
     }
