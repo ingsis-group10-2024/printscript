@@ -139,6 +139,17 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                                     leftValue + rightValue
                                 }
                             }
+                            left is BinaryOperationNode || right is BinaryOperationNode -> {
+                                val leftValue = interpretBinaryNode(left)
+                                val rightValue = interpretBinaryNode(right)
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
+                                    // Both are numbers, perform addition
+                                    (leftValue.toDouble() + rightValue.toDouble()).toString()
+                                } else {
+                                    // At least one is a string, perform concatenation
+                                    leftValue + rightValue
+                                }
+                            }
 
                             else -> return "invalid operation"
                         }
