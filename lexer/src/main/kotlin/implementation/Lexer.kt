@@ -8,11 +8,7 @@ import java.nio.charset.StandardCharsets
 class Lexer(inputStream: InputStream) {
     private var position: Int = 0 // position in the input
     private var lineNumber: Int = 1
-    private var input: String = ""
-
-    init {
-        input = inputStream.bufferedReader(StandardCharsets.UTF_8).use { it.readText() }
-    }
+    private var input: String = inputStream.bufferedReader(StandardCharsets.UTF_8).use { it.readText() }
 
     fun convertToToken(): List<Token> {
         val tokens = mutableListOf<Token>()
