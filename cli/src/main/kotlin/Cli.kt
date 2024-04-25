@@ -21,7 +21,7 @@ class Cli() : CliktCommand() {
         }
     } // validate that the file is a txt file
     private val validVersionList = listOf("1.0")
-    private  val inputStream = file.inputStream()
+    private val inputStream = file.inputStream()
 
     override fun run() {
         if (version !in validVersionList) {
@@ -38,7 +38,7 @@ class Cli() : CliktCommand() {
             }
 
             "validate" -> {
-                validateCode(file, version,inputStream)
+                validateCode(file, version, inputStream)
             }
             "analyze" -> {
                 analyzeCode(file, version, inputStream)
@@ -50,7 +50,7 @@ class Cli() : CliktCommand() {
     private fun analyzeCode(
         file: File,
         version: String,
-        inputStream : InputStream
+        inputStream: InputStream,
     ) {
         val lexer = Lexer(inputStream)
         val tokens = lexer.convertToToken()
@@ -69,7 +69,7 @@ class Cli() : CliktCommand() {
 private fun validateCode(
     file: File,
     version: String,
-    inputStream : InputStream
+    inputStream: InputStream,
 ) {
     val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()
@@ -85,9 +85,9 @@ private fun validateCode(
 private fun formatCode(
     file: File,
     version: String,
-    inputStream : InputStream
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer( inputStream)
+    val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -101,7 +101,7 @@ private fun formatCode(
 private fun executeCode(
     file: File,
     version: String,
-    inputStream : InputStream
+    inputStream: InputStream,
 ) {
     val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()

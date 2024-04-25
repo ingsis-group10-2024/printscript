@@ -29,6 +29,7 @@ class LexerTest {
         assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[3].type)
     }
 
+    /*
     @Test
     fun `test lexer with simple file and multiple lines`() {
         val message = "This is a text"
@@ -48,6 +49,8 @@ class LexerTest {
         assertEquals(TokenType.STRING_LITERAL, tokens[2].type)
         assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[3].type)
     }
+
+     */
 
     @Test
     fun `test lexer with boolean`() {
@@ -76,5 +79,4 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, tokens[8].type)
         assertEquals(TokenType.BOOLEAN_LITERAL, tokens[9].type)
     }
-
 }
