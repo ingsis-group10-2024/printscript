@@ -30,7 +30,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                     varMap = interpretDeclarationNode(ast)
                 }
                 is Assignation -> {
-                    varMap = interpretAssignation(ast) // va a tener que recibir un variablemap, modificarlo y devolverlo
+                    varMap = interpretAssignation(ast)
                 }
                 is MethodNode -> {
                     interpretMethod(ast)
@@ -66,7 +66,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("implementation.Variable ${ast.declaration.identifier} already declared")
+                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
                     return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -80,7 +80,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                     val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
                     return newMap
-                } ?: stringBuffer.append("implementation.Variable ${ast.identifier} not declared")
+                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
             }
         }
         return variableMap
@@ -94,8 +94,8 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
-                        ?: throw Exception("implementation.Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw Exception("implementation.Variable ${ast.identifier} not initialized")
+                        ?: throw Exception("Variable ${ast.identifier} not declared")
+                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
             }
             is BinaryOperationNode -> {
                 val left = ast.left!!
@@ -113,7 +113,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
 
                             left is IdentifierOperatorNode && right is NumberOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
-                                return leftValue + right.value
+                                return if (leftValue.toDoubleOrNull() != null) {
+                                    (leftValue.toDouble() + right.value).toString()
+                                } else {
+                                    leftValue + right.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is StringOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
@@ -125,7 +129,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                             }
                             left is NumberOperatorNode && right is IdentifierOperatorNode -> {
                                 val rightValue = interpretBinaryNode(right)
-                                return rightValue + left.value
+                                return if (rightValue.toDoubleOrNull() != null) {
+                                    (left.value + rightValue.toDouble()).toString()
+                                } else {
+                                    rightValue + left.value
+                                }
                             }
                             left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)

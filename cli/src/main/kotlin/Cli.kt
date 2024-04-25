@@ -10,10 +10,12 @@ import implementation.InterpreterImpl
 import implementation.Lexer
 import implementation.LinterImpl
 import implementation.VariableMap
-import parser.implementation.Parser
+import parser.Parser
+
 import sca.implementation.StaticCodeAnalyzer
 import sca.implementation.StaticCodeAnalyzerError
 import java.io.File
+import java.io.InputStream
 
 class Cli() : CliktCommand() {
     private val option: String by option().prompt("Option").help("which option do you want to choose?")
@@ -24,6 +26,7 @@ class Cli() : CliktCommand() {
         }
     } // validate that the file is a txt file
     private val validVersionList = listOf("1.0")
+    private val inputStream = file.inputStream()
 
     override fun run() {
         if (version !in validVersionList) {
@@ -32,18 +35,18 @@ class Cli() : CliktCommand() {
         }
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
-                executeCode(file, version)
+                executeCode(file, version, inputStream)
             }
 
             "format" -> {
-                formatCode(file, version)
+                formatCode(file, version, inputStream)
             }
 
             "validate" -> {
-                validateCode(file, version)
+                validateCode(file, version, inputStream)
             }
             "analyze" -> {
-                analyzeCode(file, version)
+                analyzeCode(file, version, inputStream)
             }
             else -> echo("Invalid option")
         }
@@ -52,8 +55,9 @@ class Cli() : CliktCommand() {
     private fun analyzeCode(
         file: File,
         version: String,
+        inputStream: InputStream,
     ) {
-        val lexer = Lexer(file)
+        val lexer = Lexer(inputStream)
         val tokens = lexer.convertToToken()
         val parser = Parser(tokens)
         val ast = parser.generateAST()
@@ -70,8 +74,9 @@ class Cli() : CliktCommand() {
 private fun validateCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
+    val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -85,8 +90,9 @@ private fun validateCode(
 private fun formatCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
+    val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -100,8 +106,9 @@ private fun formatCode(
 private fun executeCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
+    val lexer = Lexer(inputStream)
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -124,15 +131,30 @@ ir a la docu y como pasarle prompts por terminal
 fun main(args: Array<String>) {
     println(
         """
-| ------- Welcome to PrintScript 1.0 CLI -------
-|
-| Choose one of the following options:
-|
-|    validate
-|    execute
-|    format
-|    analyze
-|
+            
+
+╭╮╭╮╭╮╱╱╭╮╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭╮╱╱╱╱╭━━━╮╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╱╱╱╱╭╮
+┃┃┃┃┃┃╱╱┃┃╱╱╱╱╱╱╱╱╱╱╱╱╱╭╯╰╮╱╱╱┃╭━╮┃╱╱╱╱╭╯╰╮╱╱╱╱╱╱╱╱╱╱╭╯╰╮
+┃┃┃┃┃┣━━┫┃╭━━┳━━┳╮╭┳━━╮╰╮╭╋━━╮┃╰━╯┣━┳┳━╋╮╭╋━━┳━━┳━┳┳━┻╮╭╯
+┃╰╯╰╯┃┃━┫┃┃╭━┫╭╮┃╰╯┃┃━┫╱┃┃┃╭╮┃┃╭━━┫╭╋┫╭╮┫┃┃━━┫╭━┫╭╋┫╭╮┃┃
+╰╮╭╮╭┫┃━┫╰┫╰━┫╰╯┃┃┃┃┃━┫╱┃╰┫╰╯┃┃┃╱╱┃┃┃┃┃┃┃╰╋━━┃╰━┫┃┃┃╰╯┃╰╮
+╱╰╯╰╯╰━━┻━┻━━┻━━┻┻┻┻━━╯╱╰━┻━━╯╰╯╱╱╰╯╰┻╯╰┻━┻━━┻━━┻╯╰┫╭━┻━╯
+╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱┃┃
+╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰╯
+            ╭━━━╮╱╱╱╱╱╱╱╱╱╱╱╱╭╮╭━━━╮
+            ┃╭━╮┃╱╱╱╱╱╱╱╱╱╱╱╭╯┃┃╭━╮┃
+            ┃┃╱╰╋━┳━━┳╮╭┳━━╮╰╮┃┃┃┃┃┃
+            ┃┃╭━┫╭┫╭╮┃┃┃┃╭╮┃╱┃┃┃┃┃┃┃
+            ┃╰┻━┃┃┃╰╯┃╰╯┃╰╯┃╭╯╰┫╰━╯┃
+            ╰━━━┻╯╰━━┻━━┫╭━╯╰━━┻━━━╯
+            ╱╱╱╱╱╱╱╱╱╱╱╱┃┃
+            ╱╱╱╱╱╱╱╱╱╱╱╱╰╯
+
+Choose an option:
+    - execute: execute the code
+    - format: format the code
+    - analyze: analyze the code
+    - validate: validate the code
     """,
     )
     Cli().main(args)

@@ -1,4 +1,3 @@
-
 plugins {
     id("jacoco")
     id("printscript.v1.kotlin-application-conventions")

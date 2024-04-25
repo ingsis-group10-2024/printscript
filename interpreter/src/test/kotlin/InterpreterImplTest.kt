@@ -1,16 +1,17 @@
-import implementation.InterpreterImpl
 
+
+/*
 class InterpreterImplTest {
     private lateinit var interpreter: InterpreterImpl
-/*
-    @Before
+
     fun setup() {
-        val variableMap = implementation.VariableMap(HashMap())
-        interpreter = implementation.InterpreterImpl(variableMap)
+        val variableMap = VariableMap(HashMap())
+        interpreter = InterpreterImpl(variableMap)
     }
 
     @Test
     fun test001_WhenReceivingADeclarationBinaryNodeInterpreterShouldReturnItsDeclaration() {
+        setup()
         // Arrange
         val ast = DeclarationNode("x", Position(1, 1), "Int", Position(2, 1))
         val astList = listOf(ast)
@@ -188,7 +189,7 @@ class InterpreterImplTest {
 //        val ast = AssignationNode("z", NumberOperatorNode(5.0, Position(1, 1)), Position(2, 1))
 //        val astList = listOf(ast)
 //        val response = interpreter.interpret(astList)
-//        assertEquals("implementation.Variable z not declared", response.second)
+//        assertEquals("Variable z not declared", response.second)
 //    }
 
     @Test
@@ -290,6 +291,5 @@ class InterpreterImplTest {
 //        val response = interpreter.interpret(listOf(assignationNode))
 //        assertEquals("x = 5.0", response.second)
 //    }
-
- */
 }
+*/
