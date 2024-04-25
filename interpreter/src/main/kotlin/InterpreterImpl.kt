@@ -106,7 +106,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
 
                             left is IdentifierOperatorNode && right is NumberOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
-                                return if (leftValue.toDoubleOrNull() != null) {
+                                return if (valueIsNumeric(leftValue)) {
                                     (leftValue.toDouble() + right.value).toString()
                                 } else {
                                     leftValue + right.value
@@ -122,7 +122,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                             }
                             left is NumberOperatorNode && right is IdentifierOperatorNode -> {
                                 val rightValue = interpretBinaryNode(right)
-                                return if (rightValue.toDoubleOrNull() != null) {
+                                return if (valueIsNumeric(rightValue)) {
                                     (left.value + rightValue.toDouble()).toString()
                                 } else {
                                     rightValue + left.value
@@ -131,7 +131,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                             left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
                                 val leftValue = interpretBinaryNode(left)
                                 val rightValue = interpretBinaryNode(right)
-                                return if (leftValue.toDoubleOrNull() != null && rightValue.toDoubleOrNull() != null) {
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
                                     // Both are numbers, perform addition
                                     (leftValue.toDouble() + rightValue.toDouble()).toString()
                                 } else {
@@ -165,6 +165,8 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
             }
         }
     }
+
+    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
 
     private fun interpretDeclarationNode(ast: DeclarationNode): VariableMap {
         // declare a variable with the given type initialized as null
