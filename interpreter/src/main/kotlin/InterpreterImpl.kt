@@ -2,6 +2,7 @@ import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -84,6 +85,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
+            is BooleanOperatorNode -> ast.value.toString()
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
@@ -165,6 +167,54 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                                     }
                                 return result.toString()
                             }
+                            left is IdentifierOperatorNode && right is NumberOperatorNode -> {
+                                val leftValue = interpretBinaryNode(left)
+                                return if (valueIsNumeric(leftValue)) {
+                                    val result =
+                                        when (ast.symbol) {
+                                            "-" -> leftValue.toDouble() - right.value
+                                            "*" -> leftValue.toDouble() * right.value
+                                            "/" -> leftValue.toDouble() / right.value
+                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                        }
+                                    result.toString()
+                                } else {
+                                    stringBuffer.append("Invalid Operation").toString()
+                                }
+                            }
+                            left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
+                                val leftValue = interpretBinaryNode(left)
+                                val rightValue = interpretBinaryNode(right)
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
+                                    val result =
+                                        when (ast.symbol) {
+                                            "-" -> leftValue.toDouble() - rightValue.toDouble()
+                                            "*" -> leftValue.toDouble() * rightValue.toDouble()
+                                            "/" -> leftValue.toDouble() / rightValue.toDouble()
+                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                        }
+                                    result.toString()
+                                } else {
+                                    stringBuffer.append("Invalid Operation").toString()
+                                }
+                            }
+                            left is BinaryOperationNode || right is BinaryOperationNode -> {
+                                val leftValue = interpretBinaryNode(left)
+                                val rightValue = interpretBinaryNode(right)
+                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
+                                    val result =
+                                        when (ast.symbol) {
+                                            "-" -> leftValue.toDouble() - rightValue.toDouble()
+                                            "*" -> leftValue.toDouble() * rightValue.toDouble()
+                                            "/" -> leftValue.toDouble() / rightValue.toDouble()
+                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                        }
+                                    result.toString()
+                                } else {
+                                    stringBuffer.append("Invalid Operation").toString()
+                                }
+                            }
+
                             else -> return stringBuffer.append("Invalid Operation").toString()
                         }
                     else -> return "Invalid Operation"
