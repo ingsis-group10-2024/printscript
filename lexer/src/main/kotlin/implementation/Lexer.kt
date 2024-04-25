@@ -1,46 +1,17 @@
 package implementation
 
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.text.PDFTextStripper
 import token.Token
 import token.TokenType
-import java.io.File
-import java.io.IOException
-import java.util.regex.Pattern
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
 
-class Lexer(private val file: File) {
+class Lexer(inputStream: InputStream) {
     private var position: Int = 0 // position in the input
     private var lineNumber: Int = 1
     private var input: String = ""
 
     init {
-        try {
-            val text = extractTextFromPdf(file)
-            // REMOVE IMAGES AND REPLACE THEM WITH WHITESPACES
-            input = removeUrls(text)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun removeUrls(text: String): String {
-        // Simple regex to match URLs
-        val urlPattern = Pattern.compile("http[s]?://\\S+")
-        return urlPattern.matcher(text).replaceAll("")
-    }
-
-    private fun extractTextFromPdf(file: File): String {
-        // Check if the file is a PDF
-        if (!file.name.endsWith(".pdf", ignoreCase = true)) {
-            println("File is not a PDF: ${file.absolutePath}")
-            // Handle non-PDF files appropriately, e.g., by reading the file as plain text
-            return file.readText()
-        }
-        val document = PDDocument.load(file)
-        val stripper = PDFTextStripper()
-        val text = stripper.getText(document)
-        document.close()
-        return text
+        input = inputStream.bufferedReader(StandardCharsets.UTF_8).use { it.readText() }
     }
 
     fun convertToToken(): List<Token> {
