@@ -417,6 +417,36 @@ class ParserTest {
     }
 
     @Test
+    fun testPrintExpressionWithVariable2() {
+        val tokens = listOf(
+            Token(TokenType.PRINTLN, "println", 1, 0),
+            Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+            Token(TokenType.IDENTIFIER, "x", 3, 0),
+            Token(TokenType.PLUS, "+", 4, 0),
+            Token(TokenType.IDENTIFIER, "y", 5, 0),
+            Token(TokenType.CLOSE_PARENTHESIS, ")", 6, 0),
+            Token(TokenType.SEMICOLON, ";", 7, 0),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected = listOf(
+            MethodNode(
+                "println",
+                BinaryOperationNode(
+                    "+",
+                    IdentifierOperatorNode("x", Position(3, 0)),
+                    IdentifierOperatorNode("y", Position(5, 0)),
+                ),
+                Position(1, 0)
+            )
+        )
+
+        assertEquals(expected, result)
+    }
+
+    @Test
     fun testPrintConcatenatedStrings() {
         val tokens = listOf(
             Token(TokenType.PRINTLN, "println", 1, 0),

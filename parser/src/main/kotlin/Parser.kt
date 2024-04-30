@@ -254,7 +254,7 @@ class Parser(private val tokens: List<Token>) {
             }
             index++
         }
-        throw RuntimeException("La línea no finaliza con punto y coma")
+        throw RuntimeException("No hay mas tokens")
     }
 
     private fun throwParseException(
