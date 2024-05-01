@@ -9,7 +9,6 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 
-
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
     private val nonGlobalVariables = VariableMap(HashMap())
