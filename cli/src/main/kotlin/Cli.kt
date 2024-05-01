@@ -10,6 +10,7 @@ import parser.Parser
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
 import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 
 class Cli() : CliktCommand() {
@@ -21,13 +22,14 @@ class Cli() : CliktCommand() {
         }
     } // validate that the file is a txt file
     private val validVersionList = listOf("1.0")
-    private val inputStream = file.inputStream()
 
     override fun run() {
         if (version !in validVersionList) {
             echo("Invalid version")
             return
         }
+        val inputStream = FileInputStream(file.path)
+
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
                 executeCode(file, version, inputStream)
