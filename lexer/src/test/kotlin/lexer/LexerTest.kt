@@ -102,4 +102,46 @@ class LexerTest {
         assertEquals(TokenType.STRING_LITERAL, tokens[2].type)
         assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[3].type)
     }
+
+    @Test
+    fun `test lexer with if else`() {
+        val input = "if (x > 10) { println(\"Hello\") } else { println(\"World\") }"
+        val lexer = Lexer(input.byteInputStream())
+        val tokens = lexer.getToken()
+        for (token in tokens) {
+            println(token)
+        }
+        assertEquals(29, tokens.size)
+        assertEquals(TokenType.IF, tokens[0].type)
+        assertEquals(TokenType.WHITESPACE, tokens[1].type)
+        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[2].type)
+        assertEquals(TokenType.IDENTIFIER, tokens[3].type)
+        assertEquals(TokenType.WHITESPACE, tokens[4].type)
+        assertEquals(TokenType.GREATER_THAN, tokens[5].type)
+        assertEquals(TokenType.WHITESPACE, tokens[6].type)
+        assertEquals(TokenType.NUMERIC_LITERAL, tokens[7].type)
+        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[8].type)
+        assertEquals(TokenType.WHITESPACE, tokens[9].type)
+        assertEquals(TokenType.OPEN_BRACKET, tokens[10].type)
+        assertEquals(TokenType.WHITESPACE, tokens[11].type)
+        assertEquals(TokenType.PRINTLN, tokens[12].type)
+        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[13].type)
+        assertEquals(TokenType.STRING_LITERAL, tokens[14].type)
+        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[15].type)
+        assertEquals(TokenType.WHITESPACE, tokens[16].type)
+        assertEquals(TokenType.CLOSE_BRACKET, tokens[17].type)
+        assertEquals(TokenType.WHITESPACE, tokens[18].type)
+        assertEquals(TokenType.ELSE, tokens[19].type)
+        assertEquals(TokenType.WHITESPACE, tokens[20].type)
+        assertEquals(TokenType.OPEN_BRACKET, tokens[21].type)
+        assertEquals(TokenType.WHITESPACE, tokens[22].type)
+        assertEquals(TokenType.PRINTLN, tokens[23].type)
+        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[24].type)
+        assertEquals(TokenType.STRING_LITERAL, tokens[25].type)
+        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[26].type)
+        assertEquals(TokenType.WHITESPACE, tokens[27].type)
+        assertEquals(TokenType.CLOSE_BRACKET, tokens[28].type)
+    }
+
+
 }
