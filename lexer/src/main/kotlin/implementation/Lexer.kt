@@ -1,99 +1,79 @@
 package implementation
 
-import common.token.TokenType
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.text.PDFTextStripper
 import token.Token
-import java.io.File
-import java.io.IOException
-import java.util.regex.Pattern
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
 
-class Lexer(private val file: File) {
+class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
     private var position: Int = 0 // position in the input
     private var lineNumber: Int = 1
-    private var input: String = ""
-
-    init {
-        try {
-            val text = extractTextFromPdf(file)
-            // REMOVE IMAGES AND REPLACE THEM WITH WHITESPACES
-            input = removeUrls(text)
-        } catch (e: IOException) {
-            e.printStackTrace()
+    private var input: String =
+        inputStream.bufferedReader(StandardCharsets.UTF_8).use {
+            it.readText().take(maxReadSize) // Limiting input to maxReadSize
         }
-    }
-
-    private fun removeUrls(text: String): String {
-        // Simple regex to match URLs
-        val urlPattern = Pattern.compile("http[s]?://\\S+")
-        return urlPattern.matcher(text).replaceAll("")
-    }
-
-    private fun extractTextFromPdf(file: File): String {
-        // Check if the file is a PDF
-        if (!file.name.endsWith(".pdf", ignoreCase = true)) {
-            println("File is not a PDF: ${file.absolutePath}")
-            // Handle non-PDF files appropriately, e.g., by reading the file as plain text
-            return file.readText()
-        }
-        val document = PDDocument.load(file)
-        val stripper = PDFTextStripper()
-        val text = stripper.getText(document)
-        document.close()
-        return text
-    }
 
     fun convertToToken(): List<Token> {
         val tokens = mutableListOf<Token>()
 
         while (position < input.length) {
             when (val currentChar = input[position]) {
-                ' ', '\t', '\n', '\r' -> {
-                    tokens.add(Token(TokenType.WHITESPACE, currentChar.toString(), lineNumber, position + 1))
+                ' ', '\t', '\n' -> {
+                    tokens.add(Token(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
                     position++
+                    if (currentChar == '\n') {
+                        lineNumber++
+                    }
                 }
                 '+' -> {
-                    tokens.add(Token(TokenType.PLUS, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.PLUS, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '-' -> {
-                    tokens.add(Token(TokenType.MINUS, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.MINUS, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '*' -> {
-                    tokens.add(Token(TokenType.TIMES, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.TIMES, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '/' -> {
-                    tokens.add(Token(TokenType.DIVIDE, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.DIVIDE, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '=' -> {
-                    tokens.add(Token(TokenType.EQUALS, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.EQUALS, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 ';' -> {
-                    tokens.add(Token(TokenType.SEMICOLON, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.SEMICOLON, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 ':', ',' -> {
-                    tokens.add(Token(TokenType.COLON, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.COLON, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '>' -> {
-                    tokens.add(Token(TokenType.GREATER_THAN, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.GREATER_THAN, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '<' -> {
-                    tokens.add(Token(TokenType.LESSER_THAN, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.LESSER_THAN, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '(' -> {
-                    tokens.add(Token(TokenType.OPEN_PARENTHESIS, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.OPEN_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 ')' -> {
-                    tokens.add(Token(TokenType.CLOSE_PARENTHESIS, currentChar.toString(), lineNumber, position + 1))
+                    tokens.add(Token(TokenType.CLOSE_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
+                    position++
+                }
+                '{' -> {
+                    tokens.add(Token(TokenType.OPEN_BRACKET, currentChar.toString(), position + 1, lineNumber))
+                    position++
+                }
+                '}' -> {
+                    tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '"', '\'' -> { // this checks for string literals
@@ -103,7 +83,7 @@ class Lexer(private val file: File) {
                         position++
                     }
                     val stringLiteral = input.substring(start + 1, position) // removes the quotes
-                    tokens.add(Token(TokenType.STRING_LITERAL, stringLiteral, lineNumber, start + 1))
+                    tokens.add(Token(TokenType.STRING_LITERAL, stringLiteral, start + 1, lineNumber))
                     position++ // moves past the closing quote
                 }
                 else -> {
@@ -113,30 +93,27 @@ class Lexer(private val file: File) {
                             position++
                         }
                         when (val word = input.substring(start, position)) {
-                            "let" -> tokens.add(Token(TokenType.LET, word, lineNumber, start + 1))
-                            "const" -> tokens.add(Token(TokenType.CONST, word, lineNumber, start + 1))
-                            "println" -> tokens.add(Token(TokenType.PRINTLN, word, lineNumber, start + 1))
-                            "if" -> tokens.add(Token(TokenType.IF, word, lineNumber, start + 1))
-                            "else" -> tokens.add(Token(TokenType.ELSE, word, lineNumber, start + 1))
-                            "while" -> tokens.add(Token(TokenType.WHILE, word, lineNumber, start + 1))
-                            "return" -> tokens.add(Token(TokenType.RETURN, word, lineNumber, start + 1))
-                            "final" -> tokens.add(Token(TokenType.FINAL, word, lineNumber, start + 1))
-                            "public" -> tokens.add(Token(TokenType.PUBLIC, word, lineNumber, start + 1))
-                            "private" -> tokens.add(Token(TokenType.PRIVATE, word, lineNumber, start + 1))
-                            "protected" -> tokens.add(Token(TokenType.PROTECTED, word, lineNumber, start + 1))
-                            "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, lineNumber, start + 1))
-                            "Int" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, lineNumber, start + 1))
-                            "Boolean" -> tokens.add(Token(TokenType.BOOLEAN_TYPE, word, lineNumber, start + 1))
-                            "true" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
-                            "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, lineNumber, start + 1))
-                            else -> tokens.add(Token(TokenType.IDENTIFIER, word, lineNumber, start + 1))
+                            "let" -> tokens.add(Token(TokenType.LET, word, start + 1, lineNumber))
+                            "println" -> tokens.add(Token(TokenType.PRINTLN, word, start + 1, lineNumber))
+                            "while" -> tokens.add(Token(TokenType.WHILE, word, start + 1, lineNumber))
+                            "return" -> tokens.add(Token(TokenType.RETURN, word, start + 1, lineNumber))
+                            "final" -> tokens.add(Token(TokenType.FINAL, word, start + 1, lineNumber))
+                            "public" -> tokens.add(Token(TokenType.PUBLIC, word, start + 1, lineNumber))
+                            "private" -> tokens.add(Token(TokenType.PRIVATE, word, start + 1, lineNumber))
+                            "protected" -> tokens.add(Token(TokenType.PROTECTED, word, start + 1, lineNumber))
+                            "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, start + 1, lineNumber))
+                            "number" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, start + 1, lineNumber))
+                            "<=" -> tokens.add(Token(TokenType.LESSER_THAN_EQUAL, word, start + 1, lineNumber))
+                            ">=" -> tokens.add(Token(TokenType.GREATER_THAN_EQUAL, word, start + 1, lineNumber))
+                            "==" -> tokens.add(Token(TokenType.EQUAL_EQUAL, word, start + 1, lineNumber))
+                            else -> tokens.add(Token(TokenType.IDENTIFIER, word, start + 1, lineNumber))
                         }
                     } else if (currentChar.isDigit()) {
                         val start = position
                         while (position < input.length && input[position].isDigit()) {
                             position++
                         }
-                        tokens.add(Token(TokenType.NUMERIC_LITERAL, input.substring(start, position), lineNumber, start + 1))
+                        tokens.add(Token(TokenType.NUMERIC_LITERAL, input.substring(start, position), start + 1, lineNumber))
                     } else {
                         position++
                     }
