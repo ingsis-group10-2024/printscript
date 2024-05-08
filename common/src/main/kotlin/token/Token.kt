@@ -1,6 +1,6 @@
 package token
 
-import common.token.TokenType
+import TokenType
 
 data class Token(
     val type: TokenType,
