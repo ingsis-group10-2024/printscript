@@ -72,6 +72,7 @@ class Lexer(inputStream: InputStream) {
                     tokens.add(Token(TokenType.OPEN_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
+
                 ')' -> {
                     tokens.add(Token(TokenType.CLOSE_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
                     position++

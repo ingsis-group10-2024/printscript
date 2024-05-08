@@ -68,7 +68,7 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
         assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
         assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
-        // assertEquals(900, actualTokens.size)
+        assertEquals(8000, actualTokens.size)
     }
 
     @Test
