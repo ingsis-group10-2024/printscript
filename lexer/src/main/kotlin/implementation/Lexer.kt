@@ -1,29 +1,38 @@
 package implementation
 
 import token.Token
+import java.io.BufferedReader
 import java.io.InputStream
+import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
-    private var position: Int = 0 // position in the input
     private var lineNumber: Int = 1
-    private var input: String =
-        inputStream.bufferedReader(StandardCharsets.UTF_8).use {
-            it.readText().take(maxReadSize) // Limiting input to maxReadSize
+    private val tokens = mutableListOf<Token>()
+
+
+    init {
+        BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).useLines { lines ->
+            lines.forEach { line ->
+                processLine(line)
+                lineNumber++
+            }
         }
+    }
 
-    fun convertToToken(): List<Token> {
-        val tokens = mutableListOf<Token>()
+    private fun processLine(line: String) {
+        var position = 0 // posición en la línea
+        //val tokens = mutableListOf<Token>()
 
-        while (position < input.length) {
-            when (val currentChar = input[position]) {
-                ' ', '\t', '\n' -> {
+        while (position < line.length) {
+            when (val currentChar = line[position]) {
+                    ' ', '\t', '\n' -> {
                     tokens.add(Token(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
                     position++
                     if (currentChar == '\n') {
                         lineNumber++
                     }
-                }
+                    }
                 '+' -> {
                     tokens.add(Token(TokenType.PLUS, currentChar.toString(), position + 1, lineNumber))
                     position++
@@ -79,20 +88,20 @@ class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
                 '"', '\'' -> { // this checks for string literals
                     val start = position
                     position++ // moves past the opening quote
-                    while (position < input.length && input[position] != currentChar) {
+                    while (position < line.length && line[position] != currentChar) {
                         position++
                     }
-                    val stringLiteral = input.substring(start + 1, position) // removes the quotes
+                    val stringLiteral = line.substring(start + 1, position) // removes the quotes
                     tokens.add(Token(TokenType.STRING_LITERAL, stringLiteral, start + 1, lineNumber))
                     position++ // moves past the closing quote
                 }
                 else -> {
                     if (currentChar.isLetter()) {
                         val start = position
-                        while (position < input.length && input[position].isLetterOrDigit()) {
+                        while (position < line.length && line[position].isLetterOrDigit()) {
                             position++
                         }
-                        when (val word = input.substring(start, position)) {
+                        when (val word = line.substring(start, position)) {
                             "let" -> tokens.add(Token(TokenType.LET, word, start + 1, lineNumber))
                             "println" -> tokens.add(Token(TokenType.PRINTLN, word, start + 1, lineNumber))
                             "while" -> tokens.add(Token(TokenType.WHILE, word, start + 1, lineNumber))
@@ -110,16 +119,18 @@ class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
                         }
                     } else if (currentChar.isDigit()) {
                         val start = position
-                        while (position < input.length && input[position].isDigit()) {
+                        while (position < line.length && line[position].isDigit()) {
                             position++
                         }
-                        tokens.add(Token(TokenType.NUMERIC_LITERAL, input.substring(start, position), start + 1, lineNumber))
+                        tokens.add(Token(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber))
                     } else {
                         position++
                     }
                 }
             }
         }
+    }
+    fun getToken(): List<Token> {
         return tokens
     }
 }
