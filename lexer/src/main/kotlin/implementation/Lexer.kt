@@ -1,5 +1,6 @@
 package implementation
 
+import TokenType
 import token.Token
 import java.io.BufferedReader
 import java.io.InputStream
@@ -103,7 +104,10 @@ class Lexer(inputStream: InputStream) {
                         }
                         when (val word = line.substring(start, position)) {
                             "let" -> tokens.add(Token(TokenType.LET, word, start + 1, lineNumber))
+                            "const" -> tokens.add(Token(TokenType.CONST, word, start + 1, lineNumber))
                             "println" -> tokens.add(Token(TokenType.PRINTLN, word, start + 1, lineNumber))
+                            "if" -> tokens.add(Token(TokenType.IF, word, start + 1, lineNumber))
+                            "else" -> tokens.add(Token(TokenType.ELSE, word, start + 1, lineNumber))
                             "while" -> tokens.add(Token(TokenType.WHILE, word, start + 1, lineNumber))
                             "return" -> tokens.add(Token(TokenType.RETURN, word, start + 1, lineNumber))
                             "final" -> tokens.add(Token(TokenType.FINAL, word, start + 1, lineNumber))
@@ -112,6 +116,8 @@ class Lexer(inputStream: InputStream) {
                             "protected" -> tokens.add(Token(TokenType.PROTECTED, word, start + 1, lineNumber))
                             "String" -> tokens.add(Token(TokenType.STRING_TYPE, word, start + 1, lineNumber))
                             "number" -> tokens.add(Token(TokenType.NUMBER_TYPE, word, start + 1, lineNumber))
+                            "Boolean" -> tokens.add(Token(TokenType.BOOLEAN_TYPE, word, start + 1, lineNumber))
+                            "true", "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, start + 1, lineNumber))
                             "<=" -> tokens.add(Token(TokenType.LESSER_THAN_EQUAL, word, start + 1, lineNumber))
                             ">=" -> tokens.add(Token(TokenType.GREATER_THAN_EQUAL, word, start + 1, lineNumber))
                             "==" -> tokens.add(Token(TokenType.EQUAL_EQUAL, word, start + 1, lineNumber))

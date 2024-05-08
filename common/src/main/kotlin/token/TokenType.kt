@@ -5,7 +5,10 @@ enum class TokenType {
 
     // keywords
     LET,
+    CONST,
     PRINTLN,
+    IF,
+    ELSE,
     WHILE,
     RETURN,
     FINAL,
