@@ -6,10 +6,9 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
+class Lexer(inputStream: InputStream) {
     private var lineNumber: Int = 1
     private val tokens = mutableListOf<Token>()
-
 
     init {
         BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).useLines { lines ->
@@ -22,17 +21,17 @@ class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
 
     private fun processLine(line: String) {
         var position = 0 // posición en la línea
-        //val tokens = mutableListOf<Token>()
+        // val tokens = mutableListOf<Token>()
 
         while (position < line.length) {
             when (val currentChar = line[position]) {
-                    ' ', '\t', '\n' -> {
+                ' ', '\t', '\n' -> {
                     tokens.add(Token(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
                     position++
                     if (currentChar == '\n') {
                         lineNumber++
                     }
-                    }
+                }
                 '+' -> {
                     tokens.add(Token(TokenType.PLUS, currentChar.toString(), position + 1, lineNumber))
                     position++
@@ -130,6 +129,7 @@ class Lexer(inputStream: InputStream, private val maxReadSize: Int = 4096) {
             }
         }
     }
+
     fun getToken(): List<Token> {
         return tokens
     }

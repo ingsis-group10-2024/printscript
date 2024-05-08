@@ -68,7 +68,7 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
         assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
         assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
-        //assertEquals(900, actualTokens.size)
+        // assertEquals(900, actualTokens.size)
     }
 
     @Test
@@ -79,7 +79,7 @@ class LexerTest {
         val mockInputStream = MockInputStream(line, numberOfLines)
 
         // Initialize the Lexer
-        val lexer = Lexer(mockInputStream, numberOfLines * 40)
+        val lexer = Lexer(mockInputStream)
 
         // Convert the content to tokens
         val tokens = lexer.getToken()
