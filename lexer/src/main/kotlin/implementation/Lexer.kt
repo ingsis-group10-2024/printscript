@@ -1,7 +1,7 @@
 package implementation
 
-import TokenType
 import token.Token
+import token.TokenType
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
