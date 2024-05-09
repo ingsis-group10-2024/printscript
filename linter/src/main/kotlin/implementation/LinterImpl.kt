@@ -7,6 +7,7 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
@@ -38,7 +39,22 @@ class LinterImpl() : Linter {
                 is BinaryOperationNode -> checkBinaryOperationSyntax(node)
                 is IdentifierOperatorNode -> checkIdentifierOperatorSyntax(node)
                 is MethodNode -> checkMethodSyntax(node)
+                is IfNode -> checkIfSyntax(node)
                 else -> {}
+            }
+        }
+    }
+
+    private fun checkIfSyntax(node: IfNode) {
+        if (node.trueBranch !is MethodNode && node.trueBranch !is DeclarationAssignationNode && node.trueBranch !is AssignationNode) {
+            errors.add("Invalid true branch in if statement.")
+        }
+        if (node.falseBranch != null) {
+            if (node.falseBranch !is MethodNode &&
+                node.falseBranch !is DeclarationAssignationNode &&
+                node.falseBranch !is AssignationNode
+            ) {
+                errors.add("Invalid false branch in if statement.")
             }
         }
     }

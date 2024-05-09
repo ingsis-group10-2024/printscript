@@ -5,6 +5,7 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -258,5 +259,99 @@ class LinterTest {
         val errors = linter.lint(ast)
         assertEquals(1, errors.size)
         assertEquals("Missing method identifier.", errors[0])
+    }
+
+    @Test
+    fun `lint ast with valid if`() {
+        val ast =
+            listOf(
+                IfNode(
+                    BinaryOperationNode(
+                        ">",
+                        NumberOperatorNode(5.0, Position(1, 1)),
+                        NumberOperatorNode(4.0, Position(1, 1)),
+                    ),
+                    MethodNode("print", NumberOperatorNode(5.0, Position(1, 1)), Position(1, 1)),
+                    MethodNode("print", NumberOperatorNode(10.0, Position(1, 1)), Position(1, 1)),
+                ),
+            )
+        val errors = linter.lint(ast)
+        assertEquals(0, errors.size)
+    }
+
+    @Test
+    fun `lint ast with valid if2`() {
+        val ast =
+            listOf(
+                IfNode(
+                    BinaryOperationNode(
+                        ">",
+                        NumberOperatorNode(5.0, Position(1, 1)),
+                        NumberOperatorNode(4.0, Position(1, 1)),
+                    ),
+                    DeclarationAssignationNode(
+                        DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                        NumberOperatorNode(5.0, Position(1, 1)),
+                    ),
+                    null,
+                ),
+            )
+        val errors = linter.lint(ast)
+        assertEquals(0, errors.size)
+    }
+
+    @Test
+    fun `lint ast with invalid if`() {
+        val ast =
+            listOf(
+                IfNode(
+                    BinaryOperationNode(
+                        ">",
+                        NumberOperatorNode(5.0, Position(1, 1)),
+                        NumberOperatorNode(5.0, Position(1, 1)),
+                    ),
+                    NumberOperatorNode(5.0, Position(1, 1)),
+                    null,
+                ),
+            )
+        val errors = linter.lint(ast)
+        assertEquals(1, errors.size)
+        assertEquals("Invalid true branch in if statement.", errors[0])
+    }
+
+    @Test
+    fun `lint ast with valid boolean assignation`() {
+        val ast =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("x", Position(1, 1), "boolean", Position(1, 1)),
+                    BooleanOperatorNode(true, Position(1, 1)),
+                ),
+                DeclarationAssignationNode(
+                    DeclarationNode("y", Position(1, 1), "boolean", Position(1, 1)),
+                    BooleanOperatorNode(false, Position(1, 1)),
+                ),
+            )
+        val errors = linter.lint(ast)
+        assertEquals(0, errors.size)
+    }
+
+    @Test
+    fun `lint ast with invalid boolean assignation`() {
+        val ast =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("x", Position(1, 1), "boolean", Position(1, 1)),
+                    NumberOperatorNode(5.0, Position(1, 1)),
+                ),
+                DeclarationAssignationNode(
+                    DeclarationNode("y", Position(1, 1), "boolean", Position(1, 1)),
+                    StringOperatorNode("hola", Position(1, 1)),
+                ),
+            )
+        val errors = linter.lint(ast)
+        assertEquals(2, errors.size)
+        assertEquals("Invalid assignation for boolean type", errors[0])
+        assertEquals("Invalid assignation for boolean type", errors[1])
     }
 }

@@ -28,3 +28,5 @@ data class DeclarationAssignationNode(val declaration: DeclarationNode, val assi
 data class AssignationNode(val identifier: String, val identifierPosition: Position, val assignation: BinaryNode) : Assignation
 
 data class MethodNode(val name: String, val value: BinaryNode, val methodNamePosition: Position) : ASTNode // Ej: print(x)
+
+data class IfNode(val condition: BinaryNode, val trueBranch: ASTNode, val falseBranch: ASTNode?) : ASTNode
