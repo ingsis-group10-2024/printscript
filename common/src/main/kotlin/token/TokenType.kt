@@ -1,4 +1,4 @@
-package common.token
+package token
 
 enum class TokenType {
     IDENTIFIER, // variable name
@@ -35,10 +35,15 @@ enum class TokenType {
     TIMES,
     DIVIDE,
     GREATER_THAN,
+    GREATER_THAN_EQUAL,
     LESSER_THAN,
+    LESSER_THAN_EQUAL,
+    EQUAL_EQUAL,
 
     // symbols
     OPEN_PARENTHESIS,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
     CLOSE_PARENTHESIS,
     SEMICOLON,
     COLON,

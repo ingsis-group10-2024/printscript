@@ -1,0 +1,40 @@
+{
+  "activeRules": [
+    {
+      "name": "maxLineLength",
+      "enabled": true,
+      "value": 240
+    },
+    {
+      "name": "indent",
+      "enabled": true,
+      "value": 4
+    },
+    {
+      "name": "useSpaces",
+      "enabled": true
+    },
+    {
+      "name": "spaceBeforeColon",
+      "enabled": true
+    },
+    {
+      "name": "spaceAfterColon",
+      "enabled": true
+    },
+    {
+      "name": "newlineAfterSemicolon",
+      "enabled": true
+    },
+    {
+      "name": "spaceBeforePrintln",
+      "enabled": true,
+      "value": 0
+    },
+    {
+      "name": "ifBlockIndent",
+      "enabled": true,
+      "value": 0
+    }
+  ]
+}
