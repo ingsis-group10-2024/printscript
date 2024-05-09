@@ -8,7 +8,6 @@ import token.TokenType
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
-
 class LexerTest {
     @Test
     fun testBasicArithmetic() {
