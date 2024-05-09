@@ -7,7 +7,6 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-
 class Lexer(inputStream: InputStream) {
     private var lineNumber: Int = 1
     private val tokens = mutableListOf<Token>()
@@ -87,14 +86,6 @@ class Lexer(inputStream: InputStream) {
                     tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
-                '{' -> {
-                    tokens.add(Token(TokenType.OPEN_BRACKET, currentChar.toString(), lineNumber, position + 1))
-                    position++
-                }
-                '}' -> {
-                    tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), lineNumber, position + 1))
-                    position++
-                }
                 '"', '\'' -> { // this checks for string literals
                     val start = position
                     position++ // moves past the opening quote
@@ -131,7 +122,6 @@ class Lexer(inputStream: InputStream) {
                             ">=" -> tokens.add(Token(TokenType.GREATER_THAN_EQUAL, word, start + 1, lineNumber))
                             "==" -> tokens.add(Token(TokenType.EQUAL_EQUAL, word, start + 1, lineNumber))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, start + 1, lineNumber))
-
                         }
                     } else if (currentChar.isDigit()) {
                         val start = position
