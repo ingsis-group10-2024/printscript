@@ -1,5 +1,4 @@
-package `interface`
-
+package interfacePackage
 import ast.ASTNode
 
 interface Linter {

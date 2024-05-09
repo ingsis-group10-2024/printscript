@@ -10,15 +10,13 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import `interface`.Linter
+import interfacePackage.Linter
 
 class LinterImpl() : Linter {
     private val errors = mutableListOf<String>()
 
     override fun lint(astNodes: List<ASTNode>): List<String> {
         checkSyntax(astNodes)
-        // checkStyle(astNodes)
-
         return errors
     }
 

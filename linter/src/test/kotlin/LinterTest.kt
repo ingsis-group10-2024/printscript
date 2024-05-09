@@ -1,4 +1,14 @@
-import ast.*
+
+import ast.AssignationNode
+import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
+import ast.DeclarationAssignationNode
+import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.MethodNode
+import ast.NumberOperatorNode
+import ast.Position
+import ast.StringOperatorNode
 import implementation.LinterImpl
 import org.junit.Assert.assertEquals
 import org.junit.Test
