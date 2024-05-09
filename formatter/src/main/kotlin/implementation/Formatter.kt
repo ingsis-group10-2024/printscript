@@ -1,3 +1,5 @@
+package implementation
+
 import ast.ASTNode
 import ast.AssignationNode
 import ast.BinaryOperationNode
@@ -21,7 +23,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
         nodes.forEach { node ->
             when (node) {
                 is StringOperatorNode -> builder.append("\"${node.value}\"")
-                is NumberOperatorNode -> builder.append(node.value)
+                is NumberOperatorNode -> builder.append("${node.value}")
                 is BinaryOperationNode -> {
                     builder.append(formatNode(node.left))
                     builder.append(" ${node.symbol} ")
@@ -37,35 +39,35 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                     val colonWithSpaces = if (rules[3].enabled && rules[4].enabled) " : " else ":"
                     builder.append("let ${node.declaration.identifier}$colonWithSpaces${node.declaration.type} = ")
                     builder.append(formatNode(node.assignation))
-                    // builder.append("\n")
+                    builder.append(";")
                 }
                 is AssignationNode -> {
                     builder.append("${node.identifier} = ")
                     builder.append(formatNode(node.assignation))
-                    // builder.append("\n")
+                    builder.append(";")
                 }
                 is IdentifierOperatorNode -> builder.append(node.identifier)
                 is MethodNode -> {
                     // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println si la configuración lo permite
                     builder.append("\n${" ".repeat(rules[6].value!!)}${node.identifier}(")
                     builder.append(formatNode(node.value))
-                    builder.append(")")
+                    builder.append(");")
                 }
 
                 is BooleanOperatorNode -> {
-                    builder.append(node.value)
+                    builder.append("${node.value}")
                 }
 
                 is IfNode -> {
                     val ifBlockIndent = "\n".repeat(rules[7].value!!)
                     builder.append("if (${formatNode(node.condition)}) {")
                     builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del if
-                    builder.append(formatNode(node.trueBranch))
+                    builder.append(formatNode(node.trueBranch) + ";")
                     builder.append("\n}")
                     node.falseBranch?.let {
                         builder.append(" else {")
                         builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del else
-                        builder.append(formatNode(it))
+                        builder.append(formatNode(it) + ";")
                         builder.append("}")
                     }
                 }
@@ -78,7 +80,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
     private fun formatNode(node: ASTNode?): String {
         return when (node) {
             is StringOperatorNode -> "\"${node.value}\""
-            is NumberOperatorNode -> node.value.toString()
+            is NumberOperatorNode -> "${node.value}"
             is BinaryOperationNode -> {
                 "${formatNode(node.left)} ${node.symbol} ${formatNode(node.right)}"
             }
@@ -88,12 +90,12 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
             }
             is DeclarationAssignationNode -> {
                 // Agrega espacios antes y después del ":"
-                "let ${node.declaration.identifier} : ${node.declaration.type} = ${formatNode(node.assignation)}\n"
+                "let ${node.declaration.identifier} : ${node.declaration.type} = ${formatNode(node.assignation)};\n"
             }
             is AssignationNode -> {
-                "${node.identifier} = ${formatNode(node.assignation)}\n"
+                "${node.identifier} = ${formatNode(node.assignation)};\n"
             }
-            is IdentifierOperatorNode -> node.identifier
+            is IdentifierOperatorNode -> "${node.identifier}"
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
                 "${"\n".repeat(rules[6].value!!)}\n${node.identifier}(${formatNode(node.value)})"

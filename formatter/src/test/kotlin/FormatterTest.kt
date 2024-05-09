@@ -10,6 +10,7 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 import config.JsonConfigLoader
+import implementation.Formatter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -62,7 +63,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("x = 5.0 + 3.0", result)
+        assertEquals("x = 5.0 + 3.0;", result)
     }
 
     @Test
@@ -76,7 +77,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("let x : number = 5.0 + 3.0", result)
+        assertEquals("let x : number = 5.0 + 3.0;", result)
     }
 
     @Test
@@ -95,7 +96,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("\nprint(\"Hello\")", result)
+        assertEquals("\nprint(\"Hello\");", result)
     }
 
     @Test
@@ -110,7 +111,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("if (true) {\nprint(\"Hello\")\n}", result)
+        assertEquals("if (true) {\nprint(\"Hello\");\n}", result)
     }
 
     @Test
@@ -125,7 +126,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("if (x == 5.0) {\nprint(\"Hello\")\n}", result)
+        assertEquals("if (x == 5.0) {\nprint(\"Hello\");\n}", result)
     }
 
     @Test
@@ -140,7 +141,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("if (true) {\nprint(\"Hello\")\n} else {\nprint(\"World\")}", result)
+        assertEquals("if (true) {\nprint(\"Hello\");\n} else {\nprint(\"World\");}", result)
     }
 
     @Test
@@ -170,7 +171,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("let x : number = 5.0 + 3.0", result)
+        assertEquals("let x : number = 5.0 + 3.0;", result)
     }
 
     @Test
@@ -181,7 +182,7 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("x = 5.0 + 3.0", result)
+        assertEquals("x = 5.0 + 3.0;", result)
     }
 
     @Test
@@ -196,6 +197,6 @@ class FormatterTest {
             )
         val result = formatter.format(nodes)
         println(result)
-        assertEquals("if (true) {\nprint(\"Hello\")\n}", result)
+        assertEquals("if (true) {\nprint(\"Hello\");\n}", result)
     }
 }
