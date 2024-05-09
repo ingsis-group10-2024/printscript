@@ -78,7 +78,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
             is AssignationNode -> {
                 "${node.identifier} = ${formatNode(node.assignation)};\n"
             }
-            is IdentifierOperatorNode -> "${node.identifier}"
+            is IdentifierOperatorNode -> node.identifier
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
                 "${"\n".repeat(rules[6].value!!)}\n${node.name}(${formatNode(node.value)})"

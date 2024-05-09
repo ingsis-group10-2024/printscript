@@ -1,6 +1,7 @@
 package implementation
 
 import token.Token
+import token.TokenType
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -82,14 +83,6 @@ class Lexer(inputStream: InputStream) {
                 }
                 '}' -> {
                     tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '{' -> {
-                    tokens.add(Token(TokenType.OPEN_BRACKET, currentChar.toString(), lineNumber, position + 1))
-                    position++
-                }
-                '}' -> {
-                    tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), lineNumber, position + 1))
                     position++
                 }
                 '"', '\'' -> { // this checks for string literals
