@@ -10,8 +10,6 @@ data class IdentifierOperatorNode(val identifier: String) : BinaryNode // Nombre
 
 data class StringOperatorNode(val value: String) : BinaryNode // String ej: "Hello"
 
-data class BooleanOperatorNode(val value: Boolean) : BinaryNode // Boolean ej: true
-
 data class NumberOperatorNode(val value: Double) : BinaryNode // Nro ej: 5
 
 // Dos operandos y el símbolo de la operación ej: 2 + 3
@@ -26,5 +24,3 @@ data class DeclarationAssignationNode(val declaration: DeclarationNode, val assi
 data class AssignationNode(val identifier: String, val assignation: BinaryNode) : Assignation
 
 data class MethodNode(val identifier: String, val value: BinaryNode) : ASTNode // Ej: print(x)
-
-data class IfNode(val condition: BinaryNode, val trueBranch: ASTNode, val falseBranch: ASTNode?) : ASTNode

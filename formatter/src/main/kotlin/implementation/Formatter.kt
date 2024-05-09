@@ -3,11 +3,9 @@ package implementation
 import ast.ASTNode
 import ast.AssignationNode
 import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
-import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
@@ -53,24 +51,6 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                     builder.append(formatNode(node.value))
                     builder.append(");")
                 }
-
-                is BooleanOperatorNode -> {
-                    builder.append("${node.value}")
-                }
-
-                is IfNode -> {
-                    val ifBlockIndent = "\n".repeat(rules[7].value!!)
-                    builder.append("if (${formatNode(node.condition)}) {")
-                    builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del if
-                    builder.append(formatNode(node.trueBranch) + ";")
-                    builder.append("\n}")
-                    node.falseBranch?.let {
-                        builder.append(" else {")
-                        builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del else
-                        builder.append(formatNode(it) + ";")
-                        builder.append("}")
-                    }
-                }
             }
         }
 
@@ -99,9 +79,6 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
                 "${"\n".repeat(rules[6].value!!)}\n${node.identifier}(${formatNode(node.value)})"
-            }
-            is BooleanOperatorNode -> {
-                "${node.value}"
             }
             else -> ""
         }
