@@ -8,6 +8,7 @@ import ast.IdentifierOperatorNode
 import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
+import ast.Position
 import ast.StringOperatorNode
 import config.JsonConfigLoader
 import implementation.Formatter
@@ -21,7 +22,7 @@ class FormatterTest {
 
     @Test
     fun `formats declaration node`() {
-        val nodes = listOf(DeclarationNode("x", "number"))
+        val nodes = listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number\n", result)
@@ -29,7 +30,7 @@ class FormatterTest {
 
     @Test
     fun `formats binary operation node`() {
-        val nodes = listOf(BinaryOperationNode("+", NumberOperatorNode(2.0), NumberOperatorNode(3.0)))
+        val nodes = listOf(BinaryOperationNode("+", NumberOperatorNode(2.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("2.0 + 3.0", result)
@@ -39,8 +40,8 @@ class FormatterTest {
     fun `formats multiple nodes`() {
         val nodes =
             listOf(
-                DeclarationNode("x", "number"),
-                BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -59,7 +60,7 @@ class FormatterTest {
     fun `formats assignation node`() {
         val nodes =
             listOf(
-                AssignationNode("x", BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))),
+                AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -71,8 +72,8 @@ class FormatterTest {
         val nodes =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", "number"),
-                    BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                 ),
             )
         val result = formatter.format(nodes)
@@ -82,7 +83,7 @@ class FormatterTest {
 
     @Test
     fun `formats identifier operator node`() {
-        val nodes = listOf(IdentifierOperatorNode("x"))
+        val nodes = listOf(IdentifierOperatorNode("x", Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("x", result)
@@ -92,7 +93,7 @@ class FormatterTest {
     fun `formats method node`() {
         val nodes =
             listOf(
-                MethodNode("print", StringOperatorNode("Hello")),
+                MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -104,8 +105,8 @@ class FormatterTest {
         val nodes =
             listOf(
                 IfNode(
-                    BooleanOperatorNode(true),
-                    MethodNode("print", StringOperatorNode("Hello")),
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
                     null,
                 ),
             )
@@ -119,8 +120,8 @@ class FormatterTest {
         val nodes =
             listOf(
                 IfNode(
-                    BinaryOperationNode("==", IdentifierOperatorNode("x"), NumberOperatorNode(5.0)),
-                    MethodNode("print", StringOperatorNode("Hello")),
+                    BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))),
+                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
                     null,
                 ),
             )
@@ -134,9 +135,9 @@ class FormatterTest {
         val nodes =
             listOf(
                 IfNode(
-                    BooleanOperatorNode(true),
-                    MethodNode("print", StringOperatorNode("Hello")),
-                    MethodNode("print", StringOperatorNode("World")),
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                    MethodNode("print", StringOperatorNode("World", Position(1, 1)), Position(1, 1)),
                 ),
             )
         val result = formatter.format(nodes)
@@ -146,7 +147,7 @@ class FormatterTest {
 
     @Test
     fun `format boolean operator node`() {
-        val nodes = listOf(BooleanOperatorNode(true))
+        val nodes = listOf(BooleanOperatorNode(true, Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("true", result)
@@ -154,7 +155,7 @@ class FormatterTest {
 
     @Test
     fun `format declaration node with spaces`() {
-        val nodes = listOf(DeclarationNode("x", "number"))
+        val nodes = listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number\n", result)
@@ -165,8 +166,8 @@ class FormatterTest {
         val nodes =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", "number"),
-                    BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                 ),
             )
         val result = formatter.format(nodes)
@@ -178,7 +179,7 @@ class FormatterTest {
     fun `format assignation node with spaces`() {
         val nodes =
             listOf(
-                AssignationNode("x", BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0))),
+                AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -190,8 +191,8 @@ class FormatterTest {
         val nodes =
             listOf(
                 IfNode(
-                    BooleanOperatorNode(true),
-                    MethodNode("print", StringOperatorNode("Hello")),
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
                     null,
                 ),
             )
