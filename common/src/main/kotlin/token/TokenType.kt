@@ -1,4 +1,4 @@
-package common.token
+package token
 
 enum class TokenType {
     IDENTIFIER, // variable name
@@ -20,7 +20,6 @@ enum class TokenType {
     STRING_TYPE,
     NUMBER_TYPE,
     BOOLEAN_TYPE,
-    TYPE, // type of variable: int, string, float, etc.
 
     // declarations (values)
     NUMERIC_LITERAL,
@@ -30,15 +29,20 @@ enum class TokenType {
     // operators
     EQUALS,
     PLUS,
-    MULTIPLY, // Corrected typo from 'TIMES' to 'MULTIPLY'
+    MULTIPLY,
     MINUS,
     TIMES,
     DIVIDE,
     GREATER_THAN,
+    GREATER_THAN_EQUAL,
     LESSER_THAN,
+    LESSER_THAN_EQUAL,
+    EQUAL_EQUAL,
 
     // symbols
     OPEN_PARENTHESIS,
+    OPEN_BRACKET,
+    CLOSE_BRACKET,
     CLOSE_PARENTHESIS,
     SEMICOLON,
     COLON,
