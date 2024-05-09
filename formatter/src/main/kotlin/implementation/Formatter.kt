@@ -3,6 +3,7 @@ package implementation
 import ast.ASTNode
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -47,10 +48,12 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                 is IdentifierOperatorNode -> builder.append(node.identifier)
                 is MethodNode -> {
                     // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println si la configuración lo permite
-                    builder.append("\n${" ".repeat(rules[6].value!!)}${node.identifier}(")
+                    builder.append("\n${" ".repeat(rules[6].value!!)}${node.name}(")
                     builder.append(formatNode(node.value))
                     builder.append(");")
                 }
+
+                is BooleanOperatorNode -> TODO()
             }
         }
 
@@ -78,7 +81,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
             is IdentifierOperatorNode -> "${node.identifier}"
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
-                "${"\n".repeat(rules[6].value!!)}\n${node.identifier}(${formatNode(node.value)})"
+                "${"\n".repeat(rules[6].value!!)}\n${node.name}(${formatNode(node.value)})"
             }
             else -> ""
         }
