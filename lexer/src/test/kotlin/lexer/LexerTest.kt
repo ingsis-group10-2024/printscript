@@ -142,6 +142,4 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, tokens[27].type)
         assertEquals(TokenType.CLOSE_BRACKET, tokens[28].type)
     }
-
-
 }
