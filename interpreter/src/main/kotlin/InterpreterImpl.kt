@@ -2,7 +2,6 @@ import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -12,7 +11,7 @@ import ast.StringOperatorNode
 
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
-    private val nonGlobalVariables = VariableMap(HashMap())
+
 
 // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
@@ -85,7 +84,6 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
-            is BooleanOperatorNode -> ast.value.toString()
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)

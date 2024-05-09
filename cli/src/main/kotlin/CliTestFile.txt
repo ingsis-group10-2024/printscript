@@ -1,4 +1,4 @@
 let x : number = 10;
 let y : number = 20;
 let z : number = 504;
-println(x + y / z );
+println((x + y) / z + 10);
