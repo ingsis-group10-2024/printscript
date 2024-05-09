@@ -1,4 +1,4 @@
-
+package token
 
 enum class TokenType {
     IDENTIFIER, // variable name

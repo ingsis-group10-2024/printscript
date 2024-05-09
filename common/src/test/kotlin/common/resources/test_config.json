@@ -1,0 +1,12 @@
+{
+  "activeRules": [
+    {
+      "name": "rule1",
+      "enabled": true
+    },
+    {
+      "name": "rule2",
+      "enabled": false
+    }
+  ]
+}
