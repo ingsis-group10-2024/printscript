@@ -5,10 +5,7 @@ enum class TokenType {
 
     // keywords
     LET,
-    CONST,
     PRINTLN,
-    IF,
-    ELSE,
     WHILE,
     RETURN,
     FINAL,
@@ -20,7 +17,6 @@ enum class TokenType {
     STRING_TYPE,
     NUMBER_TYPE,
     BOOLEAN_TYPE,
-    TYPE, // type of variable: int, string, float, etc.
 
     // declarations (values)
     NUMERIC_LITERAL,
@@ -30,7 +26,7 @@ enum class TokenType {
     // operators
     EQUALS,
     PLUS,
-    MULTIPLY, // Corrected typo from 'TIMES' to 'MULTIPLY'
+    MULTIPLY,
     MINUS,
     TIMES,
     DIVIDE,
