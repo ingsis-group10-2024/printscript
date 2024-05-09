@@ -49,7 +49,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                 is IdentifierOperatorNode -> builder.append(node.identifier)
                 is MethodNode -> {
                     // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println si la configuración lo permite
-                    builder.append("\n${" ".repeat(rules[6].value!!)}${node.identifier}(")
+                    builder.append("\n${" ".repeat(rules[6].value!!)}${node.name}(")
                     builder.append(formatNode(node.value))
                     builder.append(");")
                 }
@@ -95,10 +95,10 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
             is AssignationNode -> {
                 "${node.identifier} = ${formatNode(node.assignation)};\n"
             }
-            is IdentifierOperatorNode -> "${node.identifier}"
+            is IdentifierOperatorNode -> node.identifier
             is MethodNode -> {
                 // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
-                "${"\n".repeat(rules[6].value!!)}\n${node.identifier}(${formatNode(node.value)})"
+                "${"\n".repeat(rules[6].value!!)}\n${node.name}(${formatNode(node.value)})"
             }
             is BooleanOperatorNode -> {
                 "${node.value}"
