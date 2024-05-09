@@ -1,10 +1,23 @@
 
 plugins {
     id("jacoco")
+    java
 }
 
 dependencies {
+    implementation("junit:junit:4.13.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
+    implementation("org.yaml:snakeyaml:1.28")
+}
+sourceSets {
+    test {
+        resources {
+            srcDir("src/test/resources")
+            include("config.json")
+        }
+    }
 }
 
 repositories {

@@ -84,6 +84,14 @@ class Lexer(inputStream: InputStream) {
                     tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
+                '{' -> {
+                    tokens.add(Token(TokenType.OPEN_BRACKET, currentChar.toString(), lineNumber, position + 1))
+                    position++
+                }
+                '}' -> {
+                    tokens.add(Token(TokenType.CLOSE_BRACKET, currentChar.toString(), lineNumber, position + 1))
+                    position++
+                }
                 '"', '\'' -> { // this checks for string literals
                     val start = position
                     position++ // moves past the opening quote
