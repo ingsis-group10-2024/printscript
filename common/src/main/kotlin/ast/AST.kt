@@ -6,8 +6,7 @@ sealed interface Assignation : ASTNode // Cuando el nodo representa asignaciones
 
 sealed interface BinaryNode : ASTNode // Cuando el nodo puede representar operaciones binarias
 
-data class IdentifierOperatorNode(val identifier: String, val identifierPosition: Position) : BinaryNode //
-// ej: x
+data class IdentifierOperatorNode(val identifier: String, val identifierPosition: Position) : BinaryNode
 
 data class StringOperatorNode(val value: String, val stringPosition: Position) : BinaryNode // String ej: "Hello"
 
