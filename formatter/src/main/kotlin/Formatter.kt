@@ -5,6 +5,7 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
@@ -58,6 +59,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                 is BooleanOperatorNode -> {
                     builder.append(node.value)
                 }
+                is IfOperatorNode -> {}
 
 //                is IfNode -> {
 //                    val ifBlockIndent = "\n".repeat(rules[7].value!!)

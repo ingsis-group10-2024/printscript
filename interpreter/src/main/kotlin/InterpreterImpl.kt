@@ -6,10 +6,10 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import ast.ifOperatorNode
 
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
@@ -30,7 +30,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 is MethodNode -> {
                     interpretMethod(ast)
                 }
-                is ifOperatorNode -> {
+                is IfOperatorNode -> {
                     interpretIfOperatorNode(ast)
                 }
                 is NumberOperatorNode -> {
@@ -238,12 +238,13 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
     }
-    private fun interpretIfOperatorNode(ast: ifOperatorNode){
+
+    private fun interpretIfOperatorNode(ast: IfOperatorNode) {
         val condition = interpretBinaryNode(ast.condition)
         nonGlobalVariables = variableMap.copy()
-        if (condition.toBoolean()){
-            for (node in ast.ifBody){
-                when (node){
+        if (condition.toBoolean()) {
+            for (node in ast.ifBody) {
+                when (node) {
                     is DeclarationNode -> {
                         nonGlobalVariables = interpretDeclarationNode(node)
                     }
@@ -266,8 +267,8 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 }
             }
         } else {
-            for (node in ast.elseBody){
-                when (node){
+            for (node in ast.elseBody) {
+                when (node) {
                     is DeclarationNode -> {
                         nonGlobalVariables = interpretDeclarationNode(node)
                     }
@@ -290,6 +291,5 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 }
             }
         }
-
     }
 }

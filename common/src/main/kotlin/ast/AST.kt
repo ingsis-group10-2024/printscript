@@ -28,4 +28,4 @@ data class AssignationNode(val identifier: String, val identifierPosition: Posit
 
 data class MethodNode(val name: String, val value: BinaryNode, val methodNamePosition: Position) : ASTNode // Ej: print(x)
 
-data class ifOperatorNode(val condition: BinaryNode, val ifBody: List<ASTNode>, val elseBody: List<ASTNode>) : ASTNode
+data class IfOperatorNode(val condition: BinaryNode, val ifBody: List<ASTNode>, val elseBody: List<ASTNode>) : ASTNode
