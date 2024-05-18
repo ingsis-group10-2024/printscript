@@ -242,7 +242,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private fun interpretIfOperatorNode(ast: IfNode) {
         val condition = interpretBinaryNode(ast.condition)
         nonGlobalVariables = variableMap.copy()
-        when(condition) {
+        when (condition) {
             "true" -> {
                 interpret(listOf(ast.trueBranch))
             }
