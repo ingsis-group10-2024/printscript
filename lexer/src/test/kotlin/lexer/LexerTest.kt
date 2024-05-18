@@ -1,10 +1,10 @@
 package lexer
 
-import TokenType
 import implementation.Lexer
 import implementation.MockInputStream
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import token.TokenType
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 

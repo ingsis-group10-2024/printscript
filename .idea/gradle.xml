@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/lexer" />
             <option value="$PROJECT_DIR$/linter" />
             <option value="$PROJECT_DIR$/parser" />
-            <option value="$PROJECT_DIR$/sca" />
           </set>
         </option>
       </GradleProjectSettings>

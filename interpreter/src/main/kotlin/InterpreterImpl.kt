@@ -42,7 +42,7 @@ class InterpreterImpl : Interpreter {
     }
 
     private fun interpretMethod(ast: MethodNode) {
-        when (ast.identifier) {
+        when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
                 println(value)
