@@ -9,10 +9,11 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import ast.ifOperatorNode
 
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
-    private val nonGlobalVariables = VariableMap(HashMap())
+    private var nonGlobalVariables = VariableMap(HashMap())
 
 // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
@@ -28,6 +29,9 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 }
                 is MethodNode -> {
                     interpretMethod(ast)
+                }
+                is ifOperatorNode -> {
+                    interpretIfOperatorNode(ast)
                 }
                 is NumberOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
@@ -233,5 +237,59 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         // declare a variable with the given type initialized as null
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
+    }
+    private fun interpretIfOperatorNode(ast: ifOperatorNode){
+        val condition = interpretBinaryNode(ast.condition)
+        nonGlobalVariables = variableMap.copy()
+        if (condition.toBoolean()){
+            for (node in ast.ifBody){
+                when (node){
+                    is DeclarationNode -> {
+                        nonGlobalVariables = interpretDeclarationNode(node)
+                    }
+                    is Assignation -> {
+                        nonGlobalVariables = interpretAssignation(node)
+                    }
+                    is MethodNode -> {
+                        interpretMethod(node)
+                    }
+                    is NumberOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    is StringOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    is BinaryOperationNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
+                }
+            }
+        } else {
+            for (node in ast.elseBody){
+                when (node){
+                    is DeclarationNode -> {
+                        nonGlobalVariables = interpretDeclarationNode(node)
+                    }
+                    is Assignation -> {
+                        nonGlobalVariables = interpretAssignation(node)
+                    }
+                    is MethodNode -> {
+                        interpretMethod(node)
+                    }
+                    is NumberOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    is StringOperatorNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    is BinaryOperationNode -> {
+                        stringBuffer.append(interpretBinaryNode(node))
+                    }
+                    else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
+                }
+            }
+        }
+
     }
 }
