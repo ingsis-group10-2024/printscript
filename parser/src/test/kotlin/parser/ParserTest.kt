@@ -1,11 +1,12 @@
-
 import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.MethodNode
 import ast.NumberOperatorNode
+import ast.Position
 import ast.StringOperatorNode
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import parser.Parser
 import token.Token
@@ -20,6 +21,7 @@ class ParserTest {
                 Token(TokenType.NUMERIC_LITERAL, "5", 1, 0),
                 Token(TokenType.PLUS, "+", 2, 0),
                 Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
+                Token(TokenType.SEMICOLON, ";", 4, 0),
             )
 
         val parser = Parser(tokens)
@@ -28,8 +30,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "+",
-                NumberOperatorNode(5.0),
-                NumberOperatorNode(3.0),
+                NumberOperatorNode(5.0, Position(1, 0)),
+                NumberOperatorNode(3.0, Position(3, 0)),
             )
 
         assertEquals(expected, result)
@@ -42,6 +44,7 @@ class ParserTest {
                 Token(TokenType.NUMERIC_LITERAL, "2", 1, 0),
                 Token(TokenType.MULTIPLY, "*", 2, 0),
                 Token(TokenType.NUMERIC_LITERAL, "8", 3, 0),
+                Token(TokenType.SEMICOLON, ";", 4, 0),
             )
 
         val parser = Parser(tokens)
@@ -50,8 +53,8 @@ class ParserTest {
         val expected =
             BinaryOperationNode(
                 "*",
-                NumberOperatorNode(2.0),
-                NumberOperatorNode(8.0),
+                NumberOperatorNode(2.0, Position(1, 0)),
+                NumberOperatorNode(8.0, Position(3, 0)),
             )
 
         assertEquals(expected, result)
@@ -66,6 +69,7 @@ class ParserTest {
                 Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
                 Token(TokenType.MULTIPLY, "*", 4, 0),
                 Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
+                // Token(TokenType.SEMICOLON, ";", 6, 0),
             )
 
         val parser = Parser(tokens)
@@ -76,11 +80,11 @@ class ParserTest {
             listOf(
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5.0),
+                    NumberOperatorNode(5.0, Position(1, 0)),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3.0),
-                        NumberOperatorNode(2.0),
+                        NumberOperatorNode(3.0, Position(3, 0)),
+                        NumberOperatorNode(2.0, Position(5, 0)),
                     ),
                 ),
             )
@@ -107,8 +111,11 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(DeclarationNode("x", "number"), DeclarationNode("y", "string"))
-        // val expected = listOf(DeclarationNode("y", "string"))
+        val expected =
+            listOf(
+                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
+                DeclarationNode("y", Position(2, 1), "string", Position(4, 1)),
+            )
 
         assertEquals(expected, result)
     }
@@ -121,15 +128,14 @@ class ParserTest {
                 Token(TokenType.IDENTIFIER, "x", 2, 0),
                 Token(TokenType.COLON, ":", 3, 0),
                 Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-                Token(TokenType.SEMICOLON, ";", 5, 1),
-                Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
-                Token(TokenType.PLUS, "+", 7, 1),
-                Token(TokenType.NUMERIC_LITERAL, "3", 8, 1),
-                Token(TokenType.MULTIPLY, "*", 9, 1),
-                Token(TokenType.NUMERIC_LITERAL, "2", 10, 1),
-                Token(TokenType.NUMERIC_LITERAL, "80", 11, 2),
-                Token(TokenType.STRING_TYPE, "Hola", 12, 3),
-                // Token(TokenType.IDENTIFIER, "x", 13, 4)
+                Token(TokenType.SEMICOLON, ";", 1, 1),
+                Token(TokenType.NUMERIC_LITERAL, "5", 2, 1),
+                Token(TokenType.PLUS, "+", 3, 1),
+                Token(TokenType.NUMERIC_LITERAL, "3", 4, 1),
+                Token(TokenType.MULTIPLY, "*", 5, 1),
+                Token(TokenType.NUMERIC_LITERAL, "2", 6, 1),
+                Token(TokenType.NUMERIC_LITERAL, "80", 1, 2),
+                Token(TokenType.STRING_TYPE, "Hola", 1, 3),
             )
 
         val parser = Parser(tokens)
@@ -137,18 +143,18 @@ class ParserTest {
 
         val expected =
             listOf(
-                DeclarationNode("x", "number"),
+                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
                 BinaryOperationNode(
                     "+",
-                    NumberOperatorNode(5.0),
+                    NumberOperatorNode(5.0, Position(2, 1)),
                     BinaryOperationNode(
                         "*",
-                        NumberOperatorNode(3.0),
-                        NumberOperatorNode(2.0),
+                        NumberOperatorNode(3.0, Position(4, 1)),
+                        NumberOperatorNode(2.0, Position(6, 1)),
                     ),
                 ),
-                NumberOperatorNode(80.0),
-                StringOperatorNode("Hola"),
+                NumberOperatorNode(80.0, Position(1, 2)),
+                StringOperatorNode("Hola", Position(1, 3)),
                 // IdentifierOperatorNode("x")
             )
 
@@ -164,12 +170,13 @@ class ParserTest {
                 Token(TokenType.EQUALS, "=", 3, 0),
                 Token(TokenType.WHITESPACE, " ", 4, 0),
                 Token(TokenType.NUMERIC_LITERAL, "5", 5, 0),
+                Token(TokenType.SEMICOLON, ";", 7, 1),
             )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(AssignationNode("x", NumberOperatorNode(5.0)))
+        val expected = listOf(AssignationNode("x", Position(1, 0), NumberOperatorNode(5.0, Position(5, 0))))
 
         assertEquals(expected, result)
     }
@@ -181,11 +188,11 @@ class ParserTest {
                 Token(TokenType.IDENTIFIER, "x", 1, 0),
                 Token(TokenType.EQUALS, "=", 2, 0),
                 Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
-                Token(TokenType.NUMERIC_LITERAL, "5", 1, 1),
                 Token(TokenType.PLUS, "+", 2, 1),
                 Token(TokenType.NUMERIC_LITERAL, "3", 3, 1),
                 Token(TokenType.MULTIPLY, "*", 4, 1),
                 Token(TokenType.NUMERIC_LITERAL, "2", 5, 1),
+                Token(TokenType.SEMICOLON, ";", 6, 1),
             )
 
         val parser = Parser(tokens)
@@ -193,14 +200,17 @@ class ParserTest {
 
         val expected =
             listOf(
-                AssignationNode("x", NumberOperatorNode(5.0)),
-                BinaryOperationNode(
-                    "+",
-                    NumberOperatorNode(5.0),
+                AssignationNode(
+                    "x",
+                    Position(1, 0),
                     BinaryOperationNode(
-                        "*",
-                        NumberOperatorNode(3.0),
-                        NumberOperatorNode(2.0),
+                        "+",
+                        NumberOperatorNode(5.0, Position(4, 0)),
+                        BinaryOperationNode(
+                            "*",
+                            NumberOperatorNode(3.0, Position(3, 1)),
+                            NumberOperatorNode(2.0, Position(5, 1)),
+                        ),
                     ),
                 ),
             )
@@ -208,7 +218,6 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
-    // todo: correr usando parser.generateAST()
     @Test
     fun testParseDeclarationAssignation() {
         val tokens =
@@ -216,31 +225,22 @@ class ParserTest {
                 Token(TokenType.LET, "let", 1, 1),
                 Token(TokenType.IDENTIFIER, "x", 2, 1),
                 Token(TokenType.COLON, ":", 3, 1),
-                Token(TokenType.NUMBER_TYPE, "int", 4, 1),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 1),
                 Token(TokenType.EQUALS, "=", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "5", 6, 1),
                 Token(TokenType.SEMICOLON, ";", 7, 1),
-                /* Token(TokenType.LET, "let", 1, 2),
-                Token(TokenType.IDENTIFIER, "y", 2, 2),
-                Token(TokenType.COLON, ":", 3, 2),
-                Token(TokenType.NUMBER_TYPE, "string", 4, 2),
-                Token(TokenType.EQUALS, "=", 5, 2),
-                Token(TokenType.NUMERIC_LITERAL, "Hello", 6, 2),
-                Token(TokenType.SEMICOLON, ";", 7, 2),*/
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseDeclarationAssignation()
-        // val result = parser.generateAST()
+        val result = parser.generateAST()
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("x", "int"),
-                NumberOperatorNode(5.0),
+                DeclarationNode("x", Position(2, 1), "number", Position(4, 1)),
+                NumberOperatorNode(5.0, Position(6, 1)),
             )
 
-        assertEquals(expected, result)
-        // assertEquals(listOf(expected), result)
+        assertEquals(listOf(expected), result)
     }
 
     @Test
@@ -259,18 +259,19 @@ class ParserTest {
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseDeclarationAssignation()
-        // val result = parser.generateAST()
+        val result = parser.generateAST()
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("y", "int"),
-                // BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world"))
-                BinaryOperationNode("+", NumberOperatorNode(5.0), NumberOperatorNode(3.0)),
+                DeclarationNode("y", Position(2, 2), "int", Position(4, 2)),
+                BinaryOperationNode(
+                    "+",
+                    NumberOperatorNode(5.0, Position(6, 2)),
+                    NumberOperatorNode(3.0, Position(8, 2)),
+                ),
             )
 
-        assertEquals(expected, result)
-        // assertEquals(listOf(expected), result)
+        assertEquals(listOf(expected), result)
     }
 
     @Test
@@ -290,16 +291,18 @@ class ParserTest {
 
         val parser = Parser(tokens)
         val result = parser.parseDeclarationAssignation()
-        // val result = parser.generateAST()
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("x", "string"),
-                BinaryOperationNode("+", StringOperatorNode("Hello"), StringOperatorNode(" world")),
+                DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
+                BinaryOperationNode(
+                    "+",
+                    StringOperatorNode("Hello", Position(6, 1)),
+                    StringOperatorNode(" world", Position(8, 1)),
+                ),
             )
 
         assertEquals(expected, result)
-        // assertEquals(listOf(expected), result)
     }
 
     @Test
@@ -316,8 +319,31 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.parsePrintln()
 
-        val expected = MethodNode("println", StringOperatorNode("Hello"))
+        val expected = MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0))
 
         assertEquals(expected, result)
+    }
+
+    @Test
+    fun testErrorLineWithoutSemicolon() {
+        val tokens =
+            listOf(
+                Token(TokenType.IDENTIFIER, "x", 1, 0),
+                Token(TokenType.WHITESPACE, " ", 2, 0),
+                Token(TokenType.EQUALS, "=", 3, 0),
+                Token(TokenType.WHITESPACE, " ", 4, 0),
+                Token(TokenType.NUMERIC_LITERAL, "5", 5, 0),
+            )
+
+        val parser = Parser(tokens)
+
+        val exception =
+            assertThrows(
+                RuntimeException::class.java,
+            ) {
+                parser.generateAST()
+            }
+
+        assertEquals("La línea no finaliza con punto y coma", exception.message)
     }
 }
