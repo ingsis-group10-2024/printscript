@@ -11,13 +11,12 @@ import org.junit.Test
 import java.io.File
 
 class StaticCodeAnalyzerTest {
-
     @Test
     fun testAnalyzeWithCamelCaseJSONConfiguration() {
         val astNodes =
             listOf(
-                DeclarationNode("my_variable", Position(0,0), "String", Position(1,0)),
-                DeclarationNode("myVariable", Position(0,1), "String", Position(1,1)),
+                DeclarationNode("my_variable", Position(0, 0), "String", Position(1, 0)),
+                DeclarationNode("myVariable", Position(0, 1), "String", Position(1, 1)),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
@@ -40,8 +39,8 @@ class StaticCodeAnalyzerTest {
     fun testAnalyzeWithCamelCaseYAMLConfiguration() {
         val astNodes =
             listOf(
-                DeclarationNode("my_variable", Position(0,0), "String", Position(1,0)),
-                DeclarationNode("myVariable", Position(0,1), "String", Position(1,1)),
+                DeclarationNode("my_variable", Position(0, 0), "String", Position(1, 0)),
+                DeclarationNode("myVariable", Position(0, 1), "String", Position(1, 1)),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.yaml"
@@ -59,6 +58,4 @@ class StaticCodeAnalyzerTest {
         val errors = analyzer.analyze(astNodes)
         assertEquals(0, errors.size)
     }
-
-
 }
