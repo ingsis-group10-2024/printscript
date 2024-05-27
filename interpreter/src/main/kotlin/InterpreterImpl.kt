@@ -2,20 +2,17 @@ import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
-import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 
 class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
-    private var nonGlobalVariables = VariableMap(HashMap())
 
-// the Pair it returns are the variableMap and the result of the interpretation
+    // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
         if (astList.isEmpty()) return Pair(variableMap, null)
         var varMap = variableMap
@@ -29,9 +26,6 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 }
                 is MethodNode -> {
                     interpretMethod(ast)
-                }
-                is IfNode -> {
-                    interpretIfOperatorNode(ast)
                 }
                 is NumberOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
@@ -59,7 +53,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         }
     }
 
-// this function will interpret the assignation node and assign the value to the variable
+    // this function will interpret the assignation node and assign the value to the variable
     private fun interpretAssignation(ast: Assignation): VariableMap {
         when (ast) {
             is DeclarationAssignationNode -> {
@@ -84,12 +78,11 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         return variableMap
     }
 
-// this function will interpret the binary node and return the value of the node
+    // this function will interpret the binary node and return the value of the node
     private fun interpretBinaryNode(ast: ASTNode): String {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
-            is BooleanOperatorNode -> ast.value.toString()
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
@@ -237,23 +230,5 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         // declare a variable with the given type initialized as null
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
-    }
-
-    private fun interpretIfOperatorNode(ast: IfNode) {
-        val condition = interpretBinaryNode(ast.condition)
-        nonGlobalVariables = variableMap.copy()
-        when (condition) {
-            "true" -> {
-                interpret(listOf(ast.trueBranch))
-            }
-            "false" -> {
-                if (ast.falseBranch != null) {
-                    interpret(listOf(ast.falseBranch!!))
-                }
-            }
-            else -> {
-                stringBuffer.append("Invalid Condition")
-            }
-        }
     }
 }

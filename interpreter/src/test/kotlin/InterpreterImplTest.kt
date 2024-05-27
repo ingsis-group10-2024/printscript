@@ -1,10 +1,8 @@
 import ast.ASTNode
 import ast.BinaryOperationNode
-import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
-import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -295,23 +293,5 @@ class InterpreterImplTest {
         val methodNode = MethodNode("println", StringOperatorNode("Hello, World!", Position(1, 1)), Position(2, 1))
         val response = interpreter.interpret(listOf(methodNode))
         assertEquals("Hello, World!", response.second)
-    }
-
-    @Test
-    fun `Given IfOperatorNode with true condition, should interpret ifBody`() {
-        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
-        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
-        val ifOperatorNode = IfNode(BooleanOperatorNode(true, Position(3, 1)), ifBodyNode, elseBodyNode)
-        val response = interpreter.interpret(listOf(ifOperatorNode))
-        assertEquals("If Body Executed", response.second)
-    }
-
-    @Test
-    fun `Given IfOperatorNode with false condition, should interpret elseBody`() {
-        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
-        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
-        val ifOperatorNode = IfNode(BooleanOperatorNode(false, Position(3, 1)), ifBodyNode, elseBodyNode)
-        val response = interpreter.interpret(listOf(ifOperatorNode))
-        assertEquals("Else Body Executed", response.second)
     }
 }
