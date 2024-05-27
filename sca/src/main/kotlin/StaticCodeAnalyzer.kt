@@ -47,3 +47,5 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
         return config.activeRules.any { it.name == "printlnArgumentChecker" && it.enabled }
     }
 }
+
+
