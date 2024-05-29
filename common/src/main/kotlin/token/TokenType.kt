@@ -7,6 +7,7 @@ enum class TokenType {
     LET,
     CONST,
     PRINTLN,
+    READINPUT,
     IF,
     ELSE,
     WHILE,

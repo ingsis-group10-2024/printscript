@@ -346,4 +346,23 @@ class ParserTest {
 
         assertEquals("La línea no finaliza con punto y coma", exception.message)
     }
+
+    @Test
+    fun testReadInputMethod(){
+        val tokens =
+            listOf(
+                Token(TokenType.READINPUT, "readInput", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
+                Token(TokenType.STRING_LITERAL, "Hello world", 1, 2),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
+                Token(TokenType.SEMICOLON, ";", 1, 4),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.parseReadInput()
+
+        val expected = MethodNode("readInput", StringOperatorNode("Hello world", Position(1,2)), Position(1, 0))
+
+        assertEquals(expected, result)
+    }
 }

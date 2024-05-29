@@ -92,6 +92,9 @@ class Parser(private val tokens: List<Token>) {
             TokenType.PRINTLN -> {
                 parsePrintln()
             }
+            TokenType.READINPUT -> {
+                parseReadInput()
+            }
             else -> null
         }
     }
@@ -221,6 +224,52 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
 
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
+    }
+
+    fun parseReadInput() : MethodNode{
+        val readInputToken = getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.OPEN_PARENTHESIS)) {
+            throwParseException(
+                "'('",
+                getCurrentSignificantToken().value,
+                getCurrentSignificantToken().column,
+                getCurrentSignificantToken().line,
+            )
+        }
+        getTokenAndAdvance()
+
+        if(!isCurrentToken(TokenType.STRING_LITERAL) && !isCurrentToken(TokenType.NUMERIC_LITERAL)){
+            throwParseException(
+                "String or Number",
+                getCurrentSignificantToken().value,
+                getCurrentSignificantToken().column,
+                getCurrentSignificantToken().line,
+            )
+        }
+        val content = getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.CLOSE_PARENTHESIS)) {
+            throwParseException(
+                "')'",
+                getCurrentSignificantToken().value,
+                getCurrentSignificantToken().column,
+                getCurrentSignificantToken().line,
+            )
+        }
+        getTokenAndAdvance()
+
+        if (!isCurrentToken(TokenType.SEMICOLON)) {
+            throwParseException(
+                "';'",
+                getCurrentSignificantToken().value,
+                getCurrentSignificantToken().column,
+                getCurrentSignificantToken().line,
+            )
+        }
+        getTokenAndAdvance()
+
+        return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
     }
 
     private fun isCurrentToken(type: TokenType): Boolean {
