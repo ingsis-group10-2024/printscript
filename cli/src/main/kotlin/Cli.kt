@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
+import implementation.Formatter
 import implementation.Lexer
 import parser.Parser
 import sca.StaticCodeAnalyzer

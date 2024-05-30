@@ -247,13 +247,19 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 interpret(listOf(ast.trueBranch))
             }
             "false" -> {
-                if (ast.falseBranch != null) {
-                    interpret(listOf(ast.falseBranch!!))
-                }
+                interpret(listOf(ast.falseBranch))
             }
             else -> {
                 stringBuffer.append("Invalid Condition")
             }
         }
     }
+//    private fun interpretReadInputNode(ast: ReadInputNode): VariableMap {
+//        print("Enter value for ${ast.identifier}: ")
+//        val inputValue = readLine() ?: ""
+//        val variable = variableMap.findKey(ast.identifier)
+//            ?: Variable(ast.identifier, "String")  // Assuming default type as String
+//        val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
+//        return newMap
+//    }
 }
