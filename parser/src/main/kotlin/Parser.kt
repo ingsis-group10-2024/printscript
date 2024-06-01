@@ -226,7 +226,7 @@ class Parser(private val tokens: List<Token>) {
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
     }
 
-    fun parseReadInput() : MethodNode{
+    fun parseReadInput(): MethodNode {
         val readInputToken = getTokenAndAdvance()
 
         if (!isCurrentToken(TokenType.OPEN_PARENTHESIS)) {
@@ -239,7 +239,7 @@ class Parser(private val tokens: List<Token>) {
         }
         getTokenAndAdvance()
 
-        if(!isCurrentToken(TokenType.STRING_LITERAL) && !isCurrentToken(TokenType.NUMERIC_LITERAL)){
+        if (!isCurrentToken(TokenType.STRING_LITERAL) && !isCurrentToken(TokenType.NUMERIC_LITERAL)) {
             throwParseException(
                 "String or Number",
                 getCurrentSignificantToken().value,
@@ -267,7 +267,7 @@ class Parser(private val tokens: List<Token>) {
                 getCurrentSignificantToken().line,
             )
         }
-        //getTokenAndAdvance()
+        // getTokenAndAdvance()
 
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
     }
