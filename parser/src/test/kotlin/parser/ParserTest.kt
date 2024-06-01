@@ -344,7 +344,7 @@ class ParserTest {
                 parser.generateAST()
             }
 
-        assertEquals("La línea no finaliza con punto y coma", exception.message)
+        assertEquals("No hay mas tokens significativos", exception.message)
     }
 
     @Test
@@ -353,7 +353,7 @@ class ParserTest {
             listOf(
                 Token(TokenType.READINPUT, "readInput", 1, 0),
                 Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
-                Token(TokenType.STRING_LITERAL, "Hello world", 1, 2),
+                Token(TokenType.STRING_LITERAL, "Ingrese su nombre: ", 1, 2),
                 Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
                 Token(TokenType.SEMICOLON, ";", 1, 4),
             )
@@ -361,7 +361,36 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.parseReadInput()
 
-        val expected = MethodNode("readInput", StringOperatorNode("Hello world", Position(1,2)), Position(1, 0))
+        val expected = MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(1,2)), Position(1, 0))
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testReadInputAssignation(){
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "name", 1, 1),
+                Token(TokenType.COLON, ":", 1, 2),
+                Token(TokenType.STRING_TYPE, "string", 1, 3),
+                Token(TokenType.EQUALS, "=", 1, 4),
+                Token(TokenType.READINPUT, "readInput", 1, 5),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 6),
+                Token(TokenType.STRING_LITERAL, "Ingrese su nombre: ", 1, 7),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 8),
+                Token(TokenType.SEMICOLON, ";", 1, 9),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected = listOf(
+            DeclarationAssignationNode(
+                DeclarationNode("name", Position(1, 1), "string", Position(1, 3)),
+                MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(1, 7)), Position(1, 5))
+            )
+        )
 
         assertEquals(expected, result)
     }

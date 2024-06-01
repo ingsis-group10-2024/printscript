@@ -162,7 +162,7 @@ class Parser(private val tokens: List<Token>) {
         val declaration = parseDeclaration()
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
-            val assignation = parseExpression() as BinaryNode
+            val assignation = parseExpression() as ASTNode
             if (isCurrentToken(TokenType.SEMICOLON)) {
                 getTokenAndAdvance()
                 return DeclarationAssignationNode(
@@ -267,7 +267,7 @@ class Parser(private val tokens: List<Token>) {
                 getCurrentSignificantToken().line,
             )
         }
-        getTokenAndAdvance()
+        //getTokenAndAdvance()
 
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
     }
@@ -300,7 +300,7 @@ class Parser(private val tokens: List<Token>) {
             index++
         }
 
-        throw RuntimeException("La línea no finaliza con punto y coma")
+        throw RuntimeException("No hay mas tokens significativos")
     }
 
     private fun throwParseException(
