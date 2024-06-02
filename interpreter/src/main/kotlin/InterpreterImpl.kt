@@ -11,7 +11,7 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 
-class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
+class InterpreterImpl(val variableMap: VariableMap , val envVariables : VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
     private var nonGlobalVariables = VariableMap(HashMap())
 
@@ -247,7 +247,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 interpret(listOf(ast.trueBranch))
             }
             "false" -> {
-                interpret(listOf(ast.falseBranch))
+                interpret(listOf(ast.falseBranch!!))
             }
             else -> {
                 stringBuffer.append("Invalid Condition")

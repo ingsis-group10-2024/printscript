@@ -7,10 +7,13 @@ import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
 import implementation.Formatter
 import implementation.Lexer
+import implementation.LinterImpl
 import parser.Parser
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
 import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 
 class Cli() : CliktCommand() {
     private val option: String by option().prompt("Option").help("which option do you want to choose?")
@@ -27,20 +30,22 @@ class Cli() : CliktCommand() {
             echo("Invalid version")
             return
         }
+        val inputStream = FileInputStream(file.path)
+
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
-                executeCode(file, version)
+                executeCode(file, version, inputStream)
             }
 
             "format" -> {
-                formatCode(file, version)
+                formatCode(file, version, inputStream)
             }
 
             "validate" -> {
-                validateCode(file, version)
+                validateCode(file, version, inputStream)
             }
             "analyze" -> {
-                analyzeCode(file, version)
+                analyzeCode(file, version, inputStream)
             }
             else -> echo("Invalid option")
         }
@@ -49,9 +54,10 @@ class Cli() : CliktCommand() {
     private fun analyzeCode(
         file: File,
         version: String,
+        inputStream: InputStream,
     ) {
-        val lexer = Lexer(file)
-        val tokens = lexer.convertToToken()
+        val lexer = Lexer(inputStream)
+        val tokens = lexer.getToken()
         val parser = Parser(tokens)
         val ast = parser.generateAST()
         val filePath = "sca/src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
@@ -67,9 +73,10 @@ class Cli() : CliktCommand() {
 private fun validateCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
-    val tokens = lexer.convertToToken()
+    val lexer = Lexer(inputStream)
+    val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val linter = LinterImpl()
@@ -82,9 +89,10 @@ private fun validateCode(
 private fun formatCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
-    val tokens = lexer.convertToToken()
+    val lexer = Lexer(inputStream)
+    val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val filePath = "formatter/src/main/resources/test_config_formatter.json"
@@ -97,14 +105,14 @@ private fun formatCode(
 private fun executeCode(
     file: File,
     version: String,
+    inputStream: InputStream,
 ) {
-    val lexer = Lexer(file)
-    val tokens = lexer.convertToToken()
+    val lexer = Lexer(inputStream)
+    val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()))
+    val interpreter = InterpreterImpl(VariableMap(HashMap()) , VariableMap(HashMap()))
     val result = interpreter.interpret(ast)
-//    println(result.second)
 }
 
 /*
