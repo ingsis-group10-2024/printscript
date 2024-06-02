@@ -11,7 +11,7 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 
-class InterpreterImpl(val variableMap: VariableMap , val envVariables : VariableMap) : Interpreter {
+class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
     private var nonGlobalVariables = VariableMap(HashMap())
 
@@ -54,6 +54,12 @@ class InterpreterImpl(val variableMap: VariableMap , val envVariables : Variable
                 val value = interpretBinaryNode(ast.value)
                 println(value)
                 stringBuffer.append(value)
+            }
+            "readInput" -> {
+                val inputValue = readLine()
+                val variable = Variable(interpretBinaryNode(ast.value), inputValue)
+                val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
+                stringBuffer.append(inputValue)
             }
             else -> stringBuffer.append("Invalid Method")
         }
@@ -254,12 +260,4 @@ class InterpreterImpl(val variableMap: VariableMap , val envVariables : Variable
             }
         }
     }
-//    private fun interpretReadInputNode(ast: ReadInputNode): VariableMap {
-//        print("Enter value for ${ast.identifier}: ")
-//        val inputValue = readLine() ?: ""
-//        val variable = variableMap.findKey(ast.identifier)
-//            ?: Variable(ast.identifier, "String")  // Assuming default type as String
-//        val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
-//        return newMap
-//    }
 }

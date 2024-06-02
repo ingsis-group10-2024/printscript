@@ -23,7 +23,7 @@ class Cli() : CliktCommand() {
             fail("File is not a text file: ${file.path}")
         }
     } // validate that the file is a txt file
-    private val validVersionList = listOf("1.0")
+    private val validVersionList = listOf("1.0", "1.1")
 
     override fun run() {
         if (version !in validVersionList) {
@@ -111,7 +111,7 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()) , VariableMap(HashMap()))
+    val interpreter = InterpreterImpl(VariableMap(HashMap()), VariableMap(HashMap()))
     val result = interpreter.interpret(ast)
 }
 

@@ -21,7 +21,8 @@ class InterpreterImplTest {
     @Before
     fun setup() {
         val variableMap = VariableMap(HashMap())
-        interpreter = InterpreterImpl(variableMap)
+        val envMap = VariableMap(HashMap())
+        interpreter = InterpreterImpl(variableMap, envMap)
     }
 
     @Test
