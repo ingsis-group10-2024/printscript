@@ -2,6 +2,8 @@ import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
+import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -447,5 +449,48 @@ class ParserTest {
             )
 
         assertEquals(expected, result)
+    }
+
+    // todo: modificar parseExresion para que reciba algo que le indique si algo debe o no finalizar con punto y coma
+    @Test
+    fun testParseIf() {
+        val tokens = listOf(
+            Token(TokenType.IF, "if", 1, 1),
+            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 3),
+            Token(TokenType.IDENTIFIER, "x", 1, 4),
+            Token(TokenType.EQUALS_EQUALS, "==", 1, 5),
+            Token(TokenType.NUMERIC_LITERAL, "1", 1, 6),
+            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 7),
+            Token(TokenType.OPEN_BRACKET, "{", 1, 8),
+            Token(TokenType.PRINTLN, "print", 1, 9),
+            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 10),
+            Token(TokenType.IDENTIFIER, "x", 1, 11),
+            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 12),
+            Token(TokenType.CLOSE_BRACKET, "}", 1, 13),
+            Token(TokenType.ELSE, "else", 1, 14),
+            Token(TokenType.OPEN_BRACKET, "{", 1, 15),
+            Token(TokenType.PRINTLN, "print", 1, 16),
+            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 17),
+            Token(TokenType.STRING_LITERAL, "\"x != 1\"", 1, 18),
+            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 19),
+            Token(TokenType.CLOSE_BRACKET, "}", 1, 20)
+        )
+
+        val parser = Parser(tokens)
+        val ast = parser.generateAST()
+
+        val expectedAst = listOf(
+            IfNode(
+                BinaryOperationNode(
+                    "==",
+                    IdentifierOperatorNode("x", Position(1, 4)),
+                    NumberOperatorNode(1.0, Position(1, 6))
+                ),
+                MethodNode("print", IdentifierOperatorNode("x", Position(1, 11)), Position(1, 9)),
+                MethodNode("print", StringOperatorNode("x != 1", Position(1, 18)), Position(1, 16))
+            )
+        )
+
+        assertEquals(expectedAst, ast)
     }
 }
