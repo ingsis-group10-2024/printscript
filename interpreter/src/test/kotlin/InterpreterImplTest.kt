@@ -14,6 +14,7 @@ import org.junit.Test
 import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class InterpreterImplTest {
     private lateinit var interpreter: InterpreterImpl
@@ -21,7 +22,7 @@ class InterpreterImplTest {
     @Before
     fun setup() {
         val variableMap = VariableMap(HashMap())
-        val envMap = VariableMap(HashMap())
+        var envMap = VariableMap(HashMap())
         interpreter = InterpreterImpl(variableMap, envMap)
     }
 
@@ -316,12 +317,40 @@ class InterpreterImplTest {
         assertEquals("Else Body Executed", response.second)
     }
 
-//    @Test
-//    fun test027_GivenMethodNodeWithInvalidMethod_WhenInterpreted_ShouldReturnInvalidMethod() {
-//        val declarationNode = DeclarationNode("x", Position(1, 1), "number", Position(2, 1))
-//        val assignationNode = AssignationNode("x", Position(3,1),NumberOperatorNode(5.0, Position(4, 1)), Position(5, 1))
-//        interpreter.interpret(listOf(declarationNode))
-//        val response = interpreter.interpret(listOf(assignationNode))
-//        assertEquals("x = 5.0", response.second)
-//    }
+    @Test
+    fun test027_Given_an_Env_variable_that_exists_in_the_map_it_should_return_its_value() {
+        val envMap = VariableMap(HashMap())
+        envMap.variableMap.put(Variable("x" , "") , "5.0")
+        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+
+        val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
+        val response = interpreter.interpret(listOf(ast))
+        assertEquals("5.0", response.second)
+    }
+    @Test
+    fun test028_Given_an_Env_variable_that_does_not_exist_in_the_map_it_should_return_it_should_fail() {
+        val envMap = VariableMap(HashMap())
+        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+
+        val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
+        val response = interpreter.interpret(listOf(ast))
+        assertEquals("Environment Variable x not found", response.second)
+    }
+    @Test
+    fun test029_GivenADeclarationAssignationNodeWithAnUndeclaredVariableItShouldAddTheVariableToTheMap() {
+        val ast = DeclarationAssignationNode(
+            DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+            NumberOperatorNode(5.0, Position(3, 1)),
+        )
+        val astList = listOf(ast)
+        val response = interpreter.interpret(astList)
+        assertEquals("", response.second)
+        assertTrue(interpreter.variableMap.containsKey(Variable("x", "number")))
+    }
+    @Test
+    fun test030_GivenReadInputMethodNodeItShouldReturnTheInputValue() {
+        val ast = MethodNode("readInput", StringOperatorNode("", Position(1, 1)), Position(1, 1))
+        val response = interpreter.interpret(listOf(ast))
+        assertEquals("", response.second)
+    }
 }

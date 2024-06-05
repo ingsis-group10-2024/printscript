@@ -61,6 +61,15 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
                 stringBuffer.append(inputValue)
             }
+            "readEnv" -> {
+                val envValue = interpretBinaryNode(ast.value)
+                if(envVariables.variableMap.containsKey(Variable(envValue, ""))) {
+                    val value = envVariables.variableMap[Variable(envValue, "")]
+                    stringBuffer.append(value)
+                } else {
+                    stringBuffer.append("Environment Variable $envValue not found")
+                }
+            }
             else -> stringBuffer.append("Invalid Method")
         }
     }
