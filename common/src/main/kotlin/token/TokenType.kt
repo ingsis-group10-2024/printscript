@@ -8,6 +8,7 @@ enum class TokenType {
     CONST,
     PRINTLN,
     READINPUT,
+    READENV,
     IF,
     ELSE,
     WHILE,
@@ -29,6 +30,7 @@ enum class TokenType {
 
     // operators
     EQUALS,
+    EQUALS_EQUALS,
     PLUS,
     MULTIPLY,
     MINUS,

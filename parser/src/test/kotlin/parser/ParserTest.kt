@@ -448,4 +448,22 @@ class ParserTest {
 
         assertEquals(expected, result)
     }
+
+    @Test
+    fun testRedEnv(){
+        val tokens = listOf(
+            Token(TokenType.READENV, "readEnv", 1, 0),
+            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
+            Token(TokenType.STRING_LITERAL, "gitHubAccessToken", 1, 2),
+            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
+            Token(TokenType.SEMICOLON, ";", 1, 4),
+        )
+
+        val parser = Parser(tokens)
+        val result = parser.parseReadEnv()
+
+        val expected = MethodNode("readEnv", StringOperatorNode("gitHubAccessToken", Position(1, 2)), Position(1, 0))
+
+        assertEquals(expected, result)
+    }
 }
