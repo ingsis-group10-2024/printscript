@@ -493,4 +493,33 @@ class ParserTest {
 
         assertEquals(expectedAst, ast)
     }
+
+
+    @Test
+    fun testGetStatement() {
+        val tokens = listOf(
+            Token(TokenType.LET, "let", 1, 0),
+            Token(TokenType.IDENTIFIER, "x", 2, 0),
+            Token(TokenType.COLON, ":", 3, 0),
+            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+            Token(TokenType.SEMICOLON, ";", 5, 0),
+            Token(TokenType.LET, "let", 1, 1),
+            Token(TokenType.IDENTIFIER, "y", 2, 1),
+            Token(TokenType.COLON, ":", 3, 1),
+            Token(TokenType.STRING_TYPE, "string", 4, 1),
+            Token(TokenType.SEMICOLON, ";", 5, 1),
+        )
+
+        val parser = Parser(tokens)
+        val statement = parser.getStatement(tokens, TokenType.SEMICOLON)
+
+        val expected = listOf(
+            Token(TokenType.LET, "let", 1, 0),
+            Token(TokenType.IDENTIFIER, "x", 2, 0),
+            Token(TokenType.COLON, ":", 3, 0),
+            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+        )
+
+        assertEquals(expected, statement)
+    }
 }

@@ -329,4 +329,14 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
+    fun getStatement(tokens: List<Token>, finalTokenType: TokenType): List<Token> {
+        val statement = mutableListOf<Token>()
+        var i = 0
+        while (i < tokens.size && tokens[i].type != finalTokenType) {
+            statement.add(tokens[i])
+            i++
+        }
+        return statement
+    }
+
 }
