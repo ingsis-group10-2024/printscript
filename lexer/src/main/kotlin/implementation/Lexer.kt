@@ -110,6 +110,8 @@ class Lexer(inputStream: InputStream) {
                             "else" -> tokens.add(Token(TokenType.ELSE, word, start + 1, lineNumber))
                             "while" -> tokens.add(Token(TokenType.WHILE, word, start + 1, lineNumber))
                             "return" -> tokens.add(Token(TokenType.RETURN, word, start + 1, lineNumber))
+                            "readInput" -> tokens.add(Token(TokenType.READINPUT, word, start + 1, lineNumber))
+                            "readEnv" -> tokens.add(Token(TokenType.READENV, word, start + 1, lineNumber))
                             "final" -> tokens.add(Token(TokenType.FINAL, word, start + 1, lineNumber))
                             "public" -> tokens.add(Token(TokenType.PUBLIC, word, start + 1, lineNumber))
                             "private" -> tokens.add(Token(TokenType.PRIVATE, word, start + 1, lineNumber))

@@ -26,6 +26,32 @@ class LexerTest {
     }
 
     @Test
+    fun `test read input`() {
+        val input = "readInput();"
+        val lexer = Lexer(input.byteInputStream())
+        val tokens = lexer.getToken()
+        println(tokens)
+        assertEquals(4, tokens.size)
+        assertEquals(TokenType.READINPUT, tokens[0].type)
+        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[1].type)
+        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[2].type)
+        assertEquals(TokenType.SEMICOLON, tokens[3].type)
+    }
+
+    @Test
+    fun `test read env`() {
+        val input = "readEnv();"
+        val lexer = Lexer(input.byteInputStream())
+        val tokens = lexer.getToken()
+        println(tokens)
+        assertEquals(4, tokens.size)
+        assertEquals(TokenType.READENV, tokens[0].type)
+        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[1].type)
+        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[2].type)
+        assertEquals(TokenType.SEMICOLON, tokens[3].type)
+    }
+
+    @Test
     fun `test convertToToken with small input`() {
         val input =
             "let x = 10;\n" +
@@ -34,7 +60,6 @@ class LexerTest {
         val lexer = Lexer(inputStream)
         val actualTokens = lexer.getToken()
         println(actualTokens)
-
         assertEquals(TokenType.LET, actualTokens[0].type)
         assertEquals(TokenType.WHITESPACE, actualTokens[1].type)
         assertEquals(TokenType.IDENTIFIER, actualTokens[2].type)
