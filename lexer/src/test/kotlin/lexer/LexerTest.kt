@@ -24,6 +24,7 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, tokens[5].type)
         assertEquals(TokenType.DIVIDE, tokens[6].type)
     }
+
     @Test
     fun `test read input`() {
         val input = "readInput();"
