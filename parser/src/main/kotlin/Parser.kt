@@ -151,15 +151,16 @@ class Parser(private val tokens: List<Token>) {
             } else {
                 throwParseException("expression", "", getCurrentSignificantToken().column, getCurrentSignificantToken().line)
             }
-        } else if (isCurrentToken(TokenType.EQUALS_EQUALS)){
-            getTokenAndAdvance()
-            val expression = parseExpression()
-            return AssignationNode(
-                identifierToken.value,
-                Position(identifierToken.column, identifierToken.line),
-                expression as BinaryNode,
-            )
-        }
+        } else if (isCurrentToken(TokenType.EQUALS_EQUALS))
+            {
+                getTokenAndAdvance()
+                val expression = parseExpression()
+                return AssignationNode(
+                    identifierToken.value,
+                    Position(identifierToken.column, identifierToken.line),
+                    expression as BinaryNode,
+                )
+            }
         throwParseException(
             "'='",
             getCurrentSignificantToken().value,
@@ -257,7 +258,11 @@ class Parser(private val tokens: List<Token>) {
 
         expectToken(TokenType.SEMICOLON, "';'")
 
-        return MethodNode("readEnv", StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)), Position(readEnvToken.column, readEnvToken.line))
+        return MethodNode(
+            "readEnv",
+            StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)),
+            Position(readEnvToken.column, readEnvToken.line),
+        )
     }
 
     private fun isCurrentToken(type: TokenType): Boolean {
@@ -300,11 +305,13 @@ class Parser(private val tokens: List<Token>) {
         throw RuntimeException("Expected $expected but found $found at column $column, line $line")
     }
 
-    fun expectToken(expectedType: TokenType, expectedValue: String) {
+    fun expectToken(
+        expectedType: TokenType,
+        expectedValue: String,
+    ) {
         if (!isCurrentToken(expectedType)) {
             val currentToken = getCurrentSignificantToken()
             throwParseException(expectedValue, currentToken.value, currentToken.column, currentToken.line)
         }
     }
-
 }
