@@ -105,6 +105,9 @@ class Parser(private val tokens: List<Token>) {
             TokenType.IF -> {
                 parseIf()
             }
+            TokenType.READENV -> {
+                parseReadEnv()
+            }
             else -> null
         }
     }
@@ -281,6 +284,22 @@ class Parser(private val tokens: List<Token>) {
         )
     }
 
+    fun parseReadEnv(): MethodNode {
+        val readEnvToken = getTokenAndAdvance() // readEnv
+
+        expectToken(TokenType.OPEN_PARENTHESIS, "'('")
+        getTokenAndAdvance()
+
+        expectToken(TokenType.STRING_LITERAL, "String")
+        val envVariableName = getTokenAndAdvance()
+
+        expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
+        getTokenAndAdvance()
+
+        expectToken(TokenType.SEMICOLON, "';'")
+
+        return MethodNode("readEnv", StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)), Position(readEnvToken.column, readEnvToken.line))
+    }
 
     private fun isCurrentToken(type: TokenType): Boolean {
         return getCurrentSignificantToken().type == type

@@ -8,6 +8,7 @@ enum class TokenType {
     CONST,
     PRINTLN,
     READINPUT,
+    READENV,
     IF,
     ELSE,
     WHILE,
@@ -49,8 +50,4 @@ enum class TokenType {
     SEMICOLON,
     COLON,
     WHITESPACE,
-    ASSIGN, // Added ASSIGN for assignment
-    LITERAL, // Added LITERAL for general literals
-
-    INVALID,
 }
