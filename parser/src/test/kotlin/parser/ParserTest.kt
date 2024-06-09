@@ -518,7 +518,7 @@ class ParserTest {
             Token(TokenType.IDENTIFIER, "x", 2, 0),
             Token(TokenType.COLON, ":", 3, 0),
             Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-        )
+            )
 
         assertEquals(expected, statement)
     }

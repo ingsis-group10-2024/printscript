@@ -113,17 +113,14 @@ class Parser(private val tokens: List<Token>) {
     }
 
     fun parseDeclaration(): DeclarationNode {
-        getTokenAndAdvance()
-        if (!isCurrentToken(TokenType.IDENTIFIER)) {
-            val currentToken = getCurrentSignificantToken()
-            throwParseException("identifier", currentToken.value, currentToken.column, currentToken.line)
-        }
+        getTokenAndAdvance() // let
+
+        expectToken(TokenType.IDENTIFIER, "identifier")
         val identifierToken = getTokenAndAdvance()
-        if (!isCurrentToken(TokenType.COLON)) {
-            val currentToken = getCurrentSignificantToken()
-            throwParseException("':'", currentToken.value, currentToken.column, currentToken.line)
-        }
+
+        expectToken(TokenType.COLON, "':'")
         getTokenAndAdvance()
+
         if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
             val currentToken = getCurrentSignificantToken()
             throwParseException("type", currentToken.value, currentToken.column, currentToken.line)
@@ -350,11 +347,12 @@ class Parser(private val tokens: List<Token>) {
 
     fun getStatement(tokens: List<Token>, finalTokenType: TokenType): List<Token> {
         val statement = mutableListOf<Token>()
-        var i = 0
+        var i = currentTokenIndex
         while (i < tokens.size && tokens[i].type != finalTokenType) {
             statement.add(tokens[i])
             i++
         }
+        currentTokenIndex = i + 1 // Skip ult token
         return statement
     }
 
