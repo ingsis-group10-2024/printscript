@@ -55,15 +55,25 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 println(value)
                 stringBuffer.append(value)
             }
+            /*
+            para el println y el readinput yo tendria que tener un lector para la variable que me dan. Para que sea mas escalable.
+            una interfaz lector
+            const sararasa = readinpu("gjygjygj")
+            let x = readinput("msg")
+            let operation = "wololo" + readinput("give me a number")
+            readinput tiene que recibir un lector.
+
+             */
             "readInput" -> {
                 val inputValue = readLine()
                 val variable = Variable(interpretBinaryNode(ast.value), inputValue)
                 val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
                 stringBuffer.append(inputValue)
+                //esto tiene que guardar en una variable tmb.
             }
             "readEnv" -> {
                 val envValue = interpretBinaryNode(ast.value)
-                if(envVariables.variableMap.containsKey(Variable(envValue, ""))) {
+                if (envVariables.variableMap.containsKey(Variable(envValue, ""))) {
                     val value = envVariables.variableMap[Variable(envValue, "")]
                     stringBuffer.append(value)
                 } else {
@@ -253,7 +263,9 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
     }
-
+    /*
+    tenemos que ver esto despues por que no creo que este funcionando bien.
+     */
     private fun interpretIfNode(ast: IfNode) {
         val condition = interpretBinaryNode(ast.condition)
         nonGlobalVariables = variableMap.copy()
