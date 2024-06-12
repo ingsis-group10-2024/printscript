@@ -1,3 +1,4 @@
+
 activeRules:
   - name: camel_case
     enabled: true
@@ -5,4 +6,3 @@ activeRules:
     enabled: false
   - name: printlnArgumentChecker
     enabled: true
-

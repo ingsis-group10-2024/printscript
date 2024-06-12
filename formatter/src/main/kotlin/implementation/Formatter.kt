@@ -62,12 +62,12 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                     val ifBlockIndent = "\n".repeat(rules[7].value!!)
                     builder.append("if (${formatNode(node.condition)}) {")
                     builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del if
-                    builder.append(formatNode(node.trueBranch))
+                    builder.append(formatNode(node.trueBranch) + ";")
                     builder.append("\n}")
                     node.falseBranch?.let {
                         builder.append(" else {")
                         builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del else
-                        builder.append(formatNode(it))
+                        builder.append(formatNode(it) + ";")
                         builder.append("}")
                     }
                 }

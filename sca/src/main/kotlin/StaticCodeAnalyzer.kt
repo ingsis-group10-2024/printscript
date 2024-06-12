@@ -32,7 +32,7 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
     }
 
     private fun isLowerCamelCase(identifier: String): Boolean {
-        return identifier.matches("""^[a-z]+(?:[A-Z][a-z\d]*)*$""".toRegex())
+        return identifier.matches("""^[a-z]+(?:[A-Z][a-z\d])$""".toRegex())
     }
 
     private fun isValidPrintlnArgument(argument: String): Boolean {
