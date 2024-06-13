@@ -15,7 +15,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
     private val stringBuffer = StringBuffer()
     private var nonGlobalVariables = VariableMap(HashMap())
 
-// the Pair it returns are the variableMap and the result of the interpretation
+    // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
         if (astList.isEmpty()) return Pair(variableMap, null)
         var varMap = variableMap
@@ -24,31 +24,38 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 is DeclarationNode -> {
                     varMap = interpretDeclarationNode(ast)
                 }
+
                 is Assignation -> {
                     varMap = interpretAssignation(ast)
                 }
+
                 is MethodNode -> {
                     interpretMethod(ast)
                 }
+
                 is IfNode -> {
                     interpretIfNode(ast)
                 }
+
                 is NumberOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 is StringOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 is BinaryOperationNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }
         return Pair(varMap, stringBuffer.toString())
     }
 
-    private fun interpretMethod(ast: MethodNode) {
+    private fun interpretMethod(ast: MethodNode) : VariableMap {
         when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
@@ -65,23 +72,36 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
 
              */
             "readInput" -> {
-                val inputValue = readLine()
-                val variable = Variable(interpretBinaryNode(ast.value), inputValue)
+                val message = interpretBinaryNode(ast.value)
+                println(message) // Print the message
+                stringBuffer.append(message) // Append the message to the buffer
+
+                // Read the input from the user
+                val inputValue = readLine()?.trim()
+                if (inputValue == null) {
+                    stringBuffer.append("No input received.")
+                    return variableMap
+                }
+
+                val variable = Variable("string", inputValue) // Assuming the input is treated as a string
                 val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
                 stringBuffer.append(inputValue)
-                //esto tiene que guardar en una variable tmb.
+                // Update the global variable map with the new input value
+               return  newMap
             }
             "readEnv" -> {
                 val envValue = interpretBinaryNode(ast.value)
                 if (envVariables.variableMap.containsKey(Variable(envValue, ""))) {
                     val value = envVariables.variableMap[Variable(envValue, "")]
                     stringBuffer.append(value)
+                    return variableMap
                 } else {
                     stringBuffer.append("Environment Variable $envValue not found")
                 }
             }
             else -> stringBuffer.append("Invalid Method")
         }
+        return  variableMap
     }
 
 // this function will interpret the assignation node and assign the value to the variable

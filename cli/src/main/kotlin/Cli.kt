@@ -111,6 +111,10 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
+    /*
+    objeto pindonga
+    crea un variable map y lo llene con el .env
+     */
     val interpreter = InterpreterImpl(VariableMap(HashMap()), VariableMap(HashMap()))
     val result = interpreter.interpret(ast)
 }
