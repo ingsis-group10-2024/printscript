@@ -55,7 +55,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         return Pair(varMap, stringBuffer.toString())
     }
 
-    private fun interpretMethod(ast: MethodNode) : VariableMap {
+    private fun interpretMethod(ast: MethodNode): VariableMap {
         when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
@@ -77,7 +77,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 stringBuffer.append(message) // Append the message to the buffer
 
                 // Read the input from the user
-                val inputValue = readLine()?.trim()
+                val inputValue = readlnOrNull()
                 if (inputValue == null) {
                     stringBuffer.append("No input received.")
                     return variableMap
@@ -87,7 +87,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
                 stringBuffer.append(inputValue)
                 // Update the global variable map with the new input value
-               return  newMap
+                return newMap
             }
             "readEnv" -> {
                 val envValue = interpretBinaryNode(ast.value)
@@ -101,7 +101,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
             }
             else -> stringBuffer.append("Invalid Method")
         }
-        return  variableMap
+        return variableMap
     }
 
 // this function will interpret the assignation node and assign the value to the variable
@@ -283,6 +283,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
     }
+
     /*
     tenemos que ver esto despues por que no creo que este funcionando bien.
      */

@@ -350,20 +350,23 @@ class InterpreterImplTest {
         assertEquals("", response.second)
         assertTrue(interpreter.variableMap.containsKey(Variable("x", "number")))
     }
+
     @Test
     fun test030_GivenReadInputMethodNodeItShouldReturnTheInputValue() {
         val ast = MethodNode("readInput", StringOperatorNode("WOLOLO", Position(1, 1)), Position(1, 1))
         val response = interpreter.interpret(listOf(ast))
         assertEquals("WOLOLO", response.second)
     }
+
     @Test
     fun testReadInput_GivenAReadInputNode_ItShouldCaptureUserInputAndStoreInVariableMap() {
         // Simulate the readInput method call with a predefined message
-        val ast = MethodNode(
-            "readInput",
-            StringOperatorNode("Enter a number: ", Position(1, 1)),
-            Position(1, 1)
-        )
+        val ast =
+            MethodNode(
+                "readInput",
+                StringOperatorNode("Enter a number: ", Position(1, 1)),
+                Position(1, 1),
+            )
         val astList = listOf(ast)
         // Execute the interpretation
         val response = interpreter.interpret(astList)
