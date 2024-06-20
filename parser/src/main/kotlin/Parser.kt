@@ -20,13 +20,31 @@ class Parser(private val tokens: List<Token>) {
 
     fun generateAST(): List<ASTNode> {
         val nodes = mutableListOf<ASTNode>()
-        while (currentTokenIndex < tokens.size) {
-            val node = parseExpression()
+        while (currentTokenIndex < tokens.size-1) {
+            val statementTokens = getStatement(tokens, TokenType.SEMICOLON)
+            currentTokenIndex = currentTokenIndex - statementTokens.size-1
+            if (statementTokens.isEmpty()) {
+                throw RuntimeException("Invalid statement")
+            }
+            val node = parseStatement(statementTokens)
             if (node != null) {
-                nodes.add(node)
+                nodes.add(node as ASTNode)
             }
         }
         return nodes
+    }
+
+
+    private fun parseStatement(tokens: List<Token>): Any? {
+        //currentTokenIndex = 0 // Reinicio el índice del token actual para los nuevos tokens de cada statement
+
+        return when (getCurrentSignificantToken().type) {
+            TokenType.NUMERIC_LITERAL, TokenType.STRING_LITERAL, TokenType.IDENTIFIER, TokenType.STRING_TYPE,
+            TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
+            TokenType.READENV -> parseContent()
+            else -> throwParseException("valid statement", getCurrentSignificantToken().value,
+                getCurrentSignificantToken().column, getCurrentSignificantToken().line)
+        }
     }
 
     private fun parseExpression(): ASTNode? {
@@ -135,29 +153,7 @@ class Parser(private val tokens: List<Token>) {
     }
 
     fun parseAssignation(identifierToken : Token): AssignationNode {
-        if (isCurrentToken(TokenType.EQUALS)) {
-            getTokenAndAdvance()
-            val expression = parseExpression()
-            if (expression != null) {
-                if (isCurrentToken(TokenType.SEMICOLON)) {
-                    getTokenAndAdvance()
-                    return AssignationNode(
-                        identifierToken.value,
-                        Position(identifierToken.column, identifierToken.line),
-                        expression as BinaryNode,
-                    )
-                } else {
-                    throwParseException(
-                        "';'",
-                        getCurrentSignificantToken().value,
-                        getCurrentSignificantToken().column,
-                        getCurrentSignificantToken().line,
-                    )
-                }
-            } else {
-                throwParseException("expression", "", getCurrentSignificantToken().column, getCurrentSignificantToken().line)
-            }
-        } else if (isCurrentToken(TokenType.EQUALS_EQUALS)){
+        if (isCurrentToken(TokenType.EQUALS) || isCurrentToken(TokenType.EQUALS_EQUALS)) {
             getTokenAndAdvance()
             val expression = parseExpression()
             return AssignationNode(
@@ -167,7 +163,7 @@ class Parser(private val tokens: List<Token>) {
             )
         }
         throwParseException(
-            "'='",
+            "'=' or '=='",
             getCurrentSignificantToken().value,
             getCurrentSignificantToken().column,
             getCurrentSignificantToken().line,
@@ -180,33 +176,13 @@ class Parser(private val tokens: List<Token>) {
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as ASTNode
-            if (isCurrentToken(TokenType.SEMICOLON)) {
-                getTokenAndAdvance()
-                return DeclarationAssignationNode(
-                    declaration,
-                    assignation,
-                )
-            } else {
-                throwParseException(
-                    "';'",
-                    getCurrentSignificantToken().value,
-                    getCurrentSignificantToken().column,
-                    getCurrentSignificantToken().line,
-                )
-            }
-        }
-        if (isCurrentToken(TokenType.SEMICOLON)) {
-            getTokenAndAdvance()
-            return declaration
-        } else {
-            throwParseException(
-                "';'",
-                getCurrentSignificantToken().value,
-                getCurrentSignificantToken().column,
-                getCurrentSignificantToken().line,
+            return DeclarationAssignationNode(
+                declaration,
+                assignation,
             )
         }
-        return DeclarationNode("", Position(0, 0), "", Position(0, 0))
+        getTokenAndAdvance()
+        return declaration
     }
 
     fun parsePrintln(): MethodNode {
@@ -217,9 +193,6 @@ class Parser(private val tokens: List<Token>) {
         val content = parseExpression()
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
 
-        getTokenAndAdvance()
-
-        expectToken(TokenType.SEMICOLON, "';'")
         getTokenAndAdvance()
 
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
@@ -243,8 +216,6 @@ class Parser(private val tokens: List<Token>) {
 
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
         getTokenAndAdvance()
-
-        expectToken(TokenType.SEMICOLON, "';'")
 
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
     }
@@ -293,8 +264,6 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
         getTokenAndAdvance()
 
-        expectToken(TokenType.SEMICOLON, "';'")
-
         return MethodNode("readEnv", StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)), Position(readEnvToken.column, readEnvToken.line))
     }
 
@@ -326,7 +295,7 @@ class Parser(private val tokens: List<Token>) {
             index++
         }
 
-        throw RuntimeException("No hay mas tokens significativos")
+        throw RuntimeException("No hay más tokens significativos")
     }
 
     private fun throwParseException(
@@ -348,12 +317,22 @@ class Parser(private val tokens: List<Token>) {
     fun getStatement(tokens: List<Token>, finalTokenType: TokenType): List<Token> {
         val statement = mutableListOf<Token>()
         var i = currentTokenIndex
-        while (i < tokens.size && tokens[i].type != finalTokenType) {
-            statement.add(tokens[i])
+
+        while (i < tokens.size) {
+            val token = tokens[i]
+
+            if (token.type == finalTokenType) {
+                // Salteo ese finalToken para que el próximo statement empiece desde el siguiente token
+                i++
+                currentTokenIndex = i
+                return statement
+            }
+
+            statement.add(token)
             i++
         }
-        currentTokenIndex = i + 1 // Skip ult token
-        return statement
+
+        throw RuntimeException("Se debe terminar el statement con un '${finalTokenType.name}'")
     }
 
 }

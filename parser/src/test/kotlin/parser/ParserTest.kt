@@ -50,14 +50,15 @@ class ParserTest {
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseMultiplication()
+        val result = parser.generateAST()
 
-        val expected =
+        val expected = listOf(
             BinaryOperationNode(
                 "*",
                 NumberOperatorNode(2.0, Position(1, 0)),
                 NumberOperatorNode(8.0, Position(3, 0)),
             )
+        )
 
         assertEquals(expected, result)
     }
@@ -71,7 +72,7 @@ class ParserTest {
                 Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
                 Token(TokenType.MULTIPLY, "*", 4, 0),
                 Token(TokenType.NUMERIC_LITERAL, "2", 5, 0),
-                // Token(TokenType.SEMICOLON, ";", 6, 0),
+                Token(TokenType.SEMICOLON, ";", 6, 0),
             )
 
         val parser = Parser(tokens)
@@ -130,15 +131,18 @@ class ParserTest {
                 Token(TokenType.IDENTIFIER, "x", 2, 0),
                 Token(TokenType.COLON, ":", 3, 0),
                 Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-                Token(TokenType.SEMICOLON, ";", 1, 1),
+                Token(TokenType.SEMICOLON, ";", 1, 0),
                 Token(TokenType.NUMERIC_LITERAL, "5", 2, 1),
                 Token(TokenType.PLUS, "+", 3, 1),
                 Token(TokenType.NUMERIC_LITERAL, "3", 4, 1),
                 Token(TokenType.MULTIPLY, "*", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "2", 6, 1),
+                Token(TokenType.SEMICOLON, ";", 1, 1),
                 Token(TokenType.NUMERIC_LITERAL, "80", 1, 2),
+                Token(TokenType.SEMICOLON, ";", 1, 2),
                 Token(TokenType.STRING_TYPE, "Hola", 1, 3),
-            )
+                Token(TokenType.SEMICOLON, ";", 1, 3),
+                )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
@@ -157,7 +161,6 @@ class ParserTest {
                 ),
                 NumberOperatorNode(80.0, Position(1, 2)),
                 StringOperatorNode("Hola", Position(1, 3)),
-                // IdentifierOperatorNode("x")
             )
 
         assertEquals(expected, result)
@@ -168,9 +171,7 @@ class ParserTest {
         val tokens =
             listOf(
                 Token(TokenType.IDENTIFIER, "x", 1, 0),
-                Token(TokenType.WHITESPACE, " ", 2, 0),
                 Token(TokenType.EQUALS, "=", 3, 0),
-                Token(TokenType.WHITESPACE, " ", 4, 0),
                 Token(TokenType.NUMERIC_LITERAL, "5", 5, 0),
                 Token(TokenType.SEMICOLON, ";", 7, 1),
             )
@@ -346,8 +347,9 @@ class ParserTest {
                 parser.generateAST()
             }
 
-        assertEquals("No hay mas tokens significativos", exception.message)
+        assertEquals("Se debe terminar el statement con un 'SEMICOLON'", exception.message)
     }
+
 
     @Test
     fun testReadInputMethod() {
@@ -521,6 +523,26 @@ class ParserTest {
             )
 
         assertEquals(expected, statement)
+    }
+
+    @Test
+    fun testErrorGetStatementWithoutFinalToken() {
+        val tokens = listOf(
+            Token(TokenType.LET, "let", 1, 0),
+            Token(TokenType.IDENTIFIER, "x", 2, 0),
+            Token(TokenType.COLON, ":", 3, 0),
+            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+        )
+
+        val parser = Parser(tokens)
+        val exception =
+            assertThrows(
+                RuntimeException::class.java,
+            ) {
+                parser.generateAST()
+            }
+
+        assertEquals("Se debe terminar el statement con un 'SEMICOLON'", exception.message)
     }
 
     @Test
