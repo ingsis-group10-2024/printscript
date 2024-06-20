@@ -344,6 +344,26 @@ class ParserTest {
     }
 
     @Test
+    fun testVariableOperationPrintln() {
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 1, 0),
+                Token(TokenType.PLUS, "+", 1, 0),
+                Token(TokenType.IDENTIFIER, "y", 1, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
+                Token(TokenType.SEMICOLON, ";", 1, 0),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.parsePrintln()
+
+        val expected = MethodNode("println", BinaryOperationNode("+", IdentifierOperatorNode("x", Position(1, 0)), IdentifierOperatorNode("y", Position(1, 0))), Position(1, 0))
+        assertEquals(expected, result)
+    }
+
+    @Test
     fun testErrorLineWithoutSemicolon() {
         val tokens =
             listOf(
