@@ -76,10 +76,10 @@ class Parser(private val tokens: List<Token>) {
             TokenType.IDENTIFIER -> {
                 // Es una variable solita ej: x
                 val nextToken = getNextSignificantToken()
-                if(nextToken.type != TokenType.EQUALS){
+                if (nextToken.type != TokenType.EQUALS) {
                     getTokenAndAdvance() // salteo el identifier
                     IdentifierOperatorNode(currentToken.value, Position(currentToken.column, currentToken.line))
-                } else{
+                } else {
                     // Es una operacion:  x=5
                     parseAssignation()
                 }
@@ -304,7 +304,7 @@ class Parser(private val tokens: List<Token>) {
     }
 
     private fun getNextSignificantToken(): Token {
-        var index = currentTokenIndex+1
+        var index = currentTokenIndex + 1
         while (index < tokens.size) {
             val token = tokens[index]
             if (token.type != TokenType.WHITESPACE) {

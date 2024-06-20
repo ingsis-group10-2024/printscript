@@ -121,7 +121,6 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
-
     @Test
     fun testParseGenerateMixedAST() {
         val tokens =
