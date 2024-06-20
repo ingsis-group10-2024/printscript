@@ -2,6 +2,7 @@ import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
+import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -120,8 +121,9 @@ class ParserTest {
         assertEquals(expected, result)
     }
 
+
     @Test
-    fun testGenerateMixedAST() {
+    fun testParseGenerateMixedAST() {
         val tokens =
             listOf(
                 Token(TokenType.LET, "let", 1, 0),
@@ -155,7 +157,6 @@ class ParserTest {
                 ),
                 NumberOperatorNode(80.0, Position(1, 2)),
                 StringOperatorNode("Hola", Position(1, 3)),
-                // IdentifierOperatorNode("x")
             )
 
         assertEquals(expected, result)
@@ -325,6 +326,25 @@ class ParserTest {
     }
 
     @Test
+    fun testVariablePrintln() {
+        val tokens =
+            listOf(
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 1, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
+                Token(TokenType.SEMICOLON, ";", 1, 0),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.parsePrintln()
+
+        val expected = MethodNode("println", IdentifierOperatorNode("x", Position(1, 0)), Position(1, 0))
+
+        assertEquals(expected, result)
+    }
+
+    @Test
     fun testErrorLineWithoutSemicolon() {
         val tokens =
             listOf(
@@ -450,7 +470,7 @@ class ParserTest {
     }
 
     @Test
-    fun testRedEnv()  {
+    fun testRedEnv() {
         val tokens =
             listOf(
                 Token(TokenType.READENV, "readEnv", 1, 0),

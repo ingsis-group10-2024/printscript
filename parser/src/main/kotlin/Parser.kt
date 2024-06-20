@@ -6,6 +6,7 @@ import ast.BinaryNode
 import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
+import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -73,8 +74,15 @@ class Parser(private val tokens: List<Token>) {
                 StringOperatorNode(token.value, Position(token.column, token.line))
             }
             TokenType.IDENTIFIER -> {
-                // Es una assignation:  x=5
-                parseAssignation()
+                // Es una variable solita ej: x
+                val nextToken = getNextSignificantToken()
+                if(nextToken.type != TokenType.EQUALS){
+                    getTokenAndAdvance() // salteo el identifier
+                    IdentifierOperatorNode(currentToken.value, Position(currentToken.column, currentToken.line))
+                } else{
+                    // Es una operacion:  x=5
+                    parseAssignation()
+                }
             }
             TokenType.STRING_TYPE -> {
                 val token = getTokenAndAdvance()
@@ -151,16 +159,15 @@ class Parser(private val tokens: List<Token>) {
             } else {
                 throwParseException("expression", "", getCurrentSignificantToken().column, getCurrentSignificantToken().line)
             }
-        } else if (isCurrentToken(TokenType.EQUALS_EQUALS))
-            {
-                getTokenAndAdvance()
-                val expression = parseExpression()
-                return AssignationNode(
-                    identifierToken.value,
-                    Position(identifierToken.column, identifierToken.line),
-                    expression as BinaryNode,
-                )
-            }
+        } else if (isCurrentToken(TokenType.EQUALS_EQUALS)) {
+            getTokenAndAdvance()
+            val expression = parseExpression()
+            return AssignationNode(
+                identifierToken.value,
+                Position(identifierToken.column, identifierToken.line),
+                expression as BinaryNode,
+            )
+        }
         throwParseException(
             "'='",
             getCurrentSignificantToken().value,
@@ -285,6 +292,19 @@ class Parser(private val tokens: List<Token>) {
 
     private fun getCurrentSignificantToken(): Token {
         var index = currentTokenIndex
+        while (index < tokens.size) {
+            val token = tokens[index]
+            if (token.type != TokenType.WHITESPACE) {
+                return token
+            }
+            index++
+        }
+
+        throw RuntimeException("No hay mas tokens significativos")
+    }
+
+    private fun getNextSignificantToken(): Token {
+        var index = currentTokenIndex+1
         while (index < tokens.size) {
             val token = tokens[index]
             if (token.type != TokenType.WHITESPACE) {

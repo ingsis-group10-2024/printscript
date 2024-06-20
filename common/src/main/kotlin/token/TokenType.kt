@@ -1,7 +1,7 @@
 package token
 
 enum class TokenType {
-    IDENTIFIER, // variable name
+    IDENTIFIER, // variable name: x por ej
 
     // keywords
     LET,
@@ -19,13 +19,13 @@ enum class TokenType {
     PROTECTED,
 
     // types
-    STRING_TYPE,
-    NUMBER_TYPE,
+    STRING_TYPE, // String
+    NUMBER_TYPE, // Int
     BOOLEAN_TYPE,
 
     // declarations (values)
-    NUMERIC_LITERAL,
-    STRING_LITERAL,
+    NUMERIC_LITERAL, // 5
+    STRING_LITERAL, // "Hello"
     BOOLEAN_LITERAL,
 
     // operators
