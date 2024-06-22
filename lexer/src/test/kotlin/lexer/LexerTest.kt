@@ -1,6 +1,6 @@
 package lexer
 
-import implementation.Lexer
+import implementation.LexerSingleton
 import implementation.MockInputStream
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -12,7 +12,7 @@ class LexerTest {
     @Test
     fun testBasicArithmetic() {
         val input = "+ - * /"
-        val lexer = Lexer(input.byteInputStream())
+        val lexer = LexerSingleton.getInstance(input.byteInputStream())
         val tokens = lexer.getToken()
         println(tokens)
         assertEquals(7, tokens.size)
@@ -28,7 +28,7 @@ class LexerTest {
     @Test
     fun `test read input`() {
         val input = "readInput();"
-        val lexer = Lexer(input.byteInputStream())
+        val lexer = LexerSingleton.getInstance(input.byteInputStream())
         val tokens = lexer.getToken()
         println(tokens)
         assertEquals(4, tokens.size)
@@ -41,7 +41,7 @@ class LexerTest {
     @Test
     fun `test read env`() {
         val input = "readEnv();"
-        val lexer = Lexer(input.byteInputStream())
+        val lexer = LexerSingleton.getInstance(input.byteInputStream())
         val tokens = lexer.getToken()
         println(tokens)
         assertEquals(4, tokens.size)
@@ -57,7 +57,7 @@ class LexerTest {
             "let x = 10;\n" +
                 "let y = 20;"
         val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
-        val lexer = Lexer(inputStream)
+        val lexer = LexerSingleton.getInstance(inputStream)
         val actualTokens = lexer.getToken()
         println(actualTokens)
         assertEquals(TokenType.LET, actualTokens[0].type)
@@ -79,7 +79,7 @@ class LexerTest {
                 }
             }
         val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
-        val lexer = Lexer(inputStream)
+        val lexer = LexerSingleton.getInstance(inputStream)
 
         val actualTokens = lexer.getToken()
 
@@ -104,7 +104,7 @@ class LexerTest {
         val mockInputStream = MockInputStream(line, numberOfLines)
 
         // Initialize the Lexer
-        val lexer = Lexer(mockInputStream)
+        val lexer = LexerSingleton.getInstance(mockInputStream)
 
         // Convert the content to tokens
         val tokens = lexer.getToken()
@@ -131,7 +131,7 @@ class LexerTest {
     @Test
     fun `test lexer with if else`() {
         val input = "if (x > 10) { println(\"Hello\") } else { println(\"World\") }"
-        val lexer = Lexer(input.byteInputStream())
+        val lexer = LexerSingleton.getInstance(input.byteInputStream())
         val tokens = lexer.getToken()
         for (token in tokens) {
             println(token)
