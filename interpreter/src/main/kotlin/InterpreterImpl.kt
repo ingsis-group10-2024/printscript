@@ -10,10 +10,16 @@ import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.Printer
+import reader.ConsoleInputReader
+import reader.Reader
+import variable.Variable
+import variable.VariableMap
 
 class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
     private var nonGlobalVariables = VariableMap(HashMap())
+    private val printer = Printer()
 
     // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
@@ -52,14 +58,16 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }
+        println(varMap.variableMap)
+        println(envVariables.variableMap)
         return Pair(varMap, stringBuffer.toString())
     }
 
-    private fun interpretMethod(ast: MethodNode): VariableMap {
+    private fun interpretMethod(ast: MethodNode) : String?{
         when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
-                println(value)
+                printer.print(value)
                 stringBuffer.append(value)
             }
             /*
@@ -73,35 +81,29 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
              */
             "readInput" -> {
                 val message = interpretBinaryNode(ast.value)
-                println(message) // Print the message
-                stringBuffer.append(message) // Append the message to the buffer
-
                 // Read the input from the user
-                val inputValue = readlnOrNull()
-                if (inputValue == null) {
-                    stringBuffer.append("No input received.")
-                    return variableMap
+                val reader = ConsoleInputReader()
+                val inputValue = readInput(reader, message)
+                if(inputValue != null){
+                    return inputValue
                 }
-
-                val variable = Variable("string", inputValue) // Assuming the input is treated as a string
-                val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, inputValue) })
-                stringBuffer.append(inputValue)
-                // Update the global variable map with the new input value
-                return newMap
+                else {
+                    stringBuffer.append("Invalid Input")
+                }
             }
             "readEnv" -> {
                 val envValue = interpretBinaryNode(ast.value)
                 if (envVariables.variableMap.containsKey(Variable(envValue, ""))) {
                     val value = envVariables.variableMap[Variable(envValue, "")]
                     stringBuffer.append(value)
-                    return variableMap
+
                 } else {
-                    stringBuffer.append("Environment Variable $envValue not found")
+                    stringBuffer.append("Environment variable.Variable $envValue not found")
                 }
             }
             else -> stringBuffer.append("Invalid Method")
         }
-        return variableMap
+        return null
     }
 
 // this function will interpret the assignation node and assign the value to the variable
@@ -109,7 +111,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
+                    stringBuffer.append("variable.Variable ${ast.declaration.identifier} already declared")
                     return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -122,8 +124,9 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                     val value = interpretBinaryNode(ast.assignation)
                     val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
+
                     return newMap
-                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
+                } ?: stringBuffer.append("variable.Variable ${ast.identifier} not declared")
             }
         }
         return variableMap
@@ -135,11 +138,12 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
+            is MethodNode -> interpretMethod(ast)!!
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
-                        ?: throw Exception("Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
+                        ?: throw Exception("variable.Variable ${ast.identifier} not declared")
+                return variableMap.variableMap[variable] ?: throw Exception("variable.Variable ${ast.identifier} not initialized")
             }
             is BinaryOperationNode -> {
                 val left = ast.left!!
@@ -282,6 +286,9 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         // declare a variable with the given type initialized as null
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
+    }
+    private fun readInput(reader : Reader , message : String) : String?{
+        return reader.read(message)
     }
 
     /*

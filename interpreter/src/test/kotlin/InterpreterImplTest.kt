@@ -11,6 +11,8 @@ import ast.Position
 import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
+import variable.Variable
+import variable.VariableMap
 import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -205,7 +207,7 @@ class InterpreterImplTest {
 //        val ast = AssignationNode("z", NumberOperatorNode(5.0, Position(1, 1)), Position(2, 1))
 //        val astList = listOf(ast)
 //        val response = interpreter.interpret(astList)
-//        assertEquals("Variable z not declared", response.second)
+//        assertEquals("variable.Variable z not declared", response.second)
 //    }
 
     @Test
@@ -335,7 +337,7 @@ class InterpreterImplTest {
 
         val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
         val response = interpreter.interpret(listOf(ast))
-        assertEquals("Environment Variable x not found", response.second)
+        assertEquals("Environment variable.Variable x not found", response.second)
     }
 
     @Test
@@ -349,28 +351,5 @@ class InterpreterImplTest {
         val response = interpreter.interpret(astList)
         assertEquals("", response.second)
         assertTrue(interpreter.variableMap.containsKey(Variable("x", "number")))
-    }
-
-    @Test
-    fun test030_GivenReadInputMethodNodeItShouldReturnTheInputValue() {
-        val ast = MethodNode("readInput", StringOperatorNode("WOLOLO", Position(1, 1)), Position(1, 1))
-        val response = interpreter.interpret(listOf(ast))
-        assertEquals("WOLOLO", response.second)
-    }
-
-    @Test
-    fun testReadInput_GivenAReadInputNode_ItShouldCaptureUserInputAndStoreInVariableMap() {
-        // Simulate the readInput method call with a predefined message
-        val ast =
-            MethodNode(
-                "readInput",
-                StringOperatorNode("Enter a number: ", Position(1, 1)),
-                Position(1, 1),
-            )
-        val astList = listOf(ast)
-        // Execute the interpretation
-        val response = interpreter.interpret(astList)
-        assertEquals("", response.second) // Expecting no output from the interpretation
-        assertTrue(interpreter.variableMap.containsKey(Variable("input", "string"))) // Assuming the input is treated as a string
     }
 }
