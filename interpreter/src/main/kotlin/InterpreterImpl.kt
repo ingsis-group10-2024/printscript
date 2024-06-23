@@ -63,7 +63,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         return Pair(varMap, stringBuffer.toString())
     }
 
-    private fun interpretMethod(ast: MethodNode) : String?{
+    private fun interpretMethod(ast: MethodNode): String? {
         when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
@@ -84,10 +84,9 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 // Read the input from the user
                 val reader = ConsoleInputReader()
                 val inputValue = readInput(reader, message)
-                if(inputValue != null){
+                if (inputValue != null) {
                     return inputValue
-                }
-                else {
+                } else {
                     stringBuffer.append("Invalid Input")
                 }
             }
@@ -96,7 +95,6 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 if (envVariables.variableMap.containsKey(Variable(envValue, ""))) {
                     val value = envVariables.variableMap[Variable(envValue, "")]
                     stringBuffer.append(value)
-
                 } else {
                     stringBuffer.append("Environment variable.Variable $envValue not found")
                 }
@@ -287,7 +285,11 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
     }
-    private fun readInput(reader : Reader , message : String) : String?{
+
+    private fun readInput(
+        reader: Reader,
+        message: String,
+    ): String? {
         return reader.read(message)
     }
 

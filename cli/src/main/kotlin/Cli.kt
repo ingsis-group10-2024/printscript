@@ -35,25 +35,24 @@ class Cli() : CliktCommand() {
 
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
-                executeCode( version, inputStream)
+                executeCode(version, inputStream)
             }
 
             "format" -> { // Este devuelve el file formateado
-                formatCode( version, inputStream)
+                formatCode(version, inputStream)
             }
 
             "validate" -> { // Este tiene que correr el lexer, dsp el parser, dsp el linter. y printear los errores que devuelve el linter
-                validateCode( version, inputStream)
+                validateCode(version, inputStream)
             }
             "analyze" -> { // Este tiene que correr el lexer, dsp el parser, dsp el sca. y printear los errores que devuelve el sca
-                analyzeCode( version, inputStream)
+                analyzeCode(version, inputStream)
             }
             else -> echo("Invalid option")
         }
     }
 
     private fun analyzeCode(
-
         version: String,
         inputStream: InputStream,
     ) {
@@ -72,7 +71,6 @@ class Cli() : CliktCommand() {
 }
 
 private fun validateCode(
-
     version: String,
     inputStream: InputStream,
 ) {
@@ -88,7 +86,6 @@ private fun validateCode(
 }
 
 private fun formatCode(
-
     version: String,
     inputStream: InputStream,
 ) {
