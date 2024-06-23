@@ -2,15 +2,24 @@ import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.Printer
+import reader.ConsoleInputReader
+import reader.Reader
+import variable.Variable
+import variable.VariableMap
 
-class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
+class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
+    private var nonGlobalVariables = VariableMap(HashMap())
+    private val printer = Printer()
 
     // the Pair it returns are the variableMap and the result of the interpretation
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
@@ -21,36 +30,78 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                 is DeclarationNode -> {
                     varMap = interpretDeclarationNode(ast)
                 }
+
                 is Assignation -> {
                     varMap = interpretAssignation(ast)
                 }
+
                 is MethodNode -> {
                     interpretMethod(ast)
                 }
+
+                is IfNode -> {
+                    interpretIfNode(ast)
+                }
+
                 is NumberOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 is StringOperatorNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 is BinaryOperationNode -> {
                     stringBuffer.append(interpretBinaryNode(ast))
                 }
+
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }
+//        println(varMap.variableMap)
+//        println(envVariables.variableMap)
         return Pair(varMap, stringBuffer.toString())
     }
 
-    private fun interpretMethod(ast: MethodNode) {
+    private fun interpretMethod(ast: MethodNode): String? {
         when (ast.name) {
             "println" -> {
                 val value = interpretBinaryNode(ast.value)
-                println(value)
+                printer.print(value)
                 stringBuffer.append(value)
+            }
+            /*
+            para el println y el readinput yo tendria que tener un lector para la variable que me dan. Para que sea mas escalable.
+            una interfaz lector
+            const sararasa = readinpu("gjygjygj")
+            let x = readinput("msg")
+            let operation = "wololo" + readinput("give me a number")
+            readinput tiene que recibir un lector.
+
+             */
+            "readInput" -> {
+                val message = interpretBinaryNode(ast.value)
+                // Read the input from the user
+                val reader = ConsoleInputReader()
+                val inputValue = readInput(reader, message)
+                if (inputValue != null) {
+                    return inputValue
+                } else {
+                    stringBuffer.append("Invalid Input")
+                }
+            }
+            "readEnv" -> {
+                val envValue = interpretBinaryNode(ast.value)
+                if (envVariables.variableMap.containsKey(Variable(envValue, ""))) {
+                    val value = envVariables.variableMap[Variable(envValue, "")]
+                    stringBuffer.append(value)
+                } else {
+                    stringBuffer.append("Environment variable.Variable $envValue not found")
+                }
             }
             else -> stringBuffer.append("Invalid Method")
         }
+        return null
     }
 
     // this function will interpret the assignation node and assign the value to the variable
@@ -58,7 +109,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
+                    stringBuffer.append("variable.Variable ${ast.declaration.identifier} already declared")
                     return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -71,8 +122,9 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                     val value = interpretBinaryNode(ast.assignation)
                     val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
+
                     return newMap
-                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
+                } ?: stringBuffer.append("variable.Variable ${ast.identifier} not declared")
             }
         }
         return variableMap
@@ -83,11 +135,13 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
+            is BooleanOperatorNode -> ast.value.toString()
+            is MethodNode -> interpretMethod(ast)!!
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
-                        ?: throw Exception("Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
+                        ?: throw Exception("variable.Variable ${ast.identifier} not declared")
+                return variableMap.variableMap[variable] ?: throw Exception("variable.Variable ${ast.identifier} not initialized")
             }
             is BinaryOperationNode -> {
                 val left = ast.left!!
@@ -230,5 +284,31 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
         // declare a variable with the given type initialized as null
         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
         return newMap
+    }
+
+    private fun readInput(
+        reader: Reader,
+        message: String,
+    ): String? {
+        return reader.read(message)
+    }
+
+    /*
+    tenemos que ver esto despues por que no creo que este funcionando bien.
+     */
+    private fun interpretIfNode(ast: IfNode) {
+        val condition = interpretBinaryNode(ast.condition)
+        nonGlobalVariables = variableMap.copy()
+        when (condition) {
+            "true" -> {
+                interpret(listOf(ast.trueBranch))
+            }
+            "false" -> {
+                interpret(listOf(ast.falseBranch!!))
+            }
+            else -> {
+                stringBuffer.append("Invalid Condition")
+            }
+        }
     }
 }

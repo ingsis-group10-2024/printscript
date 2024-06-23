@@ -264,6 +264,7 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
 
         expectToken(TokenType.SEMICOLON, "';'")
+        getTokenAndAdvance()
 
         return MethodNode(
             "readEnv",
