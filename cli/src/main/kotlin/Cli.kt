@@ -9,9 +9,10 @@ import implementation.Formatter
 import implementation.Lexer
 import implementation.LinterImpl
 import parser.Parser
+import reader.EnvFileReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
-import java.io.File
+import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
 
@@ -23,7 +24,7 @@ class Cli() : CliktCommand() {
             fail("File is not a text file: ${file.path}")
         }
     } // validate that the file is a txt file
-    private val validVersionList = listOf("1.0")
+    private val validVersionList = listOf("1.0", "1.1")
 
     override fun run() {
         if (version !in validVersionList) {
@@ -34,25 +35,24 @@ class Cli() : CliktCommand() {
 
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
-                executeCode(file, version, inputStream)
+                executeCode(version, inputStream)
             }
 
-            "format" -> {
-                formatCode(file, version, inputStream)
+            "format" -> { // Este devuelve el file formateado
+                formatCode(version, inputStream)
             }
 
-            "validate" -> {
-                validateCode(file, version, inputStream)
+            "validate" -> { // Este tiene que correr el lexer, dsp el parser, dsp el linter. y printear los errores que devuelve el linter
+                validateCode(version, inputStream)
             }
-            "analyze" -> {
-                analyzeCode(file, version, inputStream)
+            "analyze" -> { // Este tiene que correr el lexer, dsp el parser, dsp el sca. y printear los errores que devuelve el sca
+                analyzeCode(version, inputStream)
             }
             else -> echo("Invalid option")
         }
     }
 
     private fun analyzeCode(
-        file: File,
         version: String,
         inputStream: InputStream,
     ) {
@@ -71,7 +71,6 @@ class Cli() : CliktCommand() {
 }
 
 private fun validateCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
@@ -87,7 +86,6 @@ private fun validateCode(
 }
 
 private fun formatCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
@@ -103,17 +101,16 @@ private fun formatCode(
 }
 
 private fun executeCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
+    val envVariableMap = EnvFileReader("cli/src/main/kotlin/.envTest").readEnvFile()
     val lexer = Lexer(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()))
-    val result = interpreter.interpret(ast)
-//    println(result.second)
+    val interpreter = InterpreterImpl(VariableMap(HashMap()), envVariableMap)
+    interpreter.interpret(ast)
 }
 
 /*

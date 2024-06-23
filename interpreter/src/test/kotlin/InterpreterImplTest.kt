@@ -1,17 +1,22 @@
 import ast.ASTNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
+import variable.Variable
+import variable.VariableMap
 import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class InterpreterImplTest {
     private lateinit var interpreter: InterpreterImpl
@@ -19,7 +24,8 @@ class InterpreterImplTest {
     @Before
     fun setup() {
         val variableMap = VariableMap(HashMap())
-        interpreter = InterpreterImpl(variableMap)
+        var envMap = VariableMap(HashMap())
+        interpreter = InterpreterImpl(variableMap, envMap)
     }
 
     @Test
@@ -201,7 +207,7 @@ class InterpreterImplTest {
 //        val ast = AssignationNode("z", NumberOperatorNode(5.0, Position(1, 1)), Position(2, 1))
 //        val astList = listOf(ast)
 //        val response = interpreter.interpret(astList)
-//        assertEquals("Variable z not declared", response.second)
+//        assertEquals("variable.Variable z not declared", response.second)
 //    }
 
     @Test
@@ -293,5 +299,57 @@ class InterpreterImplTest {
         val methodNode = MethodNode("println", StringOperatorNode("Hello, World!", Position(1, 1)), Position(2, 1))
         val response = interpreter.interpret(listOf(methodNode))
         assertEquals("Hello, World!", response.second)
+    }
+
+    @Test
+    fun `Given IfOperatorNode with true condition, should interpret ifBody`() {
+        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
+        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
+        val ifNode = IfNode(BooleanOperatorNode(true, Position(3, 1)), ifBodyNode, elseBodyNode)
+        val response = interpreter.interpret(listOf(ifNode))
+        assertEquals("If Body Executed", response.second)
+    }
+
+    @Test
+    fun `Given IfOperatorNode with false condition, should interpret elseBody`() {
+        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
+        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
+        val ifNode = IfNode(BooleanOperatorNode(false, Position(3, 1)), ifBodyNode, elseBodyNode)
+        val response = interpreter.interpret(listOf(ifNode))
+        assertEquals("Else Body Executed", response.second)
+    }
+
+    @Test
+    fun test027_Given_an_Env_variable_that_exists_in_the_map_it_should_return_its_value() {
+        val envMap = VariableMap(HashMap())
+        envMap.variableMap.put(Variable("x", ""), "5.0")
+        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+
+        val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
+        val response = interpreter.interpret(listOf(ast))
+        assertEquals("5.0", response.second)
+    }
+
+    @Test
+    fun test028_Given_an_Env_variable_that_does_not_exist_in_the_map_it_should_return_it_should_fail() {
+        val envMap = VariableMap(HashMap())
+        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+
+        val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
+        val response = interpreter.interpret(listOf(ast))
+        assertEquals("Environment variable.Variable x not found", response.second)
+    }
+
+    @Test
+    fun test029_GivenADeclarationAssignationNodeWithAnUndeclaredVariableItShouldAddTheVariableToTheMap() {
+        val ast =
+            DeclarationAssignationNode(
+                DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+                NumberOperatorNode(5.0, Position(3, 1)),
+            )
+        val astList = listOf(ast)
+        val response = interpreter.interpret(astList)
+        assertEquals("", response.second)
+        assertTrue(interpreter.variableMap.containsKey(Variable("x", "number")))
     }
 }
