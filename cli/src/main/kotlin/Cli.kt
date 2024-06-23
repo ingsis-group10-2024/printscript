@@ -1,3 +1,4 @@
+
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
@@ -6,7 +7,7 @@ import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
 import implementation.Formatter
-import implementation.Lexer
+import implementation.LexerSingleton
 import implementation.LinterImpl
 import parser.Parser
 import reader.EnvFileReader
@@ -56,7 +57,7 @@ class Cli() : CliktCommand() {
         version: String,
         inputStream: InputStream,
     ) {
-        val lexer = Lexer(inputStream)
+        val lexer = LexerSingleton.getInstance(inputStream)
         val tokens = lexer.getToken()
         val parser = Parser(tokens)
         val ast = parser.generateAST()
@@ -74,7 +75,7 @@ private fun validateCode(
     version: String,
     inputStream: InputStream,
 ) {
-    val lexer = Lexer(inputStream)
+    val lexer = LexerSingleton.getInstance(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -89,7 +90,7 @@ private fun formatCode(
     version: String,
     inputStream: InputStream,
 ) {
-    val lexer = Lexer(inputStream)
+    val lexer = LexerSingleton.getInstance(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -105,7 +106,7 @@ private fun executeCode(
     inputStream: InputStream,
 ) {
     val envVariableMap = EnvFileReader("cli/src/main/kotlin/.envTest").readEnvFile()
-    val lexer = Lexer(inputStream)
+    val lexer = LexerSingleton.getInstance(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()

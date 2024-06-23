@@ -8,7 +8,6 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-
 object LexerSingleton {
     private var instance: Lexer? = null
     private var currentInputStream: InputStream? = null
@@ -21,7 +20,6 @@ object LexerSingleton {
         return instance!!
     }
 }
-
 
 class Lexer(inputStream: InputStream) {
     private var lineNumber: Int = 1
@@ -115,29 +113,30 @@ class Lexer(inputStream: InputStream) {
                             position++
                         }
                         val word = line.substring(start, position)
-                        val tokenType = when (word) {
-                            "let" -> TokenType.LET
-                            "const" -> TokenType.CONST
-                            "println" -> TokenType.PRINTLN
-                            "if" -> TokenType.IF
-                            "else" -> TokenType.ELSE
-                            "while" -> TokenType.WHILE
-                            "return" -> TokenType.RETURN
-                            "readInput" -> TokenType.READINPUT
-                            "readEnv" -> TokenType.READENV
-                            "final" -> TokenType.FINAL
-                            "public" -> TokenType.PUBLIC
-                            "private" -> TokenType.PRIVATE
-                            "protected" -> TokenType.PROTECTED
-                            "String" -> TokenType.STRING_TYPE
-                            "number" -> TokenType.NUMBER_TYPE
-                            "Boolean" -> TokenType.BOOLEAN_TYPE
-                            "true", "false" -> TokenType.BOOLEAN_LITERAL
-                            "<=" -> TokenType.LESSER_THAN_EQUAL
-                            ">=" -> TokenType.GREATER_THAN_EQUAL
-                            "==" -> TokenType.EQUAL_EQUAL
-                            else -> TokenType.IDENTIFIER
-                        }
+                        val tokenType =
+                            when (word) {
+                                "let" -> TokenType.LET
+                                "const" -> TokenType.CONST
+                                "println" -> TokenType.PRINTLN
+                                "if" -> TokenType.IF
+                                "else" -> TokenType.ELSE
+                                "while" -> TokenType.WHILE
+                                "return" -> TokenType.RETURN
+                                "readInput" -> TokenType.READINPUT
+                                "readEnv" -> TokenType.READENV
+                                "final" -> TokenType.FINAL
+                                "public" -> TokenType.PUBLIC
+                                "private" -> TokenType.PRIVATE
+                                "protected" -> TokenType.PROTECTED
+                                "String" -> TokenType.STRING_TYPE
+                                "number" -> TokenType.NUMBER_TYPE
+                                "Boolean" -> TokenType.BOOLEAN_TYPE
+                                "true", "false" -> TokenType.BOOLEAN_LITERAL
+                                "<=" -> TokenType.LESSER_THAN_EQUAL
+                                ">=" -> TokenType.GREATER_THAN_EQUAL
+                                "==" -> TokenType.EQUAL_EQUAL
+                                else -> TokenType.IDENTIFIER
+                            }
                         tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
                     } else if (currentChar.isDigit()) {
                         val start = position
