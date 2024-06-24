@@ -36,7 +36,7 @@ class Lexer(inputStream: InputStream) {
     }
 
     private fun processLine(line: String) {
-        var position = 0 // posición en la línea
+        var position = 0
 
         while (position < line.length) {
             when (val currentChar = line[position]) {
@@ -61,8 +61,21 @@ class Lexer(inputStream: InputStream) {
                     position++
                 }
                 '=' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.EQUALS, currentChar.toString(), position + 1, lineNumber))
-                    position++
+                    if (position + 1 < line.length && line[position + 1] == '=') {
+                        tokens.add(tokenFactory.createToken(TokenType.EQUAL_EQUAL, "==", position + 1, lineNumber))
+                        position += 2
+                    } else {
+                        tokens.add(tokenFactory.createToken(TokenType.EQUALS, currentChar.toString(), position + 1, lineNumber))
+                        position++
+                    }
+                }
+                '!' -> {
+                    if (position + 1 < line.length && line[position + 1] == '=') {
+                        tokens.add(tokenFactory.createToken(TokenType.UNEQUAL, "!=", position + 1, lineNumber))
+                        position += 2
+                    } else {
+                        position++
+                    }
                 }
                 ';' -> {
                     tokens.add(tokenFactory.createToken(TokenType.SEMICOLON, currentChar.toString(), position + 1, lineNumber))
@@ -73,12 +86,22 @@ class Lexer(inputStream: InputStream) {
                     position++
                 }
                 '>' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.GREATER_THAN, currentChar.toString(), position + 1, lineNumber))
-                    position++
+                    if (position + 1 < line.length && line[position + 1] == '=') {
+                        tokens.add(tokenFactory.createToken(TokenType.GREATER_THAN_EQUAL, ">=", position + 1, lineNumber))
+                        position += 2
+                    } else {
+                        tokens.add(tokenFactory.createToken(TokenType.GREATER_THAN, currentChar.toString(), position + 1, lineNumber))
+                        position++
+                    }
                 }
                 '<' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.LESSER_THAN, currentChar.toString(), position + 1, lineNumber))
-                    position++
+                    if (position + 1 < line.length && line[position + 1] == '=') {
+                        tokens.add(tokenFactory.createToken(TokenType.LESSER_THAN_EQUAL, "<=", position + 1, lineNumber))
+                        position += 2
+                    } else {
+                        tokens.add(tokenFactory.createToken(TokenType.LESSER_THAN, currentChar.toString(), position + 1, lineNumber))
+                        position++
+                    }
                 }
                 '(' -> {
                     tokens.add(tokenFactory.createToken(TokenType.OPEN_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
@@ -132,9 +155,6 @@ class Lexer(inputStream: InputStream) {
                                 "number" -> TokenType.NUMBER_TYPE
                                 "Boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
-                                "<=" -> TokenType.LESSER_THAN_EQUAL
-                                ">=" -> TokenType.GREATER_THAN_EQUAL
-                                "==" -> TokenType.EQUAL_EQUAL
                                 else -> TokenType.IDENTIFIER
                             }
                         tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
