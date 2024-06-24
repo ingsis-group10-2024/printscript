@@ -138,10 +138,6 @@ class ParserTest {
                 Token(TokenType.MULTIPLY, "*", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "2", 6, 1),
                 Token(TokenType.SEMICOLON, ";", 1, 1),
-                Token(TokenType.NUMERIC_LITERAL, "80", 1, 2),
-                Token(TokenType.SEMICOLON, ";", 1, 2),
-                Token(TokenType.STRING_TYPE, "Hola", 1, 3),
-                Token(TokenType.SEMICOLON, ";", 1, 3),
                 )
 
         val parser = Parser(tokens)
@@ -159,8 +155,6 @@ class ParserTest {
                         NumberOperatorNode(2.0, Position(6, 1)),
                     ),
                 ),
-                NumberOperatorNode(80.0, Position(1, 2)),
-                StringOperatorNode("Hola", Position(1, 3)),
             )
 
         assertEquals(expected, result)

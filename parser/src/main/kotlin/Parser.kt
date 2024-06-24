@@ -22,7 +22,7 @@ class Parser(private val tokens: List<Token>) {
         val nodes = mutableListOf<ASTNode>()
         while (currentTokenIndex < tokens.size-1) {
             val statementTokens = getStatement(tokens, TokenType.SEMICOLON)
-            currentTokenIndex = currentTokenIndex - statementTokens.size-1
+            //currentTokenIndex = currentTokenIndex - statementTokens.size-1
             if (statementTokens.isEmpty()) {
                 throw RuntimeException("Invalid statement")
             }
@@ -37,11 +37,12 @@ class Parser(private val tokens: List<Token>) {
 
     private fun parseStatement(tokens: List<Token>): Any? {
         //currentTokenIndex = 0 // Reinicio el índice del token actual para los nuevos tokens de cada statement
+        currentTokenIndex = currentTokenIndex - tokens.size-1
 
         return when (getCurrentSignificantToken().type) {
             TokenType.NUMERIC_LITERAL, TokenType.STRING_LITERAL, TokenType.IDENTIFIER, TokenType.STRING_TYPE,
             TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
-            TokenType.READENV -> parseContent()
+            TokenType.READENV -> parseExpression()
             else -> throwParseException("valid statement", getCurrentSignificantToken().value,
                 getCurrentSignificantToken().column, getCurrentSignificantToken().line)
         }
@@ -187,14 +188,15 @@ class Parser(private val tokens: List<Token>) {
 
     fun parsePrintln(): MethodNode {
         val printlnToken = getTokenAndAdvance()
-        expectToken(TokenType.OPEN_PARENTHESIS, "'('")
 
+        expectToken(TokenType.OPEN_PARENTHESIS, "'('")
         getTokenAndAdvance()
+
         val content = parseExpression()
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
-
         getTokenAndAdvance()
 
+        getTokenAndAdvance()
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
     }
 
@@ -215,6 +217,8 @@ class Parser(private val tokens: List<Token>) {
         val content = getTokenAndAdvance()
 
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
+        getTokenAndAdvance()
+
         getTokenAndAdvance()
 
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
