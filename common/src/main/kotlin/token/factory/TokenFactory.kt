@@ -1,4 +1,4 @@
-package implementation.factory
+package token.factory
 
 import token.Token
 import token.TokenType

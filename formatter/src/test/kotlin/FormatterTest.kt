@@ -200,4 +200,75 @@ class FormatterTest {
         println(result)
         assertEquals("if (true) {\nprint(\"Hello\");\n}", result)
     }
+
+    @Test
+    fun `format if node with declaration assignation node`() {
+        val nodes =
+            listOf(
+                IfNode(
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    DeclarationAssignationNode(
+                        DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    ),
+                    null,
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("if (true) {\nlet x : number = 5.0 + 3.0;\n}", result)
+    }
+
+    @Test
+    fun `format if node with declaration assignation node and else branch`() {
+        val nodes =
+            listOf(
+                IfNode(
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    DeclarationAssignationNode(
+                        DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    ),
+                    DeclarationAssignationNode(
+                        DeclarationNode("y", Position(1, 1), "number", Position(1, 1)),
+                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    ),
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("if (true) {\nlet x : number = 5.0 + 3.0;\n} else {\nlet y : number = 5.0 + 3.0;}", result)
+    }
+
+
+    @Test
+    fun `format if node with assignation node`() {
+        val nodes =
+            listOf(
+                IfNode(
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
+                    null,
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("if (true) {\nx = 5.0 + 3.0;\n}", result)
+    }
+
+    @Test
+    fun `format if node with declaration node`() {
+        val nodes =
+            listOf(
+                IfNode(
+                    BooleanOperatorNode(true, Position(1, 1)),
+                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    null,
+                ),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("if (true) {\nlet x : number;\n}", result)
+    }
+
 }
