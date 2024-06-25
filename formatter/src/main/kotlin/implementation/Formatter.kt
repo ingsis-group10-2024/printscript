@@ -75,7 +75,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
         val ifBlockIndent = "\n".repeat(rules[7].value!!)
         builder.append("if (${formatNode(node.condition)}) {")
         builder.append(ifBlockIndent)
-        builder.append(formatNode(node.trueBranch) )
+        builder.append(formatNode(node.trueBranch))
         builder.append("\n}")
         node.falseBranch?.let {
             builder.append(" else {")

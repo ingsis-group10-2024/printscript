@@ -240,7 +240,6 @@ class FormatterTest {
         assertEquals("if (true) {\nlet x : number = 5.0 + 3.0;\n} else {\nlet y : number = 5.0 + 3.0;}", result)
     }
 
-
     @Test
     fun `format if node with assignation node`() {
         val nodes =
@@ -270,5 +269,4 @@ class FormatterTest {
         println(result)
         assertEquals("if (true) {\nlet x : number;\n}", result)
     }
-
 }
