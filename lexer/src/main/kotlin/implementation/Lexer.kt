@@ -1,8 +1,8 @@
 package implementation
 
-import implementation.factory.ConcreteTokenFactory
 import token.Token
 import token.TokenType
+import token.factory.ConcreteTokenFactory
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
