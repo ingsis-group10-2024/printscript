@@ -1,4 +1,3 @@
 package strategy.interpreters
 
-class BinaryOperationNodeInterpreter {
-}
+class BinaryOperationNodeInterpreter
