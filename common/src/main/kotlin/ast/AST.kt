@@ -29,4 +29,6 @@ data class AssignationNode(val identifier: String, val identifierPosition: Posit
 
 data class MethodNode(val name: String, val value: BinaryNode, val methodNamePosition: Position) : ASTNode // Ej: print(x)
 
-data class IfNode(val condition: BinaryNode, val trueBranch: ASTNode, val falseBranch: ASTNode?) : ASTNode // Ej: if(x>5){print(x)} else {print("Hello")}
+data class IfNode(val condition: ASTNode, val trueBranch: ASTNode, val elseBranch: ASTNode?) : ASTNode // Ej: if(x>5){print(x)} else {print("Hello")}
+
+data class ConditionNode(val conditionType: String, val left: ASTNode, val right: ASTNode) : BinaryNode // Ej: x==5 o x!=5

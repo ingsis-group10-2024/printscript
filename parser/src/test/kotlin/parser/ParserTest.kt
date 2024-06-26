@@ -1,5 +1,6 @@
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.ConditionNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -52,13 +53,14 @@ class ParserTest {
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
-        val expected = listOf(
-            BinaryOperationNode(
-                "*",
-                NumberOperatorNode(2.0, Position(1, 0)),
-                NumberOperatorNode(8.0, Position(3, 0)),
+        val expected =
+            listOf(
+                BinaryOperationNode(
+                    "*",
+                    NumberOperatorNode(2.0, Position(1, 0)),
+                    NumberOperatorNode(8.0, Position(3, 0)),
+                ),
             )
-        )
 
         assertEquals(expected, result)
     }
@@ -138,7 +140,7 @@ class ParserTest {
                 Token(TokenType.MULTIPLY, "*", 5, 1),
                 Token(TokenType.NUMERIC_LITERAL, "2", 6, 1),
                 Token(TokenType.SEMICOLON, ";", 1, 1),
-                )
+            )
 
         val parser = Parser(tokens)
         val result = parser.generateAST()
@@ -344,7 +346,6 @@ class ParserTest {
         assertEquals("Se debe terminar el statement con un 'SEMICOLON'", exception.message)
     }
 
-
     @Test
     fun testReadInputMethod() {
         val tokens =
@@ -450,70 +451,75 @@ class ParserTest {
     // todo: modificar parseExresion para que reciba algo que le indique si algo debe o no finalizar con punto y coma
     @Test
     fun testParseIf() {
-        val tokens = listOf(
-            Token(TokenType.IF, "if", 1, 1),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 3),
-            Token(TokenType.IDENTIFIER, "x", 1, 4),
-            Token(TokenType.EQUALS_EQUALS, "==", 1, 5),
-            Token(TokenType.NUMERIC_LITERAL, "1", 1, 6),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 7),
-            Token(TokenType.OPEN_BRACKET, "{", 1, 8),
-            Token(TokenType.PRINTLN, "print", 1, 9),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 10),
-            Token(TokenType.IDENTIFIER, "x", 1, 11),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 12),
-            Token(TokenType.CLOSE_BRACKET, "}", 1, 13),
-            Token(TokenType.ELSE, "else", 1, 14),
-            Token(TokenType.OPEN_BRACKET, "{", 1, 15),
-            Token(TokenType.PRINTLN, "print", 1, 16),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 17),
-            Token(TokenType.STRING_LITERAL, "\"x != 1\"", 1, 18),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 19),
-            Token(TokenType.CLOSE_BRACKET, "}", 1, 20)
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.IF, "if", 1, 1),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 3),
+                Token(TokenType.IDENTIFIER, "x", 1, 4),
+                Token(TokenType.EQUALS_EQUALS, "==", 1, 5),
+                Token(TokenType.NUMERIC_LITERAL, "1", 1, 6),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 7),
+                Token(TokenType.OPEN_BRACKET, "{", 1, 8),
+                Token(TokenType.PRINTLN, "print", 1, 9),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 10),
+                Token(TokenType.IDENTIFIER, "x", 1, 11),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 12),
+                Token(TokenType.CLOSE_BRACKET, "}", 1, 13),
+                Token(TokenType.ELSE, "else", 1, 14),
+                Token(TokenType.OPEN_BRACKET, "{", 1, 15),
+                Token(TokenType.PRINTLN, "print", 1, 16),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 17),
+                Token(TokenType.IDENTIFIER, "x", 1, 18),
+                Token(TokenType.UNEQUALS, "!=", 1, 19),
+                Token(TokenType.NUMERIC_LITERAL, "1", 1, 20),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 21),
+                Token(TokenType.CLOSE_BRACKET, "}", 1, 22),
+            )
 
         val parser = Parser(tokens)
         val ast = parser.generateAST()
 
-        val expectedAst = listOf(
-            IfNode(
-                BinaryOperationNode(
-                    "==",
-                    IdentifierOperatorNode("x", Position(1, 4)),
-                    NumberOperatorNode(1.0, Position(1, 6))
+        val expectedAst =
+            listOf(
+                IfNode(
+                    ConditionNode(
+                        "==",
+                        IdentifierOperatorNode("x", Position(1, 4)),
+                        NumberOperatorNode(1.0, Position(1, 6)),
+                    ),
+                    MethodNode("println", IdentifierOperatorNode("x", Position(1, 11)), Position(1, 9)),
+                    MethodNode("println", ConditionNode("!=", IdentifierOperatorNode("x", Position(1, 18)), NumberOperatorNode(1.0, Position(1, 20))), Position(1, 16)),
                 ),
-                MethodNode("print", IdentifierOperatorNode("x", Position(1, 11)), Position(1, 9)),
-                MethodNode("print", StringOperatorNode("x != 1", Position(1, 18)), Position(1, 16))
             )
-        )
 
         assertEquals(expectedAst, ast)
     }
 
-
     @Test
     fun testGetStatement() {
-        val tokens = listOf(
-            Token(TokenType.LET, "let", 1, 0),
-            Token(TokenType.IDENTIFIER, "x", 2, 0),
-            Token(TokenType.COLON, ":", 3, 0),
-            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-            Token(TokenType.SEMICOLON, ";", 5, 0),
-            Token(TokenType.LET, "let", 1, 1),
-            Token(TokenType.IDENTIFIER, "y", 2, 1),
-            Token(TokenType.COLON, ":", 3, 1),
-            Token(TokenType.STRING_TYPE, "string", 4, 1),
-            Token(TokenType.SEMICOLON, ";", 5, 1),
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 2, 0),
+                Token(TokenType.COLON, ":", 3, 0),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+                Token(TokenType.SEMICOLON, ";", 5, 0),
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "y", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.STRING_TYPE, "string", 4, 1),
+                Token(TokenType.SEMICOLON, ";", 5, 1),
+            )
 
         val parser = Parser(tokens)
         val statement = parser.getStatement(tokens, TokenType.SEMICOLON)
 
-        val expected = listOf(
-            Token(TokenType.LET, "let", 1, 0),
-            Token(TokenType.IDENTIFIER, "x", 2, 0),
-            Token(TokenType.COLON, ":", 3, 0),
-            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+        val expected =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 2, 0),
+                Token(TokenType.COLON, ":", 3, 0),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 0),
             )
 
         assertEquals(expected, statement)
@@ -521,12 +527,13 @@ class ParserTest {
 
     @Test
     fun testErrorGetStatementWithoutFinalToken() {
-        val tokens = listOf(
-            Token(TokenType.LET, "let", 1, 0),
-            Token(TokenType.IDENTIFIER, "x", 2, 0),
-            Token(TokenType.COLON, ":", 3, 0),
-            Token(TokenType.NUMBER_TYPE, "number", 4, 0),
-        )
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 2, 0),
+                Token(TokenType.COLON, ":", 3, 0),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 0),
+            )
 
         val parser = Parser(tokens)
         val exception =
@@ -540,14 +547,15 @@ class ParserTest {
     }
 
     @Test
-    fun testRedEnv(){
-        val tokens = listOf(
-            Token(TokenType.READENV, "readEnv", 1, 0),
-            Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
-            Token(TokenType.STRING_LITERAL, "gitHubAccessToken", 1, 2),
-            Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
-            Token(TokenType.SEMICOLON, ";", 1, 4),
-        )
+    fun testRedEnv() {
+        val tokens =
+            listOf(
+                Token(TokenType.READENV, "readEnv", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
+                Token(TokenType.STRING_LITERAL, "gitHubAccessToken", 1, 2),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
+                Token(TokenType.SEMICOLON, ";", 1, 4),
+            )
 
         val parser = Parser(tokens)
         val result = parser.parseReadEnv()

@@ -64,13 +64,14 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) {
                     builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del if
                     builder.append(formatNode(node.trueBranch) + ";")
                     builder.append("\n}")
-                    node.falseBranch?.let {
+                    node.elseBranch?.let {
                         builder.append(" else {")
                         builder.append(ifBlockIndent) // Agrega el salto de línea y los espacios antes de las instrucciones dentro del else
                         builder.append(formatNode(it) + ";")
                         builder.append("}")
                     }
                 }
+                else -> {}
             }
         }
 

@@ -31,6 +31,7 @@ enum class TokenType {
     // operators
     EQUALS,
     EQUALS_EQUALS,
+    UNEQUALS,
     PLUS,
     MULTIPLY,
     MINUS,
@@ -40,7 +41,6 @@ enum class TokenType {
     GREATER_THAN_EQUAL,
     LESSER_THAN,
     LESSER_THAN_EQUAL,
-    EQUAL_EQUAL,
 
     // symbols
     OPEN_PARENTHESIS,
