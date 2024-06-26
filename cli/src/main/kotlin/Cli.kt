@@ -13,6 +13,7 @@ import parser.Parser
 import reader.EnvFileReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
+import strategy.InterpreterManagerImplStrategy
 import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
@@ -110,21 +111,11 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()), envVariableMap)
+//    val interpreter = InterpreterManagerImpl(VariableMap(HashMap()), envVariableMap)
+    val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envVariableMap)
     interpreter.interpret(ast)
 }
 
-/*
-primero pedir un file, si el file no existe tiro error
-si el file existe: elige que quiere hacer.
-    - execute: ejecutar el codigo
-    - format: formatear el codigo
-    - analyze: analizar el codigo
-    - validate: validar el codigo
-    - exit: salir
-promptear paso a paso.
-ir a la docu y como pasarle prompts por terminal
- */
 fun main(args: Array<String>) {
     println(
         """

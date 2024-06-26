@@ -11,6 +11,7 @@ import ast.Position
 import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
+import strategy.InterpreterManagerImplStrategy
 import variable.Variable
 import variable.VariableMap
 import java.util.HashMap
@@ -18,14 +19,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class InterpreterImplTest {
-    private lateinit var interpreter: InterpreterImpl
+class InterpreterManagerImplTest {
+    private lateinit var interpreter: InterpreterManagerImplStrategy
 
     @Before
     fun setup() {
         val variableMap = VariableMap(HashMap())
-        var envMap = VariableMap(HashMap())
-        interpreter = InterpreterImpl(variableMap, envMap)
+        val envMap = VariableMap(HashMap())
+        interpreter = InterpreterManagerImplStrategy(variableMap, envMap)
     }
 
     @Test
@@ -323,7 +324,7 @@ class InterpreterImplTest {
     fun test027_Given_an_Env_variable_that_exists_in_the_map_it_should_return_its_value() {
         val envMap = VariableMap(HashMap())
         envMap.variableMap.put(Variable("x", ""), "5.0")
-        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+        val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envMap)
 
         val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
         val response = interpreter.interpret(listOf(ast))
@@ -333,11 +334,11 @@ class InterpreterImplTest {
     @Test
     fun test028_Given_an_Env_variable_that_does_not_exist_in_the_map_it_should_return_it_should_fail() {
         val envMap = VariableMap(HashMap())
-        val interpreter = InterpreterImpl(VariableMap(HashMap()), envMap)
+        val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envMap)
 
         val ast = MethodNode("readEnv", StringOperatorNode("x", Position(1, 1)), Position(1, 1))
         val response = interpreter.interpret(listOf(ast))
-        assertEquals("Environment variable.Variable x not found", response.second)
+        assertEquals("Environment variable x not found", response.second)
     }
 
     @Test
