@@ -7,7 +7,6 @@ import ast.Assignation
 import ast.BinaryOperationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
-import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
@@ -31,12 +30,12 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                 }
 
                 is Assignation -> {
-                    varMap = AssignationInterpreter(variableMap , envVariableMap).interpret(ast).first
-                    stringBuffer.append(AssignationInterpreter(variableMap , envVariableMap).interpret(ast).second)
+                    varMap = AssignationInterpreter(variableMap, envVariableMap).interpret(ast).first
+                    stringBuffer.append(AssignationInterpreter(variableMap, envVariableMap).interpret(ast).second)
                 }
 
                 is MethodNode -> {
-                    stringBuffer.append(MethodNodeInterpreter(variableMap , envVariableMap).interpret(ast))
+                    stringBuffer.append(MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
 
 //                is IfNode -> {
@@ -60,6 +59,6 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
         }
-            return Pair(varMap, stringBuffer.toString())
-        }
+        return Pair(varMap, stringBuffer.toString())
     }
+}

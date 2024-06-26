@@ -1,6 +1,5 @@
 package strategy.interpreters
 
-import FailedResponse
 import ast.ASTNode
 import ast.BinaryOperationNode
 import ast.BooleanOperatorNode
@@ -11,18 +10,20 @@ import ast.StringOperatorNode
 import strategy.Interpreter
 import variable.VariableMap
 
-class BinaryOperationNodeInterpreter(val variableMap: VariableMap , val envVariableMap: VariableMap) : Interpreter {
+class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
+
     override fun interpret(node: ASTNode): String {
         return interpretBinaryNode(node)
     }
-    @Throws (IllegalArgumentException::class)
-    private fun interpretBinaryNode(ast : ASTNode) : String{
+
+    @Throws(IllegalArgumentException::class)
+    private fun interpretBinaryNode(ast: ASTNode): String {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
-            is MethodNode -> MethodNodeInterpreter(variableMap , envVariableMap).interpret(ast)!!
+            is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)!!
             is IdentifierOperatorNode -> {
                 val variable =
                     variableMap.findKey(ast.identifier)
@@ -163,6 +164,6 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap , val envVaria
             }
         }
     }
-    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
 
+    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
 }

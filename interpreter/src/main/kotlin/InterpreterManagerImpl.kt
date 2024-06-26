@@ -1,22 +1,23 @@
-//import ast.ASTNode
-//import ast.Assignation
-//import ast.AssignationNode
-//import ast.BinaryOperationNode
-//import ast.BooleanOperatorNode
-//import ast.DeclarationAssignationNode
-//import ast.DeclarationNode
-//import ast.IdentifierOperatorNode
-//import ast.IfNode
-//import ast.MethodNode
-//import ast.NumberOperatorNode
-//import ast.StringOperatorNode
-//import emitter.Printer
-//import reader.ConsoleInputReader
-//import reader.Reader
-//import variable.Variable
-//import variable.VariableMap
+// import ast.ASTNode
+// import ast.Assignation
+// import ast.AssignationNode
+// import ast.BinaryOperationNode
+// import ast.BooleanOperatorNode
+// import ast.DeclarationAssignationNode
+// import ast.DeclarationNode
+// import ast.IdentifierOperatorNode
+// import ast.IfNode
+// import ast.MethodNode
+// import ast.NumberOperatorNode
+// import ast.StringOperatorNode
+// import emitter.Printer
+// import reader.ConsoleInputReader
+// import reader.Reader
+// import variable.Variable
+// import variable.VariableMap
 //
-//class InterpreterManagerImpl(val variableMap: VariableMap, val envVariables: VariableMap) : InterpreterManager {
+class InterpreterManagerImpl()
+// (val variableMap: VariableMap, val envVariables: VariableMap) : InterpreterManager {
 //    private val stringBuffer = StringBuffer()
 //    private var nonGlobalVariables = VariableMap(HashMap())
 //    private val printer = Printer()
@@ -58,8 +59,8 @@
 //                else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
 //            }
 //        }
-////        println(varMap.variableMap)
-////        println(envVariables.variableMap)
+// //        println(varMap.variableMap)
+// //        println(envVariables.variableMap)
 //        return Pair(varMap, stringBuffer.toString())
 //    }
 //
@@ -311,4 +312,4 @@
 //            }
 //        }
 //    }
-//}
+// }

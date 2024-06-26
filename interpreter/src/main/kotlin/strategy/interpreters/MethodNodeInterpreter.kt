@@ -9,17 +9,19 @@ import strategy.Interpreter
 import variable.Variable
 import variable.VariableMap
 
-class MethodNodeInterpreter(val variableMap: VariableMap , val envVariableMap: VariableMap): Interpreter {
+class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
     private val printer = Printer()
+
     override fun interpret(node: ASTNode): String? {
         require(node is MethodNode) { "Node must be a MethodNode" }
         return interpretMethodNode(node)
     }
-    private fun interpretMethodNode(ast: MethodNode) : String?{
+
+    private fun interpretMethodNode(ast: MethodNode): String? {
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreter(variableMap , envVariableMap).interpret(ast.value)
+                val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
                 printer.print(value)
                 stringBuffer.append(value)
             }
@@ -33,11 +35,11 @@ class MethodNodeInterpreter(val variableMap: VariableMap , val envVariableMap: V
 
              */
             "readInput" -> {
-                val message = BinaryOperationNodeInterpreter(variableMap , envVariableMap).interpret(ast.value)
+                val message = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
                 // Read the input from the user
                 val reader = ConsoleInputReader()
                 val inputValue = readInput(reader, message)
-                //TODO: Checkear que tipo de variable es.
+                // TODO: Checkear que tipo de variable es.
                 if (inputValue != null) {
                     return inputValue
                 } else {
@@ -45,7 +47,7 @@ class MethodNodeInterpreter(val variableMap: VariableMap , val envVariableMap: V
                 }
             }
             "readEnv" -> {
-                val envValue = BinaryOperationNodeInterpreter(variableMap , envVariableMap).interpret(ast.value)
+                val envValue = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
                 if (envVariableMap.variableMap.containsKey(Variable(envValue, ""))) {
                     val value = envVariableMap.variableMap[Variable(envValue, "")]
                     stringBuffer.append(value)
@@ -64,5 +66,4 @@ class MethodNodeInterpreter(val variableMap: VariableMap , val envVariableMap: V
     ): String? {
         return reader.read(message)
     }
-
 }
