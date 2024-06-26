@@ -66,3 +66,4 @@ data class MethodNode(val name: String, val value: BinaryNode, val methodNamePos
         visitor.visit(this)
     }
 }
+
