@@ -35,6 +35,7 @@ enum class TokenType {
     LESSER_THAN,
     LESSER_THAN_EQUAL,
     EQUAL_EQUAL,
+    UNEQUAL,
 
     // symbols
     OPEN_PARENTHESIS,
