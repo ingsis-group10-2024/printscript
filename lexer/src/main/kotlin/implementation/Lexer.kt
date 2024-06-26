@@ -120,7 +120,7 @@ class Lexer(inputStream: InputStream) {
                             "true", "false" -> tokens.add(Token(TokenType.BOOLEAN_LITERAL, word, start + 1, lineNumber))
                             "<=" -> tokens.add(Token(TokenType.LESSER_THAN_EQUAL, word, start + 1, lineNumber))
                             ">=" -> tokens.add(Token(TokenType.GREATER_THAN_EQUAL, word, start + 1, lineNumber))
-                            "==" -> tokens.add(Token(TokenType.EQUAL_EQUAL, word, start + 1, lineNumber))
+                            "==" -> tokens.add(Token(TokenType.EQUALS_EQUALS, word, start + 1, lineNumber))
                             else -> tokens.add(Token(TokenType.IDENTIFIER, word, start + 1, lineNumber))
                         }
                     } else if (currentChar.isDigit()) {
