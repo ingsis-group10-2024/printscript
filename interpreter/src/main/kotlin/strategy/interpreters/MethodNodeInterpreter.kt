@@ -39,7 +39,6 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
                 // Read the input from the user
                 val reader = ConsoleInputReader()
                 val inputValue = readInput(reader, message)
-                // TODO: Checkear que tipo de variable es.
                 if (inputValue != null) {
                     return inputValue
                 } else {
