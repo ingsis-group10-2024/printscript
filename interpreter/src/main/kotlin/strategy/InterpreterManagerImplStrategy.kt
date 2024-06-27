@@ -41,7 +41,7 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                 }
 
                 is IfNode -> {
-                    stringBuffer.append(IfNodeInterpreter(variableMap , envVariableMap).interpret(ast))
+                    stringBuffer.append(IfNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
 
                 is NumberOperatorNode -> {

@@ -88,7 +88,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
 
                             else -> return "invalid operation"
                         }
-                    "-", "*", "/" , "==" , "!=" , ">" , "<" ->
+                    "-", "*", "/", "==", "!=", ">", "<" ->
                         when {
                             left is NumberOperatorNode && right is NumberOperatorNode -> {
                                 val result =
