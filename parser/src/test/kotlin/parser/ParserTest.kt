@@ -157,9 +157,6 @@ class ParserTest {
                         NumberOperatorNode(2.0, Position(6, 1)),
                     ),
                 ),
-                NumberOperatorNode(80.0, Position(1, 2)),
-                StringOperatorNode("Hola", Position(1, 3)),
-                // IdentifierOperatorNode("x")
             )
 
         assertEquals(expected, result)

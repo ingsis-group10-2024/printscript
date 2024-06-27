@@ -4,6 +4,7 @@ import ast.ASTVisitor
 import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.BooleanOperatorNode
+import ast.ConditionNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -108,6 +109,10 @@ class SyntaxChecker : ASTVisitor {
                 errors.add("Invalid false branch in if statement.")
             }
         }
+    }
+
+    override fun visit(node: ConditionNode) {
+        TODO("Not yet implemented")
     }
 
     fun getErrors(): List<String> {
