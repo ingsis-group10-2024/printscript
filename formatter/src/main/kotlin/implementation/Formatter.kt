@@ -5,6 +5,7 @@ import ast.ASTVisitor
 import ast.AssignationNode
 import ast.BinaryOperationNode
 import ast.BooleanOperatorNode
+import ast.ConditionNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
@@ -83,6 +84,10 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
             builder.append(formatNode(it))
             builder.append("}")
         }
+    }
+
+    override fun visit(node: ConditionNode) {
+        TODO("Not yet implemented")
     }
 
     private fun formatNode(node: ASTNode?): String {

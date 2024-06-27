@@ -103,8 +103,8 @@ class SyntaxChecker : ASTVisitor {
         if (node.trueBranch !is MethodNode && node.trueBranch !is DeclarationAssignationNode && node.trueBranch !is AssignationNode) {
             errors.add("Invalid true branch in if statement.")
         }
-        if (node.falseBranch != null) {
-            if (node.falseBranch !is MethodNode && node.falseBranch !is DeclarationAssignationNode && node.falseBranch !is AssignationNode) {
+        if (node.elseBranch != null) {
+            if (node.elseBranch !is MethodNode && node.elseBranch !is DeclarationAssignationNode && node.elseBranch !is AssignationNode) {
                 errors.add("Invalid false branch in if statement.")
             }
         }

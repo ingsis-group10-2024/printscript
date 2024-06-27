@@ -304,7 +304,7 @@ class InterpreterImpl(val variableMap: VariableMap, val envVariables: VariableMa
                 interpret(listOf(ast.trueBranch))
             }
             "false" -> {
-                interpret(listOf(ast.falseBranch!!))
+                interpret(listOf(ast.elseBranch!!))
             }
             else -> {
                 stringBuffer.append("Invalid Condition")

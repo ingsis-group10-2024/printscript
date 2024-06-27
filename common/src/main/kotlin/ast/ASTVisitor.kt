@@ -20,4 +20,6 @@ interface ASTVisitor {
     fun visit(node: MethodNode)
 
     fun visit(node: IfNode)
+
+    fun visit(node: ConditionNode)
 }

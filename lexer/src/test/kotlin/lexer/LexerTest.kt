@@ -387,9 +387,9 @@ class LexerTest {
             println(token)
         }
         assertEquals(11, tokens.size)
-        assertEquals(TokenType.EQUAL_EQUAL, tokens[0].type)
+        assertEquals(TokenType.EQUALS_EQUALS, tokens[0].type)
         assertEquals(TokenType.WHITESPACE, tokens[1].type)
-        assertEquals(TokenType.UNEQUAL, tokens[2].type)
+        assertEquals(TokenType.UNEQUALS, tokens[2].type)
         assertEquals(TokenType.WHITESPACE, tokens[3].type)
         assertEquals(TokenType.GREATER_THAN, tokens[4].type)
         assertEquals(TokenType.WHITESPACE, tokens[5].type)
