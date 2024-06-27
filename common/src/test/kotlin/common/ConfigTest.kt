@@ -54,7 +54,7 @@ class ConfigTest {
 
     @Test
     fun `test JsonVerificationConfig creation with numbers`() {
-        val filePath = "src/test/resources/test_config_formatter.json"
+        val filePath = "src/test/kotlin/common/resources/test_config_formatter.json"
         val jsonConfigLoader = JsonConfigLoader(filePath)
 
         val rule1 = ConfigRule(name = "indent", enabled = true, 2)

@@ -62,7 +62,7 @@ class Lexer(inputStream: InputStream) {
                 }
                 '=' -> {
                     if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.EQUAL_EQUAL, "==", position + 1, lineNumber))
+                        tokens.add(tokenFactory.createToken(TokenType.EQUALS_EQUALS, "==", position + 1, lineNumber))
                         position += 2
                     } else {
                         tokens.add(tokenFactory.createToken(TokenType.EQUALS, currentChar.toString(), position + 1, lineNumber))
@@ -71,7 +71,7 @@ class Lexer(inputStream: InputStream) {
                 }
                 '!' -> {
                     if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.UNEQUAL, "!=", position + 1, lineNumber))
+                        tokens.add(tokenFactory.createToken(TokenType.UNEQUALS, "!=", position + 1, lineNumber))
                         position += 2
                     } else {
                         position++

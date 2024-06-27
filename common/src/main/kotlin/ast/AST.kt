@@ -67,8 +67,6 @@ data class MethodNode(val name: String, val value: BinaryNode, val methodNamePos
     }
 }
 
-data class IfNode(val condition: BinaryNode, val trueBranch: ASTNode, val falseBranch: ASTNode?) : ASTNode {
-    override fun accept(visitor: ASTVisitor) {
-        visitor.visit(this)
-    }
-}
+data class IfNode(val condition: ASTNode, val trueBranch: ASTNode, val elseBranch: ASTNode?) : ASTNode // Ej: if(x>5){print(x)} else {print("Hello")}
+
+data class ConditionNode(val conditionType: String, val left: ASTNode, val right: ASTNode) : BinaryNode // Ej: x==5 o x!=5

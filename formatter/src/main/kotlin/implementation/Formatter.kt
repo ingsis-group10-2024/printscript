@@ -77,7 +77,7 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
         builder.append(ifBlockIndent)
         builder.append(formatNode(node.trueBranch))
         builder.append("\n}")
-        node.falseBranch?.let {
+        node.elseBranch?.let {
             builder.append(" else {")
             builder.append(ifBlockIndent)
             builder.append(formatNode(it))
