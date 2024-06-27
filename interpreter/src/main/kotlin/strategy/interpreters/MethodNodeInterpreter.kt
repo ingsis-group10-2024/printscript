@@ -13,9 +13,9 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
     private val stringBuffer = StringBuffer()
     private val printer = Printer()
 
-    override fun interpret(node: ASTNode): String? {
-        require(node is MethodNode) { "Node must be a MethodNode" }
-        return interpretMethodNode(node)
+    override fun interpret(ast: ASTNode): String? {
+        require(ast is MethodNode) { "Node must be a MethodNode" }
+        return interpretMethodNode(ast)
     }
 
     private fun interpretMethodNode(ast: MethodNode): String? {

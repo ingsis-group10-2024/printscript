@@ -111,7 +111,6 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-//    val interpreter = InterpreterManagerImpl(VariableMap(HashMap()), envVariableMap)
     val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envVariableMap)
     interpreter.interpret(ast)
 }

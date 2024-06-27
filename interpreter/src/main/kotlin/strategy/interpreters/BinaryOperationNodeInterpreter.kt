@@ -13,8 +13,8 @@ import variable.VariableMap
 class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
 
-    override fun interpret(node: ASTNode): String {
-        return interpretBinaryNode(node)
+    override fun interpret(ast: ASTNode): String {
+        return interpretBinaryNode(ast)
     }
 
     @Throws(IllegalArgumentException::class)
@@ -24,12 +24,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
             is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)!!
-            is IdentifierOperatorNode -> {
-                val variable =
-                    variableMap.findKey(ast.identifier)
-                        ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not initialized")
-            }
+            is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
             is BinaryOperationNode -> {
                 val left = ast.left!!
                 val right = ast.right!!
@@ -93,7 +88,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
 
                             else -> return "invalid operation"
                         }
-                    "-", "*", "/" ->
+                    "-", "*", "/" , "==" , "!=" , ">" , "<" ->
                         when {
                             left is NumberOperatorNode && right is NumberOperatorNode -> {
                                 val result =
@@ -101,6 +96,10 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                         "-" -> left.value - right.value
                                         "*" -> left.value * right.value
                                         "/" -> left.value / right.value
+                                        "==" -> (left.value == right.value)
+                                        "!=" -> (left.value != right.value)
+                                        ">" -> (left.value > right.value)
+                                        "<" -> (left.value < right.value)
                                         else -> return stringBuffer.append("Invalid Operation").toString()
                                     }
                                 return result.toString()
@@ -113,6 +112,10 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - right.value
                                             "*" -> leftValue.toDouble() * right.value
                                             "/" -> leftValue.toDouble() / right.value
+                                            "==" -> (leftValue.toDouble() == right.value)
+                                            "!=" -> (leftValue.toDouble() != right.value)
+                                            ">" -> (leftValue.toDouble() > right.value)
+                                            "<" -> (leftValue.toDouble() < right.value)
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -129,6 +132,10 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
+                                            "==" -> (leftValue.toDouble() == rightValue.toDouble())
+                                            "!=" -> (leftValue.toDouble() != rightValue.toDouble())
+                                            ">" -> (leftValue.toDouble() > rightValue.toDouble())
+                                            "<" -> (leftValue.toDouble() < rightValue.toDouble())
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -145,6 +152,10 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
+                                            "==" -> (leftValue.toDouble() == rightValue.toDouble())
+                                            "!=" -> (leftValue.toDouble() != rightValue.toDouble())
+                                            ">" -> (leftValue.toDouble() > rightValue.toDouble())
+                                            "<" -> (leftValue.toDouble() < rightValue.toDouble())
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()

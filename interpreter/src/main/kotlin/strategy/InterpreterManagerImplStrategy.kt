@@ -7,6 +7,7 @@ import ast.Assignation
 import ast.BinaryOperationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
@@ -14,6 +15,7 @@ import strategy.interpreters.AssignationInterpreter
 import strategy.interpreters.BinaryOperationNodeInterpreter
 import strategy.interpreters.DeclarationNodeInterpreter
 import strategy.interpreters.IdentifierOperatorNodeInterpreter
+import strategy.interpreters.IfNodeInterpreter
 import strategy.interpreters.MethodNodeInterpreter
 import variable.VariableMap
 
@@ -38,9 +40,9 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                     stringBuffer.append(MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
 
-//                is IfNode -> {
-//                    interpretIfNode(ast)
-//                }
+                is IfNode -> {
+                    stringBuffer.append(IfNodeInterpreter(variableMap , envVariableMap).interpret(ast))
+                }
 
                 is NumberOperatorNode -> {
                     stringBuffer.append(BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast))
@@ -54,7 +56,7 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                     stringBuffer.append(BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
                 is IdentifierOperatorNode -> {
-                    stringBuffer.append(IdentifierOperatorNodeInterpreter(variableMap, envVariableMap).interpret(ast))
+                    stringBuffer.append(IdentifierOperatorNodeInterpreter(variableMap).interpret(ast))
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
