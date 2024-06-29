@@ -20,7 +20,6 @@ class AssignationInterpreter(val variableMap: VariableMap, val envVariableMap: V
         when (ast) {
             is DeclarationAssignationNode -> {
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("variable.Variable ${ast.declaration.identifier} already declared")
                     return variableMap
                 }
                 val variable = Variable(ast.declaration.identifier, ast.declaration.type)
@@ -35,7 +34,7 @@ class AssignationInterpreter(val variableMap: VariableMap, val envVariableMap: V
                     stringBuffer.append("${it.identifier} = $value")
 
                     return newMap
-                } ?: stringBuffer.append("variable.Variable ${ast.identifier} not declared")
+                } ?: stringBuffer.append("variable ${ast.identifier} not declared")
             }
         }
         return variableMap

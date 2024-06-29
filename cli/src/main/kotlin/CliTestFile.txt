@@ -8,8 +8,8 @@ println(x+y+z);
 let w : number = readInput("Enter a number: ");
 readEnv("PORT");
 
-if(x > 10){
-    println("x is greater than 10");
+if(x == 10){
+    println("x is equal than 10");
     } else {
-    println("x is less than 10");
+    println("x is not equal than 10");
     }
