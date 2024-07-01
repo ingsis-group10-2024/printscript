@@ -13,6 +13,7 @@ import parser.Parser
 import reader.EnvFileReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
+import strategy.InterpreterManagerImplStrategy
 import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
@@ -110,7 +111,7 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()), envVariableMap)
+    val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envVariableMap)
     interpreter.interpret(ast)
 }
 
