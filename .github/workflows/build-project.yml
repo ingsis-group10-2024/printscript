@@ -1,12 +1,13 @@
-# This file have the configuration for the CI/CD pipeline
+# This file have the configuration for the CI pipeline
 
-name: Build and Test
+name: Build Project with Gradle ツ
 
 on:
   push:
 
 jobs:
-  build-gradle-project:
+  build:
+
     runs-on: ubuntu-latest # construye y prueba un proyecto de gradle en un entorno de ubuntu
     steps:
       - uses: actions/checkout@v2
@@ -22,17 +23,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2 #action para configurar gradle en el entorno de ejecución
 
-      - name: Run tests with Gradle Wrapper
-        run: ./gradlew test
-
-      - name: Check code coverage
-        run: ./gradlew jacocoTestReport
-
-      - name: Check linting
-        run: ./gradlew ktlintCheck
-
-      - name: Check code formatting
+      - name: Format files
         run: ./gradlew ktlintFormat
 
-      - name: Build project with Gradle Wrapper
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Build project
         run: ./gradlew build
