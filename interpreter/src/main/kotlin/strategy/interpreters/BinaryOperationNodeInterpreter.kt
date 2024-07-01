@@ -3,6 +3,7 @@ package strategy.interpreters
 import ast.ASTNode
 import ast.BinaryOperationNode
 import ast.BooleanOperatorNode
+import ast.ConditionNode
 import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
@@ -25,6 +26,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
             is BooleanOperatorNode -> ast.value.toString()
             is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
+            is ConditionNode -> ConditionNodeInterpreter(variableMap, envVariableMap).interpret(ast).toString()
             is BinaryOperationNode -> {
                 val left = ast.left!!
                 val right = ast.right!!
@@ -88,7 +90,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
 
                             else -> return "invalid operation"
                         }
-                    "-", "*", "/", "==", "!=", ">", "<" ->
+                    "-", "*", "/" ->
                         when {
                             left is NumberOperatorNode && right is NumberOperatorNode -> {
                                 val result =
@@ -112,10 +114,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - right.value
                                             "*" -> leftValue.toDouble() * right.value
                                             "/" -> leftValue.toDouble() / right.value
-                                            "==" -> (leftValue.toDouble() == right.value)
-                                            "!=" -> (leftValue.toDouble() != right.value)
-                                            ">" -> (leftValue.toDouble() > right.value)
-                                            "<" -> (leftValue.toDouble() < right.value)
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -132,10 +131,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
-                                            "==" -> (leftValue.toDouble() == rightValue.toDouble())
-                                            "!=" -> (leftValue.toDouble() != rightValue.toDouble())
-                                            ">" -> (leftValue.toDouble() > rightValue.toDouble())
-                                            "<" -> (leftValue.toDouble() < rightValue.toDouble())
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -152,10 +148,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
-                                            "==" -> (leftValue.toDouble() == rightValue.toDouble())
-                                            "!=" -> (leftValue.toDouble() != rightValue.toDouble())
-                                            ">" -> (leftValue.toDouble() > rightValue.toDouble())
-                                            "<" -> (leftValue.toDouble() < rightValue.toDouble())
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()

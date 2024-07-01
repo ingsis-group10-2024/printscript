@@ -1,8 +1,15 @@
 let x : number = 10;
 let y : number = 20;
 let z : number = 504;
-
+let w : number = y - x ;
 println("hello world");
 println(x+y+z);
 let w : number = readInput("Enter a number: ");
 readEnv("PORT");
+let hello : String = "hello";
+let hello2 : String = "hello";
+if(x == 36) {
+    println("x is 10");
+} else {
+    println("x is not 10");
+}

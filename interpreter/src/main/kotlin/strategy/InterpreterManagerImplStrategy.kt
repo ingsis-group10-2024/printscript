@@ -5,6 +5,7 @@ import InterpreterManager
 import ast.ASTNode
 import ast.Assignation
 import ast.BinaryOperationNode
+import ast.ConditionNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
 import ast.IfNode
@@ -57,6 +58,10 @@ class InterpreterManagerImplStrategy(val variableMap: VariableMap, val envVariab
                 }
                 is IdentifierOperatorNode -> {
                     stringBuffer.append(IdentifierOperatorNodeInterpreter(variableMap).interpret(ast))
+                }
+                is ConditionNode -> {
+//                    stringBuffer.append(ConditionNodeInterpreter(variableMap).interpret(ast))
+                    stringBuffer.append(BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
                 else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
             }
