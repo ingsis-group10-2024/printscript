@@ -6,12 +6,12 @@ import strategy.Interpreter
 import variable.VariableMap
 
 class IdentifierOperatorNodeInterpreter(val variableMap: VariableMap) : Interpreter {
-    override fun interpret(ast: ASTNode): Any? {
+    override fun interpret(ast: ASTNode): Any {
         require(ast is IdentifierOperatorNode) { "node should be a IdentifierNode" }
         return interpretIdentifier(ast)
     }
 
-    private fun interpretIdentifier(ast: IdentifierOperatorNode): Any? {
+    private fun interpretIdentifier(ast: IdentifierOperatorNode): Any {
         val variable =
             variableMap.findKey(ast.identifier)
                 ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not declared")

@@ -13,12 +13,12 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
     private val stringBuffer = StringBuffer()
     private val printer = Printer()
 
-    override fun interpret(ast: ASTNode): String? {
+    override fun interpret(ast: ASTNode): String {
         require(ast is MethodNode) { "Node must be a MethodNode" }
         return interpretMethodNode(ast)
     }
 
-    private fun interpretMethodNode(ast: MethodNode): String? {
+    private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
                 val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
@@ -32,7 +32,6 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
             let x = readinput("msg")
             let operation = "wololo" + readinput("give me a number")
             readinput tiene que recibir un lector.
-
              */
             "readInput" -> {
                 val message = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
