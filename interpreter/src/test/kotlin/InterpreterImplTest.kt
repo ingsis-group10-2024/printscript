@@ -9,17 +9,19 @@ import ast.Position
 import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
+import strategy.InterpreterManagerImpl
+import variable.VariableMap
 import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class InterpreterImplTest {
-    private lateinit var interpreter: InterpreterImpl
+    private lateinit var interpreter: InterpreterManagerImpl
 
     @Before
     fun setup() {
         val variableMap = VariableMap(HashMap())
-        interpreter = InterpreterImpl(variableMap)
+        interpreter = InterpreterManagerImpl(variableMap)
     }
 
     @Test
@@ -201,7 +203,7 @@ class InterpreterImplTest {
 //        val ast = AssignationNode("z", NumberOperatorNode(5.0, Position(1, 1)), Position(2, 1))
 //        val astList = listOf(ast)
 //        val response = interpreter.interpret(astList)
-//        assertEquals("Variable z not declared", response.second)
+//        assertEquals("variable.Variable z not declared", response.second)
 //    }
 
     @Test

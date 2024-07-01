@@ -1,94 +1,28 @@
+package strategy.interpreters
+
 import ast.ASTNode
-import ast.Assignation
-import ast.AssignationNode
 import ast.BinaryOperationNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
 import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import strategy.Interpreter
+import variable.VariableMap
 
-class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
+class BinaryOperationNodeInterpreter(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
 
-    // the Pair it returns are the variableMap and the result of the interpretation
-    override fun interpret(astList: List<ASTNode>): Pair<VariableMap, String?> {
-        if (astList.isEmpty()) return Pair(variableMap, null)
-        var varMap = variableMap
-        for (ast in astList) {
-            when (ast) {
-                is DeclarationNode -> {
-                    varMap = interpretDeclarationNode(ast)
-                }
-                is Assignation -> {
-                    varMap = interpretAssignation(ast)
-                }
-                is MethodNode -> {
-                    interpretMethod(ast)
-                }
-                is NumberOperatorNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                is StringOperatorNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                is BinaryOperationNode -> {
-                    stringBuffer.append(interpretBinaryNode(ast))
-                }
-                else -> stringBuffer.append(FailedResponse("Invalid Node Type").message)
-            }
-        }
-        return Pair(varMap, stringBuffer.toString())
+    override fun interpret(ast: ASTNode): String {
+        return interpretBinaryNode(ast)
     }
 
-    private fun interpretMethod(ast: MethodNode) {
-        when (ast.name) {
-            "println" -> {
-                val value = interpretBinaryNode(ast.value)
-                println(value)
-                stringBuffer.append(value)
-            }
-            else -> stringBuffer.append("Invalid Method")
-        }
-    }
-
-    // this function will interpret the assignation node and assign the value to the variable
-    private fun interpretAssignation(ast: Assignation): VariableMap {
-        when (ast) {
-            is DeclarationAssignationNode -> {
-                if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
-                    stringBuffer.append("Variable ${ast.declaration.identifier} already declared")
-                    return variableMap
-                }
-                val variable = Variable(ast.declaration.identifier, ast.declaration.type)
-                val value = interpretBinaryNode(ast.assignation)
-                val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
-                return newMap
-            }
-            is AssignationNode -> {
-                variableMap.findKey(ast.identifier)?.let {
-                    val value = interpretBinaryNode(ast.assignation)
-                    val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
-                    stringBuffer.append("${it.identifier} = $value")
-                    return newMap
-                } ?: stringBuffer.append("Variable ${ast.identifier} not declared")
-            }
-        }
-        return variableMap
-    }
-
-    // this function will interpret the binary node and return the value of the node
+    @Throws(IllegalArgumentException::class)
     private fun interpretBinaryNode(ast: ASTNode): String {
         return when (ast) {
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
-            is IdentifierOperatorNode -> {
-                val variable =
-                    variableMap.findKey(ast.identifier)
-                        ?: throw Exception("Variable ${ast.identifier} not declared")
-                return variableMap.variableMap[variable] ?: throw Exception("Variable ${ast.identifier} not initialized")
-            }
+            is MethodNode -> MethodNodeInterpreter(variableMap).interpret(ast)
+            is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
             is BinaryOperationNode -> {
                 val left = ast.left!!
                 val right = ast.right!!
@@ -172,6 +106,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                                             "-" -> leftValue.toDouble() - right.value
                                             "*" -> leftValue.toDouble() * right.value
                                             "/" -> leftValue.toDouble() / right.value
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -188,6 +123,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -204,6 +140,7 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
                                             "-" -> leftValue.toDouble() - rightValue.toDouble()
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
+
                                             else -> return stringBuffer.append("Invalid Operation").toString()
                                         }
                                     result.toString()
@@ -225,10 +162,4 @@ class InterpreterImpl(val variableMap: VariableMap) : Interpreter {
     }
 
     private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
-
-    private fun interpretDeclarationNode(ast: DeclarationNode): VariableMap {
-        // declare a variable with the given type initialized as null
-        val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(Variable(ast.identifier, ast.type), null) })
-        return newMap
-    }
 }

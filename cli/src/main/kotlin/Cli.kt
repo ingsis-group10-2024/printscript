@@ -11,7 +11,8 @@ import implementation.LinterImpl
 import parser.Parser
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
-import java.io.File
+import strategy.InterpreterManagerImpl
+import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
 
@@ -34,25 +35,24 @@ class Cli() : CliktCommand() {
 
         when (option) {
             "execute" -> { // este tiene que correr el lexer, dsp el parser, dsp el interpreter. y printear lo que devuelve el interpreter
-                executeCode(file, version, inputStream)
+                executeCode(version, inputStream)
             }
 
             "format" -> {
-                formatCode(file, version, inputStream)
+                formatCode(version, inputStream)
             }
 
             "validate" -> {
-                validateCode(file, version, inputStream)
+                validateCode(version, inputStream)
             }
             "analyze" -> {
-                analyzeCode(file, version, inputStream)
+                analyzeCode(version, inputStream)
             }
             else -> echo("Invalid option")
         }
     }
 
     private fun analyzeCode(
-        file: File,
         version: String,
         inputStream: InputStream,
     ) {
@@ -71,7 +71,6 @@ class Cli() : CliktCommand() {
 }
 
 private fun validateCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
@@ -87,7 +86,6 @@ private fun validateCode(
 }
 
 private fun formatCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
@@ -103,7 +101,6 @@ private fun formatCode(
 }
 
 private fun executeCode(
-    file: File,
     version: String,
     inputStream: InputStream,
 ) {
@@ -111,9 +108,8 @@ private fun executeCode(
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()))
-    val result = interpreter.interpret(ast)
-//    println(result.second)
+    val interpreter = InterpreterManagerImpl(VariableMap(HashMap()))
+    interpreter.interpret(ast)
 }
 
 /*
