@@ -1,4 +1,3 @@
 package strategy.interpreters
 
-class MethodNodeInterpreter {
-}
+class MethodNodeInterpreter

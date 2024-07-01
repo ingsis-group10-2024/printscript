@@ -1,4 +1,3 @@
 package strategy
 
-class InterpreterManagerStrategy {
-}
+class InterpreterManagerStrategy

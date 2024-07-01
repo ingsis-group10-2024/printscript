@@ -1,4 +1,3 @@
 package strategy.interpreters
 
-class AssignationInterpreter {
-}
+class AssignationInterpreter

@@ -1,4 +1,3 @@
 package strategy.interpreters
 
-class IdentifierOperatorNodeInterpreter {
-}
+class IdentifierOperatorNodeInterpreter
