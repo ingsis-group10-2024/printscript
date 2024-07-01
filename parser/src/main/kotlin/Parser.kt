@@ -244,6 +244,7 @@ class Parser(private val tokens: List<Token>) {
         // todo cambiar para poder tener content con varias lineas
         val content = getStatement(tokens, TokenType.CLOSE_BRACKET)
         val trueBranch = parseStatement(content) as ASTNode
+        getTokenAndAdvance() // Salteo el ;
 
         var elseBranch: ASTNode? = null
         if (isCurrentToken(TokenType.ELSE)) {
@@ -252,6 +253,7 @@ class Parser(private val tokens: List<Token>) {
             getTokenAndAdvance()
             val elseContent = getStatement(tokens, TokenType.CLOSE_BRACKET)
             elseBranch = parseStatement(elseContent) as ASTNode
+            getTokenAndAdvance() // Salteo el ;
         }
         return IfNode(
             condition as ASTNode,
