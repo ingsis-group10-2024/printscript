@@ -326,12 +326,21 @@ class ParserTest {
                 Token(TokenType.STRING_LITERAL, "Hello", 1, 0),
                 Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
                 Token(TokenType.SEMICOLON, ";", 1, 0),
+                Token(TokenType.PRINTLN, "println", 2, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 0),
+                Token(TokenType.STRING_LITERAL, "world!", 2, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 2, 0),
+                Token(TokenType.SEMICOLON, ";", 2, 0),
             )
 
         val parser = Parser(tokens)
-        val result = parser.parsePrintln()
+        val result = parser.generateAST()
 
-        val expected = MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0))
+        val expected =
+            listOf(
+                MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0)),
+                MethodNode("println", StringOperatorNode("world!", Position(2, 0)), Position(2, 0)),
+            )
 
         assertEquals(expected, result)
     }
@@ -368,12 +377,21 @@ class ParserTest {
                 Token(TokenType.STRING_LITERAL, "Ingrese su nombre: ", 1, 2),
                 Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
                 Token(TokenType.SEMICOLON, ";", 1, 4),
+                Token(TokenType.READINPUT, "readInput", 2, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 2, 1),
+                Token(TokenType.STRING_LITERAL, "Ingrese su apellido: ", 2, 2),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 2, 3),
+                Token(TokenType.SEMICOLON, ";", 2, 4),
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseReadInput()
+        val result = parser.generateAST()
 
-        val expected = MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(1, 2)), Position(1, 0))
+        val expected =
+            listOf(
+                MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(1, 2)), Position(1, 0)),
+                MethodNode("readInput", StringOperatorNode("Ingrese su apellido: ", Position(2, 2)), Position(2, 0)),
+            )
 
         assertEquals(expected, result)
     }
@@ -615,12 +633,21 @@ class ParserTest {
                 Token(TokenType.STRING_LITERAL, "gitHubAccessToken", 1, 2),
                 Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
                 Token(TokenType.SEMICOLON, ";", 1, 4),
+                Token(TokenType.READENV, "readEnv", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 1),
+                Token(TokenType.STRING_LITERAL, "envVariable", 1, 2),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 3),
+                Token(TokenType.SEMICOLON, ";", 1, 4),
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseReadEnv()
+        val result = parser.generateAST()
 
-        val expected = MethodNode("readEnv", StringOperatorNode("gitHubAccessToken", Position(1, 2)), Position(1, 0))
+        val expected =
+            listOf(
+                MethodNode("readEnv", StringOperatorNode("gitHubAccessToken", Position(1, 2)), Position(1, 0)),
+                MethodNode("readEnv", StringOperatorNode("envVariable", Position(1, 2)), Position(1, 0)),
+            )
 
         assertEquals(expected, result)
     }

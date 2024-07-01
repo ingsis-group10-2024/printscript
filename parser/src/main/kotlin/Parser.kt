@@ -27,9 +27,11 @@ class Parser(private val tokens: List<Token>) {
             } else {
                 val statementTokens = getStatement(tokens, TokenType.SEMICOLON)
                 if (statementTokens.isEmpty()) {
-                    throw RuntimeException("Invalid statement")
+                    throw RuntimeException("Invalid statement at column ${getCurrentSignificantToken().column}, line ${getCurrentSignificantToken().line}")
                 }
                 nodes.add(parseStatement(statementTokens) as ASTNode)
+                getTokenAndAdvance()
+                // todo add el getTokenAndAdvance aca para saltear el punto y coma de cada statement
             }
         }
         return nodes
@@ -183,13 +185,11 @@ class Parser(private val tokens: List<Token>) {
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as ASTNode
-            getTokenAndAdvance()
             return DeclarationAssignationNode(
                 declaration,
                 assignation,
             )
         }
-        getTokenAndAdvance()
         return declaration
     }
 
@@ -203,7 +203,6 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
         getTokenAndAdvance()
 
-        getTokenAndAdvance()
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
     }
 
@@ -244,7 +243,8 @@ class Parser(private val tokens: List<Token>) {
         // todo cambiar para poder tener content con varias lineas
         val content = getStatement(tokens, TokenType.CLOSE_BRACKET)
         val trueBranch = parseStatement(content) as ASTNode
-        getTokenAndAdvance() // Salteo el ;
+        getTokenAndAdvance() // Salteo el ';'
+        getTokenAndAdvance() // Salteo el '}'
 
         var elseBranch: ASTNode? = null
         if (isCurrentToken(TokenType.ELSE)) {
