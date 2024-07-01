@@ -104,21 +104,9 @@ private fun executeCode(
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterManagerImpl(VariableMap(HashMap()))
-    val result = interpreter.interpret(ast)
-//    println(result.second)
+    interpreter.interpret(ast)
 }
 
-/*
-primero pedir un file, si el file no existe tiro error
-si el file existe: elige que quiere hacer.
-    - execute: ejecutar el codigo
-    - format: formatear el codigo
-    - analyze: analizar el codigo
-    - validate: validar el codigo
-    - exit: salir
-promptear paso a paso.
-ir a la docu y como pasarle prompts por terminal
- */
 fun main(args: Array<String>) {
     println(
         """

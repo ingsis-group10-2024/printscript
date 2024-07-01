@@ -26,6 +26,4 @@ class MethodNodeInterpreter(val variableMap: VariableMap) : Interpreter {
         }
         return stringBuffer.toString()
     }
-
-
 }
