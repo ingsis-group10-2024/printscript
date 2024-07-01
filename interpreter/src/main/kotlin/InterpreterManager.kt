@@ -1,5 +1,5 @@
 import ast.ASTNode
 
-interface Interpreter {
+interface InterpreterManager {
     fun interpret(astList: List<ASTNode>): Any?
 }

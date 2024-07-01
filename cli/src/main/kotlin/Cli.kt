@@ -9,6 +9,8 @@ import implementation.Lexer
 import parser.Parser
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
+import strategy.InterpreterManagerImpl
+import variable.VariableMap
 import java.io.File
 
 class Cli() : CliktCommand() {
@@ -101,7 +103,7 @@ private fun executeCode(
     val tokens = lexer.convertToToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterImpl(VariableMap(HashMap()))
+    val interpreter = InterpreterManagerImpl(VariableMap(HashMap()))
     val result = interpreter.interpret(ast)
 //    println(result.second)
 }
