@@ -23,7 +23,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
-            is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)!!
+            is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
             is BinaryOperationNode -> {
                 val left = ast.left!!
