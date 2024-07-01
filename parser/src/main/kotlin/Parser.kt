@@ -183,6 +183,7 @@ class Parser(private val tokens: List<Token>) {
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as ASTNode
+            getTokenAndAdvance()
             return DeclarationAssignationNode(
                 declaration,
                 assignation,
@@ -223,8 +224,6 @@ class Parser(private val tokens: List<Token>) {
         val content = getTokenAndAdvance()
 
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
-        getTokenAndAdvance()
-
         getTokenAndAdvance()
 
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
