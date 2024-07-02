@@ -10,4 +10,3 @@ include("lexer")
 include("linter")
 include("parser")
 include("sca")
-
