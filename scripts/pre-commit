@@ -4,12 +4,6 @@ echo "***** Running pre-commit ******"
 
 git stash -q --keep-index
 
-# tengo que correrlo yo (cami) porque no guarda el permiso
-chmod +x .git/hooks/pre-commit
-
-echo "* Running ktlintCheck *"
-./gradlew ktlintCheck
-
 echo "* Running ktlintFormat *"
 ./gradlew ktlintFormat
 
