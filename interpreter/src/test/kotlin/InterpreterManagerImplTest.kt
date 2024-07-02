@@ -1,8 +1,10 @@
 import ast.ASTNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -300,13 +302,11 @@ class InterpreterManagerImplTest {
         assertEquals("Hello, World!", response.second)
     }
 
-    // todo modificar para que use trueBranch y elseBranch como listas
-
-    /*@Test
+    @Test
     fun `Given IfOperatorNode with true condition, should interpret ifBody`() {
         val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
         val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
-        val ifNode = IfNode(BooleanOperatorNode(true, Position(3, 1)), ifBodyNode, elseBodyNode)
+        val ifNode = IfNode(BooleanOperatorNode(true, Position(3, 1)), listOf(ifBodyNode), listOf(elseBodyNode))
         val response = interpreter.interpret(listOf(ifNode))
         assertEquals("If Body Executed", response.second)
     }
@@ -315,10 +315,10 @@ class InterpreterManagerImplTest {
     fun `Given IfOperatorNode with false condition, should interpret elseBody`() {
         val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
         val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
-        val ifNode = IfNode(BooleanOperatorNode(false, Position(3, 1)), ifBodyNode, elseBodyNode)
+        val ifNode = IfNode(BooleanOperatorNode(false, Position(3, 1)), listOf(ifBodyNode), listOf(elseBodyNode))
         val response = interpreter.interpret(listOf(ifNode))
         assertEquals("Else Body Executed", response.second)
-    }*/
+    }
 
     @Test
     fun test027_Given_an_Env_variable_that_exists_in_the_map_it_should_return_its_value() {
