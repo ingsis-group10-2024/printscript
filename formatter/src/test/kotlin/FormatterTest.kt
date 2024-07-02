@@ -5,6 +5,7 @@ import ast.BooleanOperatorNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -99,15 +100,13 @@ class FormatterTest {
         assertEquals("\nprint(\"Hello\");", result)
     }
 
-    // todo modificar para que use trueBranch y elseBranch como listas de AST
-
-    /*@Test
+    @Test
     fun `formats if node`() {
         val nodes =
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
@@ -122,7 +121,7 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))),
-                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
@@ -137,14 +136,14 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
-                    MethodNode("print", StringOperatorNode("World", Position(1, 1)), Position(1, 1)),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("World", Position(1, 1)), Position(1, 1))),
                 ),
             )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("if (true) {\nprint(\"Hello\");\n} else {\nprint(\"World\");}", result)
-    }*/
+    }
 
     @Test
     fun `format boolean operator node`() {
