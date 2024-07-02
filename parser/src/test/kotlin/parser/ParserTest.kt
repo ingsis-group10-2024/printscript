@@ -495,6 +495,11 @@ class ParserTest {
                 Token(TokenType.IDENTIFIER, "x", 1, 11),
                 Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 12),
                 Token(TokenType.SEMICOLON, ";", 1, 13),
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 0),
+                Token(TokenType.STRING_LITERAL, "Hello", 1, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
+                Token(TokenType.SEMICOLON, ";", 1, 0),
                 Token(TokenType.CLOSE_BRACKET, "}", 1, 13),
                 Token(TokenType.ELSE, "else", 1, 14),
                 Token(TokenType.OPEN_BRACKET, "{", 1, 15),
@@ -519,8 +524,8 @@ class ParserTest {
                         IdentifierOperatorNode("x", Position(1, 4)),
                         NumberOperatorNode(1.0, Position(1, 6)),
                     ),
-                    MethodNode("println", IdentifierOperatorNode("x", Position(1, 11)), Position(1, 9)),
-                    MethodNode("println", ConditionNode("!=", IdentifierOperatorNode("x", Position(1, 18)), NumberOperatorNode(1.0, Position(1, 20))), Position(1, 16)),
+                    listOf(MethodNode("println", IdentifierOperatorNode("x", Position(1, 11)), Position(1, 9))),
+                    listOf(MethodNode("println", ConditionNode("!=", IdentifierOperatorNode("x", Position(1, 18)), NumberOperatorNode(1.0, Position(1, 20))), Position(1, 16))),
                 ),
             )
 
@@ -565,8 +570,8 @@ class ParserTest {
                         IdentifierOperatorNode("x", Position(1, 4)),
                         NumberOperatorNode(10.0, Position(1, 6)),
                     ),
-                    MethodNode("println", StringOperatorNode("x is 10", Position(1, 11)), Position(1, 9)),
-                    MethodNode("println", StringOperatorNode("x is not 10", Position(1, 19)), Position(1, 17)),
+                    listOf(MethodNode("println", StringOperatorNode("x is 10", Position(1, 11)), Position(1, 9))),
+                    listOf(MethodNode("println", StringOperatorNode("x is not 10", Position(1, 19)), Position(1, 17))),
                 ),
             )
 
