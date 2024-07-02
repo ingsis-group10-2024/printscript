@@ -91,7 +91,9 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
     }
 
     override fun visit(node: ConditionNode) {
-        TODO("Not yet implemented")
+        node.left.accept(this)
+        builder.append(" ${node.conditionType} ")
+        node.right.accept(this)
     }
 
     private fun formatNode(node: ASTNode?): String {
