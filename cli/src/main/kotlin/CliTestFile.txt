@@ -4,11 +4,11 @@ let z : number = 504;
 let w : number = y - x ;
 println("hello world");
 println(x+y+z);
-let w : number = readInput("Enter a number: ");
+let p : number = readInput("Enter a number: ");
 readEnv("PORT");
 let hello : String = "hello";
 let hello2 : String = "hello";
-if(x == 36) {
+if(hello == "yesz") {
     println("x is 10");
 } else {
     println("x is not 10");
