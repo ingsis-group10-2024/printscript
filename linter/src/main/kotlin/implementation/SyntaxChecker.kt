@@ -101,7 +101,6 @@ class SyntaxChecker : ASTVisitor {
     }
 
     override fun visit(node: IfNode) {
-        // todo modificar para que use trueBranch y elseBranch como listas
         for (ast in node.trueBranch) {
             if (ast !is MethodNode && ast !is DeclarationAssignationNode && ast !is AssignationNode) {
                 errors.add("Invalid true branch in if statement.")
