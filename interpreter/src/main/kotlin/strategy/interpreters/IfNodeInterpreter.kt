@@ -16,11 +16,11 @@ class IfNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Variab
         val condition = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.condition)
         return when (condition) {
             "true" -> {
-                InterpreterManagerImplStrategy(variableMap, envVariableMap).interpret(listOf(ast.trueBranch)).second
+                InterpreterManagerImplStrategy(variableMap, envVariableMap).interpret(ast.trueBranch).second
             }
 
             "false" -> {
-                InterpreterManagerImplStrategy(variableMap, envVariableMap).interpret(listOf(ast.elseBranch!!)).second
+                InterpreterManagerImplStrategy(variableMap, envVariableMap).interpret(ast.elseBranch!!).second
             }
             else -> {
                 throw IllegalArgumentException("Condition must be a boolean")

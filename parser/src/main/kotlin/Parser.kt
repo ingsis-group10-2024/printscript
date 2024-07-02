@@ -22,26 +22,28 @@ class Parser(private val tokens: List<Token>) {
     fun generateAST(): List<ASTNode> {
         return generateAST(tokens)
     }
+
     fun generateAST(tokens: List<Token>): List<ASTNode> {
         val nodes = mutableListOf<ASTNode>()
         while (currentTokenIndex < tokens.size - 1) {
             if (isCurrentToken(TokenType.IF)) {
                 nodes.add(parseIf())
+                currentTokenIndex++
             } else {
-                val statementTokens = getStatement(tokens, TokenType.SEMICOLON)
+                val statementTokens = getStatement(tokens, currentTokenIndex, TokenType.SEMICOLON)
+                currentTokenIndex += statementTokens.size
                 if (statementTokens.isEmpty()) {
                     throw RuntimeException("Invalid statement at column ${getCurrentSignificantToken().column}, line ${getCurrentSignificantToken().line}")
                 }
                 nodes.add(parseStatement(statementTokens) as ASTNode)
-                getTokenAndAdvance()
-                // todo add el getTokenAndAdvance aca para saltear el punto y coma de cada statement
+                currentTokenIndex++ // Salteo el punto y coma
             }
         }
         return nodes
     }
 
     private fun parseStatement(tokens: List<Token>): Any? {
-        currentTokenIndex = currentTokenIndex - tokens.size - 1
+        currentTokenIndex = currentTokenIndex - tokens.size
 
         return when (getCurrentSignificantToken().type) {
             TokenType.NUMERIC_LITERAL, TokenType.STRING_LITERAL, TokenType.IDENTIFIER, TokenType.STRING_TYPE,
@@ -243,27 +245,41 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.OPEN_BRACKET, "'{'")
         getTokenAndAdvance()
 
-        // todo cambiar para poder tener content con varias lineas
-        val content = getStatement(tokens, TokenType.CLOSE_BRACKET)
+        val trueContent = getStatement(tokens, currentTokenIndex, TokenType.CLOSE_BRACKET)
         val trueBranch = mutableListOf<ASTNode>()
-        if(!content.isEmpty()){
+        if (!trueContent.isEmpty()) {
             var index = 0
-            while (index < content.size) {
-                val statement = getStatement(content, TokenType.SEMICOLON)
+            while (index < trueContent.size) {
+                val statement = getStatement(trueContent, index, TokenType.SEMICOLON)
+                currentTokenIndex += statement.size
                 trueBranch.add(parseStatement(statement) as ASTNode)
-                index++
+                getTokenAndAdvance()
+                index += statement.size + 1
             }
         }
 
-        var elseBranch: List<ASTNode>? = null
+        expectToken(TokenType.CLOSE_BRACKET, "'}'")
+        getTokenAndAdvance()
+
+        var elseBranch = mutableListOf<ASTNode>()
         if (isCurrentToken(TokenType.ELSE)) {
             getTokenAndAdvance()
             expectToken(TokenType.OPEN_BRACKET, "'{'")
             getTokenAndAdvance()
-            val elseContent = getStatement(tokens, TokenType.CLOSE_BRACKET)
-            elseBranch = generateAST(elseContent)
-            getTokenAndAdvance() // Salteo el ;
+            val elseContent = getStatement(tokens, currentTokenIndex, TokenType.CLOSE_BRACKET)
+            if (!elseContent.isEmpty()) {
+                var index = 0
+                while (index < elseContent.size) {
+                    val statement = getStatement(elseContent, index, TokenType.SEMICOLON)
+                    currentTokenIndex += statement.size
+                    elseBranch.add(parseStatement(statement) as ASTNode)
+                    getTokenAndAdvance()
+                    index += statement.size + 1
+                }
+            }
+            expectToken(TokenType.CLOSE_BRACKET, "'}'")
         }
+
         return IfNode(
             condition as ASTNode,
             trueBranch,
@@ -274,7 +290,9 @@ class Parser(private val tokens: List<Token>) {
     fun parseCondition(token: Token): ConditionNode {
         val left = IdentifierOperatorNode(token.value, Position(token.column, token.line))
         val operator = getTokenAndAdvance().value
-        val right = parseStatement(getStatement(tokens, TokenType.CLOSE_PARENTHESIS)) as ASTNode
+        val rightStatement = getStatement(tokens, currentTokenIndex, TokenType.CLOSE_PARENTHESIS)
+        currentTokenIndex += rightStatement.size
+        val right = parseStatement(rightStatement) as ASTNode
         return ConditionNode(operator, left, right)
     }
 
@@ -349,18 +367,16 @@ class Parser(private val tokens: List<Token>) {
 
     fun getStatement(
         tokens: List<Token>,
+        fromIndex: Int,
         finalTokenType: TokenType,
     ): List<Token> {
         val statement = mutableListOf<Token>()
-        var i = currentTokenIndex
+        var i = fromIndex
 
         while (i < tokens.size) {
             val token = tokens[i]
 
             if (token.type == finalTokenType) {
-                // Salteo ese finalToken para que el próximo statement empiece desde el siguiente token
-                i++
-                currentTokenIndex = i
                 return statement
             }
 
