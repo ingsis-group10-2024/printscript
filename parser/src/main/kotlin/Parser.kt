@@ -36,7 +36,7 @@ class Parser(private val tokens: List<Token>) {
                     throw RuntimeException("Invalid statement at column ${getCurrentSignificantToken().column}, line ${getCurrentSignificantToken().line}")
                 }
                 nodes.add(parseStatement(statementTokens) as ASTNode)
-                currentTokenIndex++ // Salteo el punto y coma
+                getTokenAndAdvance() // Salteo el punto y coma
             }
         }
         return nodes
@@ -64,7 +64,7 @@ class Parser(private val tokens: List<Token>) {
         return parseAddition()
     }
 
-    fun parseAddition(): ASTNode? {
+    private fun parseAddition(): ASTNode? {
         var node: ASTNode? = parseMultiplication()
         while (currentTokenIndex < tokens.size &&
             (isCurrentToken(TokenType.PLUS) || isCurrentToken(TokenType.MINUS))
@@ -76,7 +76,7 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-    fun parseMultiplication(): ASTNode? {
+    private fun parseMultiplication(): ASTNode? {
         var node: ASTNode? = parseContent()
         while (currentTokenIndex < tokens.size &&
             (isCurrentToken(TokenType.MULTIPLY) || isCurrentToken(TokenType.DIVIDE))
@@ -93,7 +93,7 @@ class Parser(private val tokens: List<Token>) {
         return node
     }
 
-    fun parseContent(): ASTNode? {
+    private fun parseContent(): ASTNode? {
         val currentToken = getCurrentSignificantToken()
 
         return when (currentToken.type) {
@@ -144,7 +144,7 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    fun parseDeclaration(): DeclarationNode {
+    private fun parseDeclaration(): DeclarationNode {
         getTokenAndAdvance() // let
 
         expectToken(TokenType.IDENTIFIER, "identifier")
@@ -166,7 +166,7 @@ class Parser(private val tokens: List<Token>) {
         )
     }
 
-    fun parseAssignation(identifierToken: Token): AssignationNode {
+    private fun parseAssignation(identifierToken: Token): AssignationNode {
         if (isCurrentToken(TokenType.EQUALS) || isCurrentToken(TokenType.EQUALS_EQUALS)) {
             getTokenAndAdvance()
             val expression = parseExpression()
@@ -185,7 +185,7 @@ class Parser(private val tokens: List<Token>) {
         return AssignationNode("", Position(0, 0), StringOperatorNode(" ", Position(0, 0)))
     }
 
-    fun parseDeclarationAssignation(): ASTNode {
+    private fun parseDeclarationAssignation(): ASTNode {
         val declaration = parseDeclaration()
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
@@ -198,7 +198,7 @@ class Parser(private val tokens: List<Token>) {
         return declaration
     }
 
-    fun parsePrintln(): MethodNode {
+    private fun parsePrintln(): MethodNode {
         val printlnToken = getTokenAndAdvance()
 
         expectToken(TokenType.OPEN_PARENTHESIS, "'('")
@@ -211,7 +211,7 @@ class Parser(private val tokens: List<Token>) {
         return MethodNode("println", content as BinaryNode, Position(printlnToken.column, printlnToken.line))
     }
 
-    fun parseReadInput(): MethodNode {
+    private fun parseReadInput(): MethodNode {
         val readInputToken = getTokenAndAdvance()
 
         expectToken(TokenType.OPEN_PARENTHESIS, "'('")
@@ -233,7 +233,7 @@ class Parser(private val tokens: List<Token>) {
         return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
     }
 
-    fun parseIf(): ASTNode {
+    private fun parseIf(): ASTNode {
         getTokenAndAdvance() // if
         expectToken(TokenType.OPEN_PARENTHESIS, "'('")
         getTokenAndAdvance()
@@ -261,7 +261,7 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.CLOSE_BRACKET, "'}'")
         getTokenAndAdvance()
 
-        var elseBranch = mutableListOf<ASTNode>()
+        val elseBranch = mutableListOf<ASTNode>()
         if (isCurrentToken(TokenType.ELSE)) {
             getTokenAndAdvance()
             expectToken(TokenType.OPEN_BRACKET, "'{'")
@@ -287,7 +287,7 @@ class Parser(private val tokens: List<Token>) {
         )
     }
 
-    fun parseCondition(token: Token): ConditionNode {
+    private fun parseCondition(token: Token): ConditionNode {
         val left = IdentifierOperatorNode(token.value, Position(token.column, token.line))
         val operator = getTokenAndAdvance().value
         val rightStatement = getStatement(tokens, currentTokenIndex, TokenType.CLOSE_PARENTHESIS)
@@ -296,7 +296,7 @@ class Parser(private val tokens: List<Token>) {
         return ConditionNode(operator, left, right)
     }
 
-    fun parseReadEnv(): MethodNode {
+    private fun parseReadEnv(): MethodNode {
         val readEnvToken = getTokenAndAdvance() // readEnv
 
         expectToken(TokenType.OPEN_PARENTHESIS, "'('")
@@ -355,7 +355,7 @@ class Parser(private val tokens: List<Token>) {
         throw RuntimeException("Expected $expected but found $found at column $column, line $line")
     }
 
-    fun expectToken(
+    private fun expectToken(
         expectedType: TokenType,
         expectedValue: String,
     ) {
