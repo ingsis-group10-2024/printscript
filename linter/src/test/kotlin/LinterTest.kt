@@ -4,6 +4,7 @@ import ast.BinaryOperationNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
 import ast.IdentifierOperatorNode
+import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
@@ -223,12 +224,12 @@ class LinterTest {
 
     // todo modificar para que use trueBranch y elseBranch como listas de AST
 
-    /*@Test
+    @Test
     fun `test lint with if node`() {
         val node = BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1)))
         val condition = BinaryOperationNode(">", NumberOperatorNode(4.0, Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1)))
         val trueBranch = MethodNode("print", node, Position(1, 1))
-        val ifNode = IfNode(condition, trueBranch, null)
+        val ifNode = IfNode(condition, listOf(trueBranch), null)
         val checker = SyntaxChecker()
         checker.visit(ifNode)
         val errors = checker.getErrors()
@@ -239,7 +240,7 @@ class LinterTest {
     fun `test lint with invalid if node`() {
         val condition = BinaryOperationNode(">", NumberOperatorNode(4.0, Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1)))
         val trueBranch = NumberOperatorNode(5.0, Position(1, 1))
-        val ifNode = IfNode(condition, trueBranch, null)
+        val ifNode = IfNode(condition, listOf(trueBranch), null)
         val checker = SyntaxChecker()
         checker.visit(ifNode)
         val errors = checker.getErrors()
@@ -253,11 +254,11 @@ class LinterTest {
         val condition = BinaryOperationNode(">", NumberOperatorNode(4.0, Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1)))
         val trueBranch = MethodNode("print", node, Position(1, 1))
         val falseBranch = NumberOperatorNode(5.0, Position(1, 1))
-        val ifNode = IfNode(condition, trueBranch, falseBranch)
+        val ifNode = IfNode(condition, listOf(trueBranch), listOf(falseBranch))
         val checker = SyntaxChecker()
         checker.visit(ifNode)
         val errors = checker.getErrors()
         assertEquals(1, errors.size)
         assertEquals("Invalid false branch in if statement.", errors[0])
-    }*/
+    }
 }

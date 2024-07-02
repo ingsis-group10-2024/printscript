@@ -72,19 +72,22 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
         builder.append("${node.value}")
     }
 
-    // todo modificar para que use listas como trueBranch y elseBranch
     override fun visit(node: IfNode) {
-        /*val ifBlockIndent = "\n".repeat(rules[7].value!!)
+        val ifBlockIndent = "\n".repeat(rules[7].value!!)
         builder.append("if (${formatNode(node.condition)}) {")
         builder.append(ifBlockIndent)
-        builder.append(formatNode(node.trueBranch))
+        for (ast in node.trueBranch) {
+            builder.append(formatNode(ast))
+        }
         builder.append("\n}")
         node.elseBranch?.let {
             builder.append(" else {")
             builder.append(ifBlockIndent)
-            builder.append(formatNode(it))
+            for (ast in it) {
+                builder.append(formatNode(ast))
+            }
             builder.append("}")
-        }*/
+        }
     }
 
     override fun visit(node: ConditionNode) {
