@@ -33,7 +33,7 @@ tasks.register("ktlintFormat", JavaExec) {
     args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
 }
 
-// build {
-//     dependsOn(tasks.named("ktlintCheck"))
-//     dependsOn(tasks.named("ktlintFormat"))
-// }
+ build {
+     dependsOn(tasks.named("ktlintCheck"))
+     dependsOn(tasks.named("ktlintFormat"))
+ }
