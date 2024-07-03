@@ -22,7 +22,7 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
         when (ast.name) {
             "println" -> {
                 val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
-                printer.print(value)
+//                printer.print(value)
                 stringBuffer.append(value)
             }
             /*
