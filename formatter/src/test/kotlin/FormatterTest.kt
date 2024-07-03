@@ -186,6 +186,25 @@ class FormatterTest {
         assertEquals("x = 5.0 + 3.0;", result)
     }
 
+    @Test
+    fun `format condition node with spaces`() {
+        val nodes = listOf(BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))))
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("x == 5.0", result)
+    }
+
+    @Test
+    fun `format condition node with spaces and method node`() {
+        val nodes =
+            listOf(
+                BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))),
+                MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+            )
+        val result = formatter.format(nodes)
+        println(result)
+        assertEquals("x == 5.0\nprint(\"Hello\");", result)
+    }
     // todo modificar para que use trueBranch y elseBranch como listas de AST
 
     /*@Test

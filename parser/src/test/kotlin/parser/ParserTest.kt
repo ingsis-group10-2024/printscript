@@ -25,16 +25,27 @@ class ParserTest {
                 Token(TokenType.PLUS, "+", 2, 0),
                 Token(TokenType.NUMERIC_LITERAL, "3", 3, 0),
                 Token(TokenType.SEMICOLON, ";", 4, 0),
+                Token(TokenType.NUMERIC_LITERAL, "6", 1, 0),
+                Token(TokenType.MINUS, "-", 2, 0),
+                Token(TokenType.NUMERIC_LITERAL, "2", 3, 0),
+                Token(TokenType.SEMICOLON, ";", 4, 0),
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseAddition()
+        val result = parser.generateAST()
 
         val expected =
-            BinaryOperationNode(
-                "+",
-                NumberOperatorNode(5.0, Position(1, 0)),
-                NumberOperatorNode(3.0, Position(3, 0)),
+            listOf(
+                BinaryOperationNode(
+                    "+",
+                    NumberOperatorNode(5.0, Position(1, 0)),
+                    NumberOperatorNode(3.0, Position(3, 0)),
+                ),
+                BinaryOperationNode(
+                    "-",
+                    NumberOperatorNode(6.0, Position(1, 0)),
+                    NumberOperatorNode(2.0, Position(3, 0)),
+                ),
             )
 
         assertEquals(expected, result)
@@ -48,6 +59,10 @@ class ParserTest {
                 Token(TokenType.MULTIPLY, "*", 2, 0),
                 Token(TokenType.NUMERIC_LITERAL, "8", 3, 0),
                 Token(TokenType.SEMICOLON, ";", 4, 0),
+                Token(TokenType.NUMERIC_LITERAL, "2", 1, 0),
+                Token(TokenType.DIVIDE, "/", 2, 0),
+                Token(TokenType.NUMERIC_LITERAL, "8", 3, 0),
+                Token(TokenType.SEMICOLON, ";", 4, 0),
             )
 
         val parser = Parser(tokens)
@@ -57,6 +72,11 @@ class ParserTest {
             listOf(
                 BinaryOperationNode(
                     "*",
+                    NumberOperatorNode(2.0, Position(1, 0)),
+                    NumberOperatorNode(8.0, Position(3, 0)),
+                ),
+                BinaryOperationNode(
+                    "/",
                     NumberOperatorNode(2.0, Position(1, 0)),
                     NumberOperatorNode(8.0, Position(3, 0)),
                 ),
@@ -302,19 +322,52 @@ class ParserTest {
             )
 
         val parser = Parser(tokens)
-        val result = parser.parseDeclarationAssignation()
+        val result = parser.generateAST()
 
         val expected =
-            DeclarationAssignationNode(
-                DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
-                BinaryOperationNode(
-                    "+",
-                    StringOperatorNode("Hello", Position(6, 1)),
-                    StringOperatorNode(" world", Position(8, 1)),
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
+                    BinaryOperationNode(
+                        "+",
+                        StringOperatorNode("Hello", Position(6, 1)),
+                        StringOperatorNode(" world", Position(8, 1)),
+                    ),
                 ),
             )
 
         assertEquals(expected, result)
+    }
+
+    @Test
+    fun testVariableDeclarationAssignation() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "w", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 1),
+                Token(TokenType.EQUALS, "=", 5, 1),
+                Token(TokenType.IDENTIFIER, "x", 6, 1),
+                Token(TokenType.PLUS, "+", 7, 1),
+                Token(TokenType.IDENTIFIER, "y", 8, 1),
+                Token(TokenType.SEMICOLON, ";", 9, 1),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected =
+            DeclarationAssignationNode(
+                DeclarationNode("w", Position(2, 1), "number", Position(4, 1)),
+                BinaryOperationNode(
+                    "+",
+                    IdentifierOperatorNode("x", Position(6, 1)),
+                    IdentifierOperatorNode("y", Position(8, 1)),
+                ),
+            )
+
+        assertEquals(listOf(expected), result)
     }
 
     @Test
@@ -340,6 +393,68 @@ class ParserTest {
             listOf(
                 MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0)),
                 MethodNode("println", StringOperatorNode("world!", Position(2, 0)), Position(2, 0)),
+            )
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testDeclarationAssignationAndPrintln() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.IDENTIFIER, "w", 2, 1),
+                Token(TokenType.COLON, ":", 3, 1),
+                Token(TokenType.NUMBER_TYPE, "number", 4, 1),
+                Token(TokenType.EQUALS, "=", 5, 1),
+                Token(TokenType.IDENTIFIER, "x", 6, 1),
+                Token(TokenType.PLUS, "-", 7, 1),
+                Token(TokenType.IDENTIFIER, "y", 8, 1),
+                Token(TokenType.WHITESPACE, " ", 1, 9),
+                Token(TokenType.SEMICOLON, ";", 9, 1),
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 0),
+                Token(TokenType.STRING_LITERAL, "Hello world!", 1, 0),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
+                Token(TokenType.SEMICOLON, ";", 9, 1),
+                Token(TokenType.PRINTLN, "println", 1, 0),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 0),
+                Token(TokenType.IDENTIFIER, "x", 6, 1),
+                Token(TokenType.PLUS, "+", 7, 1),
+                Token(TokenType.IDENTIFIER, "y", 8, 1),
+                Token(TokenType.PLUS, "+", 7, 1),
+                Token(TokenType.IDENTIFIER, "z", 8, 1),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 0),
+                Token(TokenType.SEMICOLON, ";", 9, 1),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("w", Position(2, 1), "number", Position(4, 1)),
+                    BinaryOperationNode(
+                        "-",
+                        IdentifierOperatorNode("x", Position(6, 1)),
+                        IdentifierOperatorNode("y", Position(8, 1)),
+                    ),
+                ),
+                MethodNode("println", StringOperatorNode("Hello world!", Position(1, 0)), Position(1, 0)),
+                MethodNode(
+                    "println",
+                    BinaryOperationNode(
+                        "+",
+                        BinaryOperationNode(
+                            "+",
+                            IdentifierOperatorNode("x", Position(6, 1)),
+                            IdentifierOperatorNode("y", Position(8, 1)),
+                        ),
+                        IdentifierOperatorNode("z", Position(8, 1)),
+                    ),
+                    Position(1, 0),
+                ),
             )
 
         assertEquals(expected, result)
