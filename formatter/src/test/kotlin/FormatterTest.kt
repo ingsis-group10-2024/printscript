@@ -215,13 +215,13 @@ class FormatterTest {
     }
     // todo modificar para que use trueBranch y elseBranch como listas de AST
 
-    /*@Test
+    @Test
     fun `format if node with spaces`() {
         val nodes =
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
@@ -236,9 +236,11 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    DeclarationAssignationNode(
-                        DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
-                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    listOf(
+                        DeclarationAssignationNode(
+                            DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                            BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                        ),
                     ),
                     null,
                 ),
@@ -254,13 +256,17 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    DeclarationAssignationNode(
-                        DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
-                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    listOf(
+                        DeclarationAssignationNode(
+                            DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                            BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                        ),
                     ),
-                    DeclarationAssignationNode(
-                        DeclarationNode("y", Position(1, 1), "number", Position(1, 1)),
-                        BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                    listOf(
+                        DeclarationAssignationNode(
+                            DeclarationNode("y", Position(1, 1), "number", Position(1, 1)),
+                            BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                        ),
                     ),
                 ),
             )
@@ -275,7 +281,13 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
+                    listOf(
+                        AssignationNode(
+                            "x",
+                            Position(1, 1),
+                            BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                        ),
+                    ),
                     null,
                 ),
             )
@@ -290,12 +302,12 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1))),
                     null,
                 ),
             )
         val result = formatter.format(nodes)
         println(result)
         assertEquals("if (true) {\nlet x : number;\n}", result)
-    }*/
+    }
 }

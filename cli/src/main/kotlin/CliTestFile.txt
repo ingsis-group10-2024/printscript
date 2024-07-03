@@ -11,7 +11,8 @@ let hello2 : String = "hello";
 if(hello == "hello") {
     println("x is 10");
     println(x + z);
-    println(l);
+    let g : number = 2020;
 } else {
     println("x is not 10");
 }
+println(g);
