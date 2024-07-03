@@ -82,4 +82,4 @@ tasks.jacocoTestReport {
     }
 }
 
-build.dependsOn(tasks.named("jacocoTestReport"))
+build.dependsOn(tasks.named("test"))
