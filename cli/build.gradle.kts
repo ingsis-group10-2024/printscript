@@ -1,6 +1,7 @@
 plugins {
-    id("jacoco")
+    id("printscript.app-conventions")
 }
+
 dependencies {
     implementation(project(":common"))
     implementation(project(":formatter"))
@@ -9,9 +10,4 @@ dependencies {
     implementation(project(":interpreter"))
     implementation(project(":linter"))
     implementation(project(":sca"))
-    implementation("com.github.ajalt.clikt:clikt:4.3.0")
-}
-
-repositories {
-    mavenCentral()
 }

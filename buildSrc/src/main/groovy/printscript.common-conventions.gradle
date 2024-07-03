@@ -1,8 +1,8 @@
 plugins {
+    id 'printscript.ktlint-conventions'
     id 'org.jetbrains.kotlin.jvm'
     id 'jacoco'
     id 'maven-publish'
-    id 'org.jlleitschuh.gradle.ktlint-idea' // automatically creates check and format tasks for project Kotlin sources
 }
 
 version = "1.1.1-SNAPSHOT"
@@ -12,8 +12,22 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.8.10'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:1.8.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'
+    implementation 'junit:junit:4.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+    implementation 'org.yaml:snakeyaml:1.28'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.8.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 test {
@@ -38,3 +52,13 @@ publishing {
     }
 }
 
+tasks.withType(JavaCompile) {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
