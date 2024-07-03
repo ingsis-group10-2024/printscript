@@ -4,8 +4,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.example"
-version = "1.0.0-SNAPSHOT" // -snapshot para que sea una versión pisable
+version = "1.0.1-SNAPSHOT" // -snapshot para que sea una versión pisable
 
 repositories {
     mavenCentral()
@@ -51,22 +50,3 @@ tasks.register<Copy>("copyPreCommitHook") {
 }
 
 tasks.getByName("build").dependsOn("copyPreCommitHook")
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/ingsis-group10-2024/printscript")
-            version = "1.0.0-SNAPSHOT"
-            credentials {
-                username = System.getenv("GITHUB_USERNAME") ?: ""
-                password = System.getenv("GITHUB_TOKEN") ?: ""
-            }
-        }
-    }
-}
