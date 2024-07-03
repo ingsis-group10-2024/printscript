@@ -116,7 +116,9 @@ class SyntaxChecker : ASTVisitor {
     }
 
     override fun visit(node: ConditionNode) {
-        TODO("Not yet implemented")
+        if (node.conditionType !in listOf("==", "!=", "<", ">")) {
+            errors.add("Invalid condition type.")
+        }
     }
 
     fun getErrors(): List<String> {
