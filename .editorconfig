@@ -5,5 +5,5 @@ root = true
 
 [*]
 # indent_style = space
-max_line_length = off # use a positive number to set max line length
+# max_line_length = 180 # use a positive number to set max line length
 insert_final_newline = true

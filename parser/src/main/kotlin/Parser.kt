@@ -33,7 +33,9 @@ class Parser(private val tokens: List<Token>) {
                 val statementTokens = getStatement(tokens, currentTokenIndex, TokenType.SEMICOLON)
                 currentTokenIndex += statementTokens.size
                 if (statementTokens.isEmpty()) {
-                    throw RuntimeException("Invalid statement at column ${getCurrentSignificantToken().column}, line ${getCurrentSignificantToken().line}")
+                    throw RuntimeException(
+                        "Invalid statement at column ${getCurrentSignificantToken().column}, line ${getCurrentSignificantToken().line}",
+                    )
                 }
                 nodes.add(parseStatement(statementTokens) as ASTNode)
                 getTokenAndAdvance() // Salteo el punto y coma
@@ -230,7 +232,11 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.CLOSE_PARENTHESIS, "')'")
         getTokenAndAdvance()
 
-        return MethodNode("readInput", StringOperatorNode(content.value, Position(content.column, content.line)), Position(readInputToken.column, readInputToken.line))
+        return MethodNode(
+            "readInput",
+            StringOperatorNode(content.value, Position(content.column, content.line)),
+            Position(readInputToken.column, readInputToken.line),
+        )
     }
 
     private fun parseIf(): ASTNode {

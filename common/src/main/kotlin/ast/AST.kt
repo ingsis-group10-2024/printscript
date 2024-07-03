@@ -41,7 +41,12 @@ data class BinaryOperationNode(val symbol: String, val left: ASTNode?, val right
 }
 
 // Ej:  let x:number   let y:string
-data class DeclarationNode(val identifier: String, val identifierPosition: Position, val type: String, val typePosition: Position) : ASTNode {
+data class DeclarationNode(
+    val identifier: String,
+    val identifierPosition: Position,
+    val type: String,
+    val typePosition: Position,
+) : ASTNode {
     override fun accept(visitor: ASTVisitor) {
         visitor.visit(this)
     }
@@ -67,13 +72,15 @@ data class MethodNode(val name: String, val value: BinaryNode, val methodNamePos
     }
 }
 
-data class IfNode(val condition: ASTNode, val trueBranch: List<ASTNode>, val elseBranch: List<ASTNode>?) : ASTNode { // Ej: if(x>5){print(x)} else {print("Hello")}
+data class IfNode(val condition: ASTNode, val trueBranch: List<ASTNode>, val elseBranch: List<ASTNode>?) : ASTNode {
+    // Ej: if(x>5){print(x)} else {print("Hello")}
     override fun accept(visitor: ASTVisitor) {
         visitor.visit(this)
     }
 }
 
-data class ConditionNode(val conditionType: String, val left: ASTNode, val right: ASTNode) : BinaryNode { // Ej: x==5 o x!=5
+data class ConditionNode(val conditionType: String, val left: ASTNode, val right: ASTNode) : BinaryNode {
+    // Ej: x==5 o x!=5
     override fun accept(visitor: ASTVisitor) {
         visitor.visit(this)
     }

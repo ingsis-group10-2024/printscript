@@ -163,7 +163,9 @@ class Lexer(inputStream: InputStream) {
                         while (position < line.length && line[position].isDigit()) {
                             position++
                         }
-                        tokens.add(tokenFactory.createToken(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber))
+                        tokens.add(
+                            tokenFactory.createToken(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber),
+                        )
                     } else {
                         position++
                     }

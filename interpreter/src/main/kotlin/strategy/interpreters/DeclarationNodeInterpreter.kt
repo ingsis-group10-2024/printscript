@@ -16,7 +16,13 @@ class DeclarationNodeInterpreter(val variableMap: VariableMap) : Interpreter {
 
     private fun interpretDeclaration(ast: DeclarationNode): VariableMap {
         // declare a variable with the given type initialized as null
-        val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variableFactory.createVariable(ast.identifier, ast.type), null) })
+        val newMap =
+            variableMap.copy(
+                variableMap =
+                    variableMap.variableMap.apply {
+                        put(variableFactory.createVariable(ast.identifier, ast.type), null)
+                    },
+            )
         return newMap
     }
 }

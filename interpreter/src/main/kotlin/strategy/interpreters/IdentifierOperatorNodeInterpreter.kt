@@ -14,7 +14,12 @@ class IdentifierOperatorNodeInterpreter(val variableMap: VariableMap) : Interpre
     private fun interpretIdentifier(ast: IdentifierOperatorNode): Any {
         val variable =
             variableMap.findKey(ast.identifier)
-                ?: throw IllegalArgumentException("variable ${ast.identifier} not declared at column ${ast.identifierPosition.column} line ${ast.identifierPosition.line} ")
-        return variableMap.variableMap[variable] ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not initialized")
+                ?: throw IllegalArgumentException(
+                    "variable ${ast.identifier} " +
+                        "not declared at column ${ast.identifierPosition.column} " +
+                        "line ${ast.identifierPosition.line} ",
+                )
+        return variableMap.variableMap[variable]
+            ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not initialized")
     }
 }

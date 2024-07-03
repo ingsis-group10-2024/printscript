@@ -60,7 +60,11 @@ class FormatterTest {
     fun `formats assignation node`() {
         val nodes =
             listOf(
-                AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
+                AssignationNode(
+                    "x",
+                    Position(1, 1),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                ),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -179,7 +183,11 @@ class FormatterTest {
     fun `format assignation node with spaces`() {
         val nodes =
             listOf(
-                AssignationNode("x", Position(1, 1), BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1)))),
+                AssignationNode(
+                    "x",
+                    Position(1, 1),
+                    BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
+                ),
             )
         val result = formatter.format(nodes)
         println(result)

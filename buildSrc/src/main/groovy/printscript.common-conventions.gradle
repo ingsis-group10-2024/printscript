@@ -15,14 +15,19 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'
     implementation 'junit:junit:4.13.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
     implementation 'org.yaml:snakeyaml:1.28'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0'
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.8.10")
+    // testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
+    // testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.8.10")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
+
+
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {

@@ -644,7 +644,11 @@ class ParserTest {
                         MethodNode("println", StringOperatorNode("Hello", Position(3, 2)), Position(3, 0)),
                     ),
                     listOf(
-                        MethodNode("println", ConditionNode("!=", IdentifierOperatorNode("x", Position(5, 2)), NumberOperatorNode(1.0, Position(5, 4))), Position(5, 0)),
+                        MethodNode(
+                            "println",
+                            ConditionNode("!=", IdentifierOperatorNode("x", Position(5, 2)), NumberOperatorNode(1.0, Position(5, 4))),
+                            Position(5, 0),
+                        ),
                     ),
                 ),
             )
