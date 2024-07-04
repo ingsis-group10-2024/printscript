@@ -20,7 +20,7 @@ class LexerTest {
         assertEquals(TokenType.WHITESPACE, tokens[1].type)
         assertEquals(TokenType.MINUS, tokens[2].type)
         assertEquals(TokenType.WHITESPACE, tokens[3].type)
-        assertEquals(TokenType.TIMES, tokens[4].type)
+        assertEquals(TokenType.MULTIPLY, tokens[4].type)
         assertEquals(TokenType.WHITESPACE, tokens[5].type)
         assertEquals(TokenType.DIVIDE, tokens[6].type)
     }

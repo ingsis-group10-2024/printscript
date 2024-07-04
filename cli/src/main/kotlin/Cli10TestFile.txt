@@ -1,2 +1,8 @@
 let numberResult: number = 5 * 5 - 8;
 println(numberResult);
+let pi : number;
+pi = 3.14;
+println(pi / 2);
+let result: number;
+result = 5;
+println(result);
