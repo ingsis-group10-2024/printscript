@@ -307,6 +307,43 @@ class ParserTest {
     }
 
     @Test
+    fun testParseMixNumberDeclarationAssignation() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 2),
+                Token(TokenType.IDENTIFIER, "y", 2, 2),
+                Token(TokenType.COLON, ":", 3, 2),
+                Token(TokenType.NUMBER_TYPE, "int", 4, 2),
+                Token(TokenType.EQUALS, "=", 5, 2),
+                Token(TokenType.NUMERIC_LITERAL, "5", 4, 0),
+                Token(TokenType.MULTIPLY, "*", 2, 1),
+                Token(TokenType.NUMERIC_LITERAL, "3", 3, 1),
+                Token(TokenType.MINUS, "-", 4, 1),
+                Token(TokenType.NUMERIC_LITERAL, "2", 5, 1),
+                Token(TokenType.SEMICOLON, ";", 6, 1),
+            )
+
+        val parser = Parser(tokens)
+        val result = parser.generateAST()
+
+        val expected =
+            DeclarationAssignationNode(
+                DeclarationNode("y", TokenType.LET, Position(2, 2), "int", Position(4, 2)),
+                BinaryOperationNode(
+                    "-",
+                    BinaryOperationNode(
+                        "*",
+                        NumberOperatorNode(5.0, Position(4, 0)),
+                        NumberOperatorNode(3.0, Position(3, 1)),
+                    ),
+                    NumberOperatorNode(2.0, Position(5, 1)),
+                    ),
+            )
+
+        assertEquals(listOf(expected), result)
+    }
+
+    @Test
     fun testParseComplexStringDeclarationAssignation() {
         val tokens =
             listOf(
