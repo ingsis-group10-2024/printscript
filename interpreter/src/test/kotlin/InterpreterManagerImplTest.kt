@@ -407,4 +407,57 @@ class InterpreterManagerImplTest {
         assertTrue(response.second.isEmpty())
         assertTrue(interpreter.variableMap.containsKey(Variable("x", "number", true)))
     }
+
+    @Test
+    fun test030_GivenAnAssignationDeclarationNodeWithAnOperationInsideItShouldReturnTheResultOfTheOperation() {
+        val ast =
+            DeclarationAssignationNode(
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
+                BinaryOperationNode(
+                    "-",
+                    BinaryOperationNode(
+                        "*",
+                        NumberOperatorNode(5.0, Position(3, 1)),
+                        NumberOperatorNode(5.0, Position(4, 1)),
+                    ),
+                    NumberOperatorNode(8.0, Position(5, 1)),
+                ),
+            )
+        val ast2 = MethodNode("println", IdentifierOperatorNode("x", Position(6, 1)), Position(7, 1))
+        val astList = listOf(ast, ast2)
+        val response = interpreter.interpret(astList)
+        assertEquals("17.0", response.second[0])
+        assertTrue(interpreter.variableMap.containsKey(Variable("x", "number", true)))
+    }
+
+    @Test
+    fun test031_GivenManyPrintLnTheInterpreterStringListShouldHaveTheSameSizeAsTheAmountOfPrints() {
+        val ast1 =
+            MethodNode(
+                "println",
+                StringOperatorNode("This is a test", TokenType.STRING_LITERAL, Position(1, 1)),
+                Position(2, 1),
+            )
+        val ast2 =
+            MethodNode(
+                "println",
+                StringOperatorNode("This is a test", TokenType.STRING_LITERAL, Position(3, 1)),
+                Position(4, 1),
+            )
+        val ast3 =
+            MethodNode(
+                "println",
+                StringOperatorNode("This is a test", TokenType.STRING_LITERAL, Position(5, 1)),
+                Position(6, 1),
+            )
+        val ast4 =
+            MethodNode(
+                "println",
+                StringOperatorNode("This is a test", TokenType.STRING_LITERAL, Position(7, 1)),
+                Position(8, 1),
+            )
+        val astList = listOf(ast1, ast2, ast3, ast4)
+        val response = interpreter.interpret(astList)
+        assertEquals(4, response.second.size)
+    }
 }

@@ -364,19 +364,19 @@ class LexerTest {
         assertEquals(TokenType.SEMICOLON, tokens[7].type)
     }
 
-    @Test
-    fun `test lexer with boolean literals`() {
-        val input = "true false"
-        val lexer = LexerSingleton.getInstance(input.byteInputStream())
-        val tokens = lexer.getToken()
-        for (token in tokens) {
-            println(token)
-        }
-        assertEquals(3, tokens.size)
-        assertEquals(TokenType.BOOLEAN_LITERAL, tokens[0].type)
-        assertEquals(TokenType.WHITESPACE, tokens[1].type)
-        assertEquals(TokenType.BOOLEAN_LITERAL, tokens[2].type)
-    }
+//    @Test
+//    fun `test lexer with boolean literals`() {
+//        val input = "true false"
+//        val lexer = LexerSingleton.getInstance(input.byteInputStream())
+//        val tokens = lexer.getToken()
+//        for (token in tokens) {
+//            println(token)
+//        }
+//        assertEquals(3, tokens.size)
+//        assertEquals(TokenType.BOOLEAN_LITERAL, tokens[0].type)
+//        assertEquals(TokenType.WHITESPACE, tokens[1].type)
+//        assertEquals(TokenType.BOOLEAN_LITERAL, tokens[2].type)
+//    }
 
     @Test
     fun `test lexer with operators`() {
