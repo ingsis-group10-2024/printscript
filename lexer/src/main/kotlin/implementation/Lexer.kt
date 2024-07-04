@@ -132,7 +132,7 @@ class Lexer(inputStream: InputStream) {
                 else -> {
                     if (currentChar.isLetter() || currentChar == '_') {
                         val start = position
-                        while (position < line.length && line[position].isLetterOrDigit() || line[position] == '_') {
+                        while (position < line.length && (line[position].isLetterOrDigit() || line[position] == '_')) {
                             position++
                         }
                         val word = line.substring(start, position)
