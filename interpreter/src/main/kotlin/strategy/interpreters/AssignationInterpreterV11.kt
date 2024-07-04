@@ -19,7 +19,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val envVariableMap
 
     private fun interpretAssignation(ast: Assignation): VariableMap {
         when (ast) {
-            is DeclarationAssignationNode -> {
+            is DeclarationAssignationNode -> { // todo: checkear si es const o no.
                 if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type, true))) {
                     return variableMap
                 }

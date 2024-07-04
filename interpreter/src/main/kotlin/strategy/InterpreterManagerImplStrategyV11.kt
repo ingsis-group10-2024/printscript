@@ -28,8 +28,6 @@ class InterpreterManagerImplStrategyV11(
 ) : InterpreterManager {
     private val stringList = ArrayList<String>()
 
-// Todo: cambiar todos los stringbuffer de aca por arraylist de strings.
-// todo: y cambiar los errores de buffer a exceptions
     @Throws(IllegalArgumentException::class)
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, ArrayList<String>> {
         if (astList.isEmpty()) return Pair(variableMap, stringList)
@@ -49,7 +47,7 @@ class InterpreterManagerImplStrategyV11(
                 }
 
                 is IfNode -> {
-                    IfNodeInterpreter(variableMap, envVariableMap, reader).interpret(ast)
+                    stringList.addAll(IfNodeInterpreter(variableMap, envVariableMap, reader).interpret(ast))
                 }
 
                 is NumberOperatorNode -> {
