@@ -53,7 +53,7 @@ class Lexer(inputStream: InputStream) {
                     position++
                 }
                 '*' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.TIMES, currentChar.toString(), position + 1, lineNumber))
+                    tokens.add(tokenFactory.createToken(TokenType.MULTIPLY, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '/' -> {
@@ -160,7 +160,11 @@ class Lexer(inputStream: InputStream) {
                         tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
                     } else if (currentChar.isDigit()) {
                         val start = position
-                        while (position < line.length && line[position].isDigit()) {
+                        var hasDecimalPoint = false
+                        while (position < line.length && line[position].isDigit() || (line[position] == '.' && !hasDecimalPoint)) {
+                            if (line[position] == '.') {
+                                hasDecimalPoint = true
+                            }
                             position++
                         }
                         tokens.add(

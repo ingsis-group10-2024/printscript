@@ -35,7 +35,6 @@ enum class TokenType {
     PLUS,
     MULTIPLY,
     MINUS,
-    TIMES,
     DIVIDE,
     GREATER_THAN,
     GREATER_THAN_EQUAL,
