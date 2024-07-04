@@ -126,7 +126,7 @@ class ParserTest {
                 Token(TokenType.COLON, ":", 3, 0),
                 Token(TokenType.NUMBER_TYPE, "number", 4, 0),
                 Token(TokenType.SEMICOLON, ";", 5, 0),
-                Token(TokenType.LET, "let", 1, 1),
+                Token(TokenType.CONST, "const", 1, 1),
                 Token(TokenType.IDENTIFIER, "y", 2, 1),
                 Token(TokenType.COLON, ":", 3, 1),
                 Token(TokenType.STRING_TYPE, "string", 4, 1),
@@ -138,8 +138,8 @@ class ParserTest {
 
         val expected =
             listOf(
-                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
-                DeclarationNode("y", Position(2, 1), "string", Position(4, 1)),
+                DeclarationNode("x", TokenType.LET, Position(2, 0), "number", Position(4, 0)),
+                DeclarationNode("y", TokenType.CONST, Position(2, 1), "string", Position(4, 1)),
             )
 
         assertEquals(expected, result)
@@ -167,7 +167,7 @@ class ParserTest {
 
         val expected =
             listOf(
-                DeclarationNode("x", Position(2, 0), "number", Position(4, 0)),
+                DeclarationNode("x", TokenType.LET, Position(2, 0), "number", Position(4, 0)),
                 BinaryOperationNode(
                     "+",
                     NumberOperatorNode(5.0, Position(2, 1)),
@@ -263,11 +263,11 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(2, 1), "number", Position(4, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(2, 1), "number", Position(4, 1)),
                     NumberOperatorNode(5.0, Position(6, 1)),
                 ),
                 DeclarationAssignationNode(
-                    DeclarationNode("y", Position(2, 2), "string", Position(4, 2)),
+                    DeclarationNode("y", TokenType.LET, Position(2, 2), "string", Position(4, 2)),
                     StringOperatorNode("Hello", Position(6, 2)),
                 ),
             )
@@ -295,7 +295,7 @@ class ParserTest {
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("y", Position(2, 2), "int", Position(4, 2)),
+                DeclarationNode("y", TokenType.LET, Position(2, 2), "int", Position(4, 2)),
                 BinaryOperationNode(
                     "+",
                     NumberOperatorNode(5.0, Position(6, 2)),
@@ -327,7 +327,7 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(2, 1), "string", Position(4, 1)),
                     BinaryOperationNode(
                         "+",
                         StringOperatorNode("Hello", Position(6, 1)),
@@ -359,7 +359,7 @@ class ParserTest {
 
         val expected =
             DeclarationAssignationNode(
-                DeclarationNode("w", Position(2, 1), "number", Position(4, 1)),
+                DeclarationNode("w", TokenType.LET, Position(2, 1), "number", Position(4, 1)),
                 BinaryOperationNode(
                     "+",
                     IdentifierOperatorNode("x", Position(6, 1)),
@@ -434,7 +434,7 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("w", Position(2, 1), "number", Position(4, 1)),
+                    DeclarationNode("w", TokenType.LET, Position(2, 1), "number", Position(4, 1)),
                     BinaryOperationNode(
                         "-",
                         IdentifierOperatorNode("x", Position(6, 1)),
@@ -533,7 +533,7 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("name", Position(1, 1), "string", Position(1, 3)),
+                    DeclarationNode("name", TokenType.LET, Position(1, 1), "string", Position(1, 3)),
                     MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(1, 7)), Position(1, 5)),
                 ),
             )
@@ -577,12 +577,12 @@ class ParserTest {
         val expected =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("name", Position(1, 0), "string", Position(3, 0)),
+                    DeclarationNode("name", TokenType.LET, Position(1, 0), "string", Position(3, 0)),
                     MethodNode("readInput", StringOperatorNode("Ingrese su nombre: ", Position(7, 0)), Position(5, 0)),
                 ),
                 MethodNode("println", StringOperatorNode("Hello", Position(1, 0)), Position(1, 0)),
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(2, 1), "string", Position(4, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(2, 1), "string", Position(4, 1)),
                     BinaryOperationNode(
                         "+",
                         StringOperatorNode("Hello", Position(6, 1)),

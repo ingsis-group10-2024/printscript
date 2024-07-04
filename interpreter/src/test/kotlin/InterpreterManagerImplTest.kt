@@ -12,6 +12,7 @@ import ast.StringOperatorNode
 import org.junit.Before
 import org.junit.Test
 import strategy.InterpreterManagerImplStrategy
+import token.TokenType
 import variable.Variable
 import variable.VariableMap
 import java.util.HashMap
@@ -32,7 +33,7 @@ class InterpreterManagerImplTest {
     @Test
     fun test001_WhenReceivingADeclarationBinaryNodeInterpreterShouldReturnItsDeclaration() {
         // Arrange
-        val ast = DeclarationNode("x", Position(1, 1), "Int", Position(2, 1))
+        val ast = DeclarationNode("x", TokenType.LET, Position(1, 1), "Int", Position(2, 1))
         val astList = listOf(ast)
         // Act
         val response = interpreter.interpret(astList)
@@ -45,7 +46,7 @@ class InterpreterManagerImplTest {
         // Arrange
         val ast =
             DeclarationAssignationNode(
-                DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
                 NumberOperatorNode(5.0, Position(3, 1)),
             )
         val astList = listOf(ast)
@@ -57,7 +58,7 @@ class InterpreterManagerImplTest {
 
     @Test
     fun test003_shouldInterpretDeclarationNode() {
-        val ast = DeclarationNode("x", Position(1, 1), "Int", Position(2, 1))
+        val ast = DeclarationNode("x", TokenType.LET, Position(1, 1), "Int", Position(2, 1))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
         assertEquals("", response.second)
@@ -69,6 +70,7 @@ class InterpreterManagerImplTest {
             DeclarationAssignationNode(
                 DeclarationNode(
                     "X",
+                    TokenType.LET,
                     Position(1, 1),
                     "number",
                     Position(2, 1),
@@ -128,12 +130,12 @@ class InterpreterManagerImplTest {
         // Arrange
         val ast1 =
             DeclarationAssignationNode(
-                DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
                 NumberOperatorNode(5.0, Position(3, 1)),
             )
         val ast2 =
             DeclarationAssignationNode(
-                DeclarationNode("y", Position(4, 1), "number", Position(5, 1)),
+                DeclarationNode("y", TokenType.LET, Position(4, 1), "number", Position(5, 1)),
                 NumberOperatorNode(3.0, Position(6, 1)),
             )
         val method =
@@ -164,7 +166,7 @@ class InterpreterManagerImplTest {
         val ast =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("a", Position(1, 1), "string", Position(2, 1)),
+                    DeclarationNode("a", TokenType.LET, Position(1, 1), "string", Position(2, 1)),
                     BinaryOperationNode(
                         "+",
                         StringOperatorNode("Hello", Position(3, 1)),
@@ -186,11 +188,11 @@ class InterpreterManagerImplTest {
         val ast =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("a", Position(1, 1), "number", Position(2, 1)),
+                    DeclarationNode("a", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
                     NumberOperatorNode(1.0, Position(3, 1)),
                 ),
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(4, 1), "string", Position(5, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(4, 1), "string", Position(5, 1)),
                     BinaryOperationNode(
                         "+",
                         IdentifierOperatorNode("a", Position(6, 1)),
@@ -223,12 +225,12 @@ class InterpreterManagerImplTest {
     fun test016_interpretBinaryNodeWithIdentifierOperands() {
         val ast1 =
             DeclarationAssignationNode(
-                DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
                 NumberOperatorNode(5.0, Position(3, 1)),
             )
         val ast2 =
             DeclarationAssignationNode(
-                DeclarationNode("y", Position(4, 1), "number", Position(5, 1)),
+                DeclarationNode("y", TokenType.LET, Position(4, 1), "number", Position(5, 1)),
                 NumberOperatorNode(3.0, Position(6, 1)),
             )
         val ast3 =
@@ -345,7 +347,7 @@ class InterpreterManagerImplTest {
     fun test029_GivenADeclarationAssignationNodeWithAnUndeclaredVariableItShouldAddTheVariableToTheMap() {
         val ast =
             DeclarationAssignationNode(
-                DeclarationNode("x", Position(1, 1), "number", Position(2, 1)),
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(2, 1)),
                 NumberOperatorNode(5.0, Position(3, 1)),
             )
         val astList = listOf(ast)

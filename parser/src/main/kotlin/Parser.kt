@@ -49,7 +49,7 @@ class Parser(private val tokens: List<Token>) {
 
         return when (getCurrentSignificantToken().type) {
             TokenType.NUMERIC_LITERAL, TokenType.STRING_LITERAL, TokenType.IDENTIFIER, TokenType.STRING_TYPE,
-            TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
+            TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.CONST, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
             TokenType.READENV,
             -> parseExpression()
             else ->
@@ -131,7 +131,10 @@ class Parser(private val tokens: List<Token>) {
                 node
             }
             TokenType.LET -> {
-                parseDeclarationAssignation()
+                parseDeclarationAssignation(TokenType.LET)
+            }
+            TokenType.CONST -> {
+                parseDeclarationAssignation(TokenType.CONST)
             }
             TokenType.PRINTLN -> {
                 parsePrintln()
@@ -146,7 +149,7 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun parseDeclaration(): DeclarationNode {
+    private fun parseDeclaration(tokenType: TokenType): DeclarationNode {
         getTokenAndAdvance() // let
 
         expectToken(TokenType.IDENTIFIER, "identifier")
@@ -162,6 +165,7 @@ class Parser(private val tokens: List<Token>) {
         val typeToken = getTokenAndAdvance()
         return DeclarationNode(
             identifierToken.value,
+            tokenType,
             Position(identifierToken.column, identifierToken.line),
             typeToken.value,
             Position(typeToken.column, typeToken.line),
@@ -187,8 +191,8 @@ class Parser(private val tokens: List<Token>) {
         return AssignationNode("", Position(0, 0), StringOperatorNode(" ", Position(0, 0)))
     }
 
-    private fun parseDeclarationAssignation(): ASTNode {
-        val declaration = parseDeclaration()
+    private fun parseDeclarationAssignation(tokenType: TokenType): ASTNode {
+        val declaration = parseDeclaration(tokenType)
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as ASTNode

@@ -1,5 +1,7 @@
 package ast
 
+import token.TokenType
+
 sealed interface ASTNode {
     fun accept(visitor: ASTVisitor)
 }
@@ -40,11 +42,12 @@ data class BinaryOperationNode(val symbol: String, val left: ASTNode?, val right
     }
 }
 
-// Ej:  let x:number   let y:string
+// Ej:  let x:number   let y:string   const z:boolean
 data class DeclarationNode(
-    val identifier: String,
+    val identifier: String, // Nombre de la variable
+    val declarationType: TokenType, // Tipo de la variable (const o let)
     val identifierPosition: Position,
-    val type: String,
+    val type: String, // Tipo de la variable (string, number, boolean)
     val typePosition: Position,
 ) : ASTNode {
     override fun accept(visitor: ASTVisitor) {

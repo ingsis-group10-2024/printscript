@@ -14,6 +14,7 @@ import config.JsonConfigLoader
 import implementation.Formatter
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import token.TokenType
 
 class FormatterTest {
     private val filePath = "src/main/resources/test_config_formatter.json"
@@ -22,7 +23,7 @@ class FormatterTest {
 
     @Test
     fun `formats declaration node`() {
-        val nodes = listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1)))
+        val nodes = listOf(DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number\n", result)
@@ -40,7 +41,7 @@ class FormatterTest {
     fun `formats multiple nodes`() {
         val nodes =
             listOf(
-                DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                 BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
             )
         val result = formatter.format(nodes)
@@ -76,7 +77,7 @@ class FormatterTest {
         val nodes =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                     BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                 ),
             )
@@ -159,7 +160,7 @@ class FormatterTest {
 
     @Test
     fun `format declaration node with spaces`() {
-        val nodes = listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1)))
+        val nodes = listOf(DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)))
         val result = formatter.format(nodes)
         println(result)
         assertEquals("let x : number\n", result)
@@ -170,7 +171,7 @@ class FormatterTest {
         val nodes =
             listOf(
                 DeclarationAssignationNode(
-                    DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                    DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                     BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                 ),
             )
@@ -238,7 +239,7 @@ class FormatterTest {
                     BooleanOperatorNode(true, Position(1, 1)),
                     listOf(
                         DeclarationAssignationNode(
-                            DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                            DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                             BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                         ),
                     ),
@@ -258,13 +259,13 @@ class FormatterTest {
                     BooleanOperatorNode(true, Position(1, 1)),
                     listOf(
                         DeclarationAssignationNode(
-                            DeclarationNode("x", Position(1, 1), "number", Position(1, 1)),
+                            DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                             BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                         ),
                     ),
                     listOf(
                         DeclarationAssignationNode(
-                            DeclarationNode("y", Position(1, 1), "number", Position(1, 1)),
+                            DeclarationNode("y", TokenType.LET, Position(1, 1), "number", Position(1, 1)),
                             BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(1, 1))),
                         ),
                     ),
@@ -302,7 +303,7 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    listOf(DeclarationNode("x", Position(1, 1), "number", Position(1, 1))),
+                    listOf(DeclarationNode("x", TokenType.LET, Position(1, 1), "number", Position(1, 1))),
                     null,
                 ),
             )
