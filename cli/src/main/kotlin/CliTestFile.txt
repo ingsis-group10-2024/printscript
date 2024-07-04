@@ -5,7 +5,7 @@ let w : number = y - x;
 println("hello world");
 println(x+y+z);
 let p : number = readInput("Enter a number: ");
-readEnv("PORT");
+let wo : String = readEnv("PORT");
 let hello : String = "hello";
 let hello2 : String = "hello";
 if(hello == "hello") {
@@ -16,3 +16,7 @@ if(hello == "hello") {
     println("x is not 10");
 }
 println(g);
+println(wo);
+readEnv("POSTGRES_HOST");
+let secret_key : String = readEnv("MY_ULTRA_SECRET_KEY");
+println(secret_key);

@@ -130,9 +130,9 @@ class Lexer(inputStream: InputStream) {
                     position++ // moves past the closing quote
                 }
                 else -> {
-                    if (currentChar.isLetter()) {
+                    if (currentChar.isLetter() || currentChar == '_') {
                         val start = position
-                        while (position < line.length && line[position].isLetterOrDigit()) {
+                        while (position < line.length && line[position].isLetterOrDigit() || line[position] == '_') {
                             position++
                         }
                         val word = line.substring(start, position)
@@ -155,17 +155,7 @@ class Lexer(inputStream: InputStream) {
                                 "number" -> TokenType.NUMBER_TYPE
                                 "Boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
-                                else -> {
-                                    var nextPosition = position
-                                    while (nextPosition < line.length && line[nextPosition].isWhitespace()) {
-                                        nextPosition++
-                                    }
-                                    if (nextPosition < line.length && "=><!;:".contains(line[nextPosition])) {
-                                        TokenType.IDENTIFIER
-                                    } else {
-                                        throw IllegalArgumentException("Unknown character at line $lineNumber, position ${position + 1}")
-                                    }
-                                }
+                                else -> TokenType.IDENTIFIER
                             }
                         tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
                     } else if (currentChar.isDigit()) {
@@ -177,7 +167,7 @@ class Lexer(inputStream: InputStream) {
                             tokenFactory.createToken(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber),
                         )
                     } else {
-                        position++
+                        throw IllegalArgumentException("Unknown character at line $lineNumber, position ${position + 1}")
                     }
                 }
             }
