@@ -2,27 +2,24 @@ package strategy.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
-import emitter.Printer
-import reader.ConsoleInputReader
 import reader.Reader
 import strategy.Interpreter
 import variable.Variable
 import variable.VariableMap
 
-class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
+class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
     private val stringBuffer = StringBuffer()
-    private val printer = Printer()
 
     override fun interpret(ast: ASTNode): String {
         require(ast is MethodNode) { "Node must be a MethodNode" }
         return interpretMethodNode(ast)
     }
 
+    @Throws(IllegalArgumentException::class)
     private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
-//                printer.print(value)
+                val value = BinaryOperationNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast.value)
                 stringBuffer.append(value)
             }
             /*
@@ -34,26 +31,27 @@ class MethodNodeInterpreter(val variableMap: VariableMap, val envVariableMap: Va
             readinput tiene que recibir un lector.
              */
             "readInput" -> {
-                val message = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
+                val message = BinaryOperationNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast.value)
                 // Read the input from the user
-                val reader = ConsoleInputReader()
                 val inputValue = readInput(reader, message)
                 if (inputValue != null) {
                     return inputValue
                 } else {
-                    stringBuffer.append("Invalid Input")
+                    throw IllegalArgumentException("Invalid Input")
                 }
             }
             "readEnv" -> {
-                val envValue = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.value)
-                if (envVariableMap.variableMap.containsKey(Variable(envValue, ""))) {
-                    val value = envVariableMap.variableMap[Variable(envValue, "")]
+                val envValue = BinaryOperationNodeInterpreterV10(envVariableMap).interpret(ast.value)
+                if (envVariableMap.containsKey(Variable(envValue, "String", true))) {
+                    val value = envVariableMap.variableMap[Variable(envValue, "String", false)]
                     stringBuffer.append(value)
                 } else {
-                    stringBuffer.append("Environment variable $envValue not found")
+                    throw IllegalArgumentException("Environment variable $envValue not found")
                 }
             }
-            else -> stringBuffer.append("Invalid Method")
+            else -> throw IllegalArgumentException(
+                "Invalid Method at column ${ast.methodNamePosition.column} row ${ast.methodNamePosition.line}",
+            )
         }
         return stringBuffer.toString()
     }

@@ -8,7 +8,7 @@ import strategy.Interpreter
 import variable.Variable
 import variable.VariableMap
 
-class AssignationInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
+class AssignationInterpreterV10(val variableMap: VariableMap) : Interpreter {
     private val stringBuffer = StringBuffer()
 
     override fun interpret(ast: ASTNode): Pair<VariableMap, String?> {
@@ -19,24 +19,22 @@ class AssignationInterpreter(val variableMap: VariableMap, val envVariableMap: V
     private fun interpretAssignation(ast: Assignation): VariableMap {
         when (ast) {
             is DeclarationAssignationNode -> {
-                if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type))) {
+                if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type, true))) {
                     return variableMap
                 }
-                val variable = Variable(ast.declaration.identifier, ast.declaration.type)
-                val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.assignation)
+                val variable = Variable(ast.declaration.identifier, ast.declaration.type, true)
+                val value = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.assignation)
                 val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
                 return newMap
             }
             is AssignationNode -> {
                 variableMap.findKey(ast.identifier)?.let {
-                    val value = BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast.assignation)
+                    val value = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.assignation)
                     val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                     stringBuffer.append("${it.identifier} = $value")
-
                     return newMap
-                } ?: stringBuffer.append("variable ${ast.identifier} not declared")
+                } ?: throw throw IllegalArgumentException("variable ${ast.identifier} not declared")
             }
         }
-        return variableMap
     }
 }

@@ -8,12 +8,11 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariableMap: VariableMap) : Interpreter {
-    private val stringBuffer = StringBuffer()
-
+class BinaryOperationNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
     override fun interpret(ast: ASTNode): String {
         return interpretBinaryNode(ast)
     }
@@ -24,9 +23,9 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
-            is MethodNode -> MethodNodeInterpreter(variableMap, envVariableMap).interpret(ast)
+            is MethodNode -> MethodNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
-            is ConditionNode -> ConditionNodeInterpreter(variableMap, envVariableMap).interpret(ast).toString()
+            is ConditionNode -> ConditionNodeInterpreter(variableMap, envVariableMap, reader).interpret(ast).toString()
             is BinaryOperationNode -> {
                 val left = ast.left!!
                 val right = ast.right!!
@@ -88,7 +87,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                 }
                             }
 
-                            else -> return "invalid operation"
+                            else -> throw IllegalArgumentException("Invalid Operation")
                         }
                     "-", "*", "/" ->
                         when {
@@ -99,7 +98,7 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                         "*" -> left.value * right.value
                                         "/" -> left.value / right.value
 
-                                        else -> return stringBuffer.append("Invalid Operation").toString()
+                                        else -> throw IllegalArgumentException("Invalid Operation")
                                     }
                                 return result.toString()
                             }
@@ -112,11 +111,11 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "*" -> leftValue.toDouble() * right.value
                                             "/" -> leftValue.toDouble() / right.value
 
-                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                            else -> throw IllegalArgumentException("Invalid Operation")
                                         }
                                     result.toString()
                                 } else {
-                                    stringBuffer.append("Invalid Operation").toString()
+                                    throw IllegalArgumentException("Invalid Operation")
                                 }
                             }
                             left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
@@ -129,11 +128,11 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
 
-                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                            else -> throw IllegalArgumentException("Invalid Operation")
                                         }
                                     result.toString()
                                 } else {
-                                    stringBuffer.append("Invalid Operation").toString()
+                                    throw IllegalArgumentException("Invalid Operation")
                                 }
                             }
                             left is BinaryOperationNode || right is BinaryOperationNode -> {
@@ -146,22 +145,22 @@ class BinaryOperationNodeInterpreter(val variableMap: VariableMap, val envVariab
                                             "*" -> leftValue.toDouble() * rightValue.toDouble()
                                             "/" -> leftValue.toDouble() / rightValue.toDouble()
 
-                                            else -> return stringBuffer.append("Invalid Operation").toString()
+                                            else -> throw IllegalArgumentException("Invalid Operation")
                                         }
                                     result.toString()
                                 } else {
-                                    stringBuffer.append("Invalid Operation").toString()
+                                    throw IllegalArgumentException("Invalid Operation")
                                 }
                             }
 
-                            else -> return stringBuffer.append("Invalid Operation").toString()
+                            else -> throw IllegalArgumentException("Invalid Operation")
                         }
-                    else -> return "Invalid Operation"
+                    else -> throw IllegalArgumentException("Invalid Operation")
                 }
             }
 
             else -> {
-                stringBuffer.append("Invalid Node Type").toString()
+                throw IllegalArgumentException("Invalid Node Type")
             }
         }
     }

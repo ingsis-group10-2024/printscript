@@ -6,8 +6,8 @@ import strategy.Interpreter
 import variable.VariableFactory
 import variable.VariableMap
 
-class DeclarationNodeInterpreter(val variableMap: VariableMap) : Interpreter {
-    val variableFactory = VariableFactory()
+class DeclarationNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {
+    private val variableFactory = VariableFactory()
 
     override fun interpret(ast: ASTNode): VariableMap {
         require(ast is DeclarationNode) { "ast should be a DeclarationNode" }
@@ -20,7 +20,7 @@ class DeclarationNodeInterpreter(val variableMap: VariableMap) : Interpreter {
             variableMap.copy(
                 variableMap =
                     variableMap.variableMap.apply {
-                        put(variableFactory.createVariable(ast.identifier, ast.type), null)
+                        put(variableFactory.createVariable(ast.identifier, ast.type, true), null)
                     },
             )
         return newMap

@@ -31,7 +31,7 @@ class EnvFileReader(filePath: String) : Reader {
                 if (parts.size == 2) {
                     val variableName = parts[0].trim()
                     val variableValue = parts[1].trim().removeSurrounding("\"")
-                    val variableKey = variableFactory.createVariable(variableName, "String")
+                    val variableKey = variableFactory.createVariable(variableName, "String", false)
                     envMap[variableKey] = variableValue
                 } else {
                     println("Skipping malformed line: $line")
