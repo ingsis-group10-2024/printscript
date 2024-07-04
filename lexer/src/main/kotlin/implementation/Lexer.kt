@@ -151,10 +151,14 @@ class Lexer(inputStream: InputStream) {
                                 "Boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
                                 else -> {
-                                    if (position < line.length && line[position] == '=') {
+                                    var nextPosition = position
+                                    while (nextPosition < line.length && line[nextPosition].isWhitespace()) {
+                                        nextPosition++
+                                    }
+                                    if (nextPosition < line.length && "=><!;:".contains(line[nextPosition])) {
                                         TokenType.IDENTIFIER
                                     } else {
-                                        throw IllegalArgumentException("Unknown character at $lineNumber, position ${position + 1}")
+                                        throw IllegalArgumentException("Unknown character at line $lineNumber, position ${position + 1}")
                                     }
                                 }
                             }
