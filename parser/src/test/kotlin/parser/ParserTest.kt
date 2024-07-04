@@ -504,16 +504,24 @@ class ParserTest {
 
         val expected =
             listOf(
-                MethodNode("readInput", StringOperatorNode(
-                    "Ingrese su nombre: ",
-                    TokenType.STRING_LITERAL,
-                    Position(1, 2)
-                ), Position(1, 0)),
-                MethodNode("readInput", StringOperatorNode(
-                    "Ingrese su apellido: ",
-                    TokenType.STRING_LITERAL,
-                    Position(2, 2)
-                ), Position(2, 0)),
+                MethodNode(
+                    "readInput",
+                    StringOperatorNode(
+                        "Ingrese su nombre: ",
+                        TokenType.STRING_LITERAL,
+                        Position(1, 2),
+                    ),
+                    Position(1, 0),
+                ),
+                MethodNode(
+                    "readInput",
+                    StringOperatorNode(
+                        "Ingrese su apellido: ",
+                        TokenType.STRING_LITERAL,
+                        Position(2, 2),
+                    ),
+                    Position(2, 0),
+                ),
             )
 
         assertEquals(expected, result)
@@ -542,11 +550,15 @@ class ParserTest {
             listOf(
                 DeclarationAssignationNode(
                     DeclarationNode("name", TokenType.LET, Position(1, 1), "string", Position(1, 3)),
-                    MethodNode("readInput", StringOperatorNode(
-                        "Ingrese su nombre: ",
-                        TokenType.STRING_LITERAL,
-                        Position(1, 7)
-                    ), Position(1, 5)),
+                    MethodNode(
+                        "readInput",
+                        StringOperatorNode(
+                            "Ingrese su nombre: ",
+                            TokenType.STRING_LITERAL,
+                            Position(1, 7),
+                        ),
+                        Position(1, 5),
+                    ),
                 ),
             )
 
@@ -590,11 +602,15 @@ class ParserTest {
             listOf(
                 DeclarationAssignationNode(
                     DeclarationNode("name", TokenType.LET, Position(1, 0), "string", Position(3, 0)),
-                    MethodNode("readInput", StringOperatorNode(
-                        "Ingrese su nombre: ",
-                        TokenType.STRING_LITERAL,
-                        Position(7, 0)
-                    ), Position(5, 0)),
+                    MethodNode(
+                        "readInput",
+                        StringOperatorNode(
+                            "Ingrese su nombre: ",
+                            TokenType.STRING_LITERAL,
+                            Position(7, 0),
+                        ),
+                        Position(5, 0),
+                    ),
                 ),
                 MethodNode("println", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 0)), Position(1, 0)),
                 DeclarationAssignationNode(
@@ -714,16 +730,28 @@ class ParserTest {
                         IdentifierOperatorNode("x", Position(1, 4)),
                         NumberOperatorNode(10.0, Position(1, 6)),
                     ),
-                    listOf(MethodNode("println", StringOperatorNode(
-                        "x is 10",
-                        TokenType.STRING_LITERAL,
-                        Position(1, 11)
-                    ), Position(1, 9))),
-                    listOf(MethodNode("println", StringOperatorNode(
-                        "x is not 10",
-                        TokenType.STRING_LITERAL,
-                        Position(1, 19)
-                    ), Position(1, 17))),
+                    listOf(
+                        MethodNode(
+                            "println",
+                            StringOperatorNode(
+                                "x is 10",
+                                TokenType.STRING_LITERAL,
+                                Position(1, 11),
+                            ),
+                            Position(1, 9),
+                        ),
+                    ),
+                    listOf(
+                        MethodNode(
+                            "println",
+                            StringOperatorNode(
+                                "x is not 10",
+                                TokenType.STRING_LITERAL,
+                                Position(1, 19),
+                            ),
+                            Position(1, 17),
+                        ),
+                    ),
                 ),
                 AssignationNode("x", Position(1, 0), NumberOperatorNode(5.0, Position(5, 0))),
             )

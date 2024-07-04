@@ -323,7 +323,7 @@ class Parser(private val tokens: List<Token>) {
             StringOperatorNode(
                 envVariableName.value,
                 TokenType.STRING_LITERAL,
-                Position(envVariableName.column, envVariableName.line)
+                Position(envVariableName.column, envVariableName.line),
             ),
             Position(readEnvToken.column, readEnvToken.line),
         )
