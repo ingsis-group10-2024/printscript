@@ -105,7 +105,7 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.STRING_LITERAL -> {
                 val token = getTokenAndAdvance()
-                StringOperatorNode(token.value, Position(token.column, token.line))
+                StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.line))
             }
             TokenType.IDENTIFIER -> {
                 val token = getTokenAndAdvance()
@@ -122,7 +122,7 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.STRING_TYPE -> {
                 val token = getTokenAndAdvance()
-                StringOperatorNode(token.value, Position(token.column, token.line))
+                StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.line))
             }
             TokenType.OPEN_PARENTHESIS -> {
                 getTokenAndAdvance()
@@ -188,7 +188,7 @@ class Parser(private val tokens: List<Token>) {
             getCurrentSignificantToken().column,
             getCurrentSignificantToken().line,
         )
-        return AssignationNode("", Position(0, 0), StringOperatorNode(" ", Position(0, 0)))
+        return AssignationNode("", Position(0, 0), StringOperatorNode(" ", TokenType.STRING_LITERAL, Position(0, 0)))
     }
 
     private fun parseDeclarationAssignation(tokenType: TokenType): ASTNode {
@@ -238,7 +238,7 @@ class Parser(private val tokens: List<Token>) {
 
         return MethodNode(
             "readInput",
-            StringOperatorNode(content.value, Position(content.column, content.line)),
+            StringOperatorNode(content.value, TokenType.STRING_LITERAL, Position(content.column, content.line)),
             Position(readInputToken.column, readInputToken.line),
         )
     }
@@ -320,7 +320,11 @@ class Parser(private val tokens: List<Token>) {
 
         return MethodNode(
             "readEnv",
-            StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)),
+            StringOperatorNode(
+                envVariableName.value,
+                TokenType.STRING_LITERAL,
+                Position(envVariableName.column, envVariableName.line)
+            ),
             Position(readEnvToken.column, readEnvToken.line),
         )
     }

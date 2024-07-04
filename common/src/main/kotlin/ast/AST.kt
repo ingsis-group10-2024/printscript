@@ -17,7 +17,7 @@ data class IdentifierOperatorNode(val identifier: String, val identifierPosition
     }
 }
 
-data class StringOperatorNode(val value: String, val stringPosition: Position) : BinaryNode {
+data class StringOperatorNode(val value: String, val tokenType: TokenType, val stringPosition: Position) : BinaryNode {
     override fun accept(visitor: ASTVisitor) {
         visitor.visit(this)
     }

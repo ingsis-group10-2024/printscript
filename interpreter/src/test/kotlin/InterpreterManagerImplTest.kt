@@ -89,7 +89,7 @@ class InterpreterManagerImplTest {
 
     @Test
     fun test005_shouldInterpretMethodNode() {
-        val ast = MethodNode("println", StringOperatorNode("Hello, World!", Position(1, 1)), Position(1, 1))
+        val ast = MethodNode("println", StringOperatorNode("Hello, World!", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
 
@@ -174,13 +174,17 @@ class InterpreterManagerImplTest {
                     DeclarationNode("a", TokenType.LET, Position(1, 1), "string", Position(2, 1)),
                     BinaryOperationNode(
                         "+",
-                        StringOperatorNode("Hello", Position(3, 1)),
+                        StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(3, 1)),
                         NumberOperatorNode(5.0, Position(4, 1)),
                     ),
                 ),
                 MethodNode(
                     "println",
-                    BinaryOperationNode("+", IdentifierOperatorNode("a", Position(5, 1)), StringOperatorNode("", Position(6, 1))),
+                    BinaryOperationNode("+", IdentifierOperatorNode("a", Position(5, 1)), StringOperatorNode(
+                        "",
+                        TokenType.STRING_LITERAL,
+                        Position(6, 1)
+                    )),
                     Position(7, 1),
                 ),
             )
@@ -201,7 +205,7 @@ class InterpreterManagerImplTest {
                     BinaryOperationNode(
                         "+",
                         IdentifierOperatorNode("a", Position(6, 1)),
-                        StringOperatorNode("Hello", Position(7, 1)),
+                        StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(7, 1)),
                     ),
                 ),
                 MethodNode("println", IdentifierOperatorNode("x", Position(8, 1)), Position(9, 1)),
@@ -314,8 +318,16 @@ class InterpreterManagerImplTest {
 //
     @Test
     fun `Given IfOperatorNode with true condition, should interpret ifBody`() {
-        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
-        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
+        val ifBodyNode = MethodNode("println", StringOperatorNode(
+            "If Body Executed",
+            TokenType.STRING_LITERAL,
+            Position(1, 1)
+        ), Position(1, 1))
+        val elseBodyNode = MethodNode("println", StringOperatorNode(
+            "Else Body Executed",
+            TokenType.STRING_LITERAL,
+            Position(2, 1)
+        ), Position(2, 1))
         val ifNode = IfNode(BooleanOperatorNode(true, Position(3, 1)), listOf(ifBodyNode), listOf(elseBodyNode))
         val response = interpreter.interpret(listOf(ifNode))
         assertEquals("If Body Executed", response.second[0])
@@ -323,8 +335,16 @@ class InterpreterManagerImplTest {
 
     @Test
     fun `Given IfOperatorNode with false condition, should interpret elseBody`() {
-        val ifBodyNode = MethodNode("println", StringOperatorNode("If Body Executed", Position(1, 1)), Position(1, 1))
-        val elseBodyNode = MethodNode("println", StringOperatorNode("Else Body Executed", Position(2, 1)), Position(2, 1))
+        val ifBodyNode = MethodNode("println", StringOperatorNode(
+            "If Body Executed",
+            TokenType.STRING_LITERAL,
+            Position(1, 1)
+        ), Position(1, 1))
+        val elseBodyNode = MethodNode("println", StringOperatorNode(
+            "Else Body Executed",
+            TokenType.STRING_LITERAL,
+            Position(2, 1)
+        ), Position(2, 1))
         val ifNode = IfNode(BooleanOperatorNode(false, Position(3, 1)), listOf(ifBodyNode), listOf(elseBodyNode))
         val response = interpreter.interpret(listOf(ifNode))
         assertEquals("Else Body Executed", response.second[0])

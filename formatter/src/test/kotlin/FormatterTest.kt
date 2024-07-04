@@ -98,7 +98,7 @@ class FormatterTest {
     fun `formats method node`() {
         val nodes =
             listOf(
-                MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1)),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -111,7 +111,7 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
@@ -126,7 +126,7 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))),
-                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
@@ -141,8 +141,8 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
-                    listOf(MethodNode("print", StringOperatorNode("World", Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("World", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))),
                 ),
             )
         val result = formatter.format(nodes)
@@ -208,7 +208,7 @@ class FormatterTest {
         val nodes =
             listOf(
                 BinaryOperationNode("==", IdentifierOperatorNode("x", Position(1, 1)), NumberOperatorNode(5.0, Position(1, 1))),
-                MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1)),
+                MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1)),
             )
         val result = formatter.format(nodes)
         println(result)
@@ -222,7 +222,7 @@ class FormatterTest {
             listOf(
                 IfNode(
                     BooleanOperatorNode(true, Position(1, 1)),
-                    listOf(MethodNode("print", StringOperatorNode("Hello", Position(1, 1)), Position(1, 1))),
+                    listOf(MethodNode("print", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(1, 1)), Position(1, 1))),
                     null,
                 ),
             )
