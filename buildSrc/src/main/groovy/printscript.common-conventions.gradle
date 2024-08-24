@@ -1,40 +1,61 @@
 plugins {
-    id 'printscript.ktlint-conventions'
     id 'org.jetbrains.kotlin.jvm'
     id 'jacoco'
     id 'maven-publish'
 }
 
-version = "1.1.1-SNAPSHOT"
+version = "2.1.0"
 
 repositories {
     mavenCentral()
 }
+configurations {
+    ktlint
+}
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10'
-    implementation 'org.yaml:snakeyaml:1.28'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0'
-
-    testImplementation 'junit:junit:4.13.1'
-
-    // Dependencias de prueba de Kotlin
     testImplementation "org.jetbrains.kotlin:kotlin-test:1.8.10"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.8.10"
-}
-
-
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
+    ktlint("com.pinterest.ktlint:ktlint-cli:1.2.1") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
+        }
     }
+
 }
+
+tasks.register("ktlintCheck", JavaExec) {
+    classpath = configurations.ktlint           //clases necesarias para ejecutar esta tarea
+    mainClass = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt", "**.kts", "!**/build/**"
+}
+
+tasks.register("ktlintFormat", JavaExec) {
+    classpath = configurations.ktlint
+    mainClass = "com.pinterest.ktlint.Main"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
+}
+
+tasks.named("check") {
+    dependsOn tasks.named("ktlintCheck")
+}
+
+tasks.register('copyPreCommitHook', Copy) {
+    from new File(rootProject.rootDir, 'scripts/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    fileMode 0775
+}
+
+tasks.named("build"){
+    dependsOn(tasks.named("copyPreCommitHook"))
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
 
 publishing {
     repositories {
@@ -55,32 +76,6 @@ publishing {
     }
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
 
-jacoco {
-    toolVersion = "0.8.7"
-}
 
-tasks.test {
-    finalizedBy tasks.jacocoTestReport
-}
-
-tasks.jacocoTestReport {
-    dependsOn tasks.test
-    reports {
-        xml.required.set(true)
-        csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
-    }
-}
-
-build.dependsOn(tasks.named("test"))
