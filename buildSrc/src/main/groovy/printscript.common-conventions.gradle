@@ -1,6 +1,5 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'jacoco'
     id 'maven-publish'
 }
 
@@ -9,19 +8,39 @@ version = "2.1.0"
 repositories {
     mavenCentral()
 }
+
 configurations {
     ktlint
 }
 
 dependencies {
-    testImplementation "org.jetbrains.kotlin:kotlin-test:1.8.10"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.8.10"
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     ktlint("com.pinterest.ktlint:ktlint-cli:1.2.1") {
         attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.class, Bundling.EXTERNAL))
         }
     }
 
+
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 tasks.register("ktlintCheck", JavaExec) {

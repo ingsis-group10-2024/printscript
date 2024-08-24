@@ -1,0 +1,25 @@
+plugins {
+    id 'base'
+    id 'jacoco-report-aggregation'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    jacocoAggregation project(':lexer')
+    jacocoAggregation project(':parser')
+    jacocoAggregation project(':interpreter')
+    jacocoAggregation project(':formatter')
+    jacocoAggregation project(':cli')
+    jacocoAggregation project(':sca')
+}
+
+reporting {
+    reports {
+        testCodeCoverageReport(JacocoCoverageReport) {
+            testType = TestSuiteType.UNIT_TEST
+        }
+    }
+}
