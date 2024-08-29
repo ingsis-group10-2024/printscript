@@ -12,7 +12,11 @@ import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-class BinaryOperationNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
+class BinaryOperationNodeInterpreterV11(
+    val variableMap: VariableMap,
+    val envVariableMap: VariableMap,
+    val reader: Reader,
+) : Interpreter {
     override fun interpret(ast: ASTNode): String {
         return interpretBinaryNode(ast)
     }

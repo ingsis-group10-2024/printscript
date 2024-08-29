@@ -4,7 +4,6 @@ import ast.ASTNode
 import ast.MethodNode
 import reader.Reader
 import strategy.Interpreter
-import variable.Variable
 import variable.VariableMap
 
 class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
@@ -42,12 +41,13 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap:
             }
             "readEnv" -> {
                 val envValue = BinaryOperationNodeInterpreterV10(envVariableMap).interpret(ast.value)
-                if (envVariableMap.containsKey(Variable(envValue, "String", false))) {
-                    val value = envVariableMap.variableMap[Variable(envValue, "String", false)]
-                    return value!!
-                } else {
-                    throw IllegalArgumentException("Environment variable $envValue not found")
-                }
+//                if (envVariableMap.containsKey(Variable(envValue, "String", false))) {
+//                    val value = envVariableMap.variableMap[Variable(envValue, "String", false)]
+//                    return value!!
+//                } else {
+//                    throw IllegalArgumentException("Environment variable $envValue not found")
+//                }
+                return System.getenv(envValue)
             }
             else -> throw IllegalArgumentException(
                 "Invalid Method at column ${ast.methodNamePosition.column} row ${ast.methodNamePosition.line}",
