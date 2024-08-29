@@ -8,6 +8,7 @@ import config.ConfigLoader
 import config.VerificationConfig
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
+import token.TokenType
 import java.io.File
 
 class StaticCodeAnalyzerTest {
@@ -15,8 +16,8 @@ class StaticCodeAnalyzerTest {
     fun testAnalyzeWithCamelCaseJSONConfiguration() {
         val astNodes =
             listOf(
-                DeclarationNode("my_variable", Position(0, 0), "String", Position(1, 0)),
-                DeclarationNode("myVariable", Position(0, 1), "String", Position(1, 1)),
+                DeclarationNode("my_variable", TokenType.LET, Position(0, 0), "String", Position(1, 0)),
+                DeclarationNode("myVariable", TokenType.LET, Position(0, 1), "String", Position(1, 1)),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
@@ -39,8 +40,8 @@ class StaticCodeAnalyzerTest {
     fun testAnalyzeWithCamelCaseYAMLConfiguration() {
         val astNodes =
             listOf(
-                DeclarationNode("my_variable", Position(0, 0), "String", Position(1, 0)),
-                DeclarationNode("myVariable", Position(0, 1), "String", Position(1, 1)),
+                DeclarationNode("my_variable", TokenType.LET, Position(0, 0), "String", Position(1, 0)),
+                DeclarationNode("myVariable", TokenType.LET, Position(0, 1), "String", Position(1, 1)),
             )
 
         val configFilePath = "src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.yaml"

@@ -5,7 +5,7 @@ let w : number = y - x;
 println("hello world");
 println(x+y+z);
 let p : number = readInput("Enter a number: ");
-readEnv("PORT");
+let wo : String = readEnv("JAVA_HOME");
 let hello : String = "hello";
 let hello2 : String = "hello";
 if(hello == "hello") {
@@ -16,3 +16,4 @@ if(hello == "hello") {
     println("x is not 10");
 }
 println(g);
+println(wo);

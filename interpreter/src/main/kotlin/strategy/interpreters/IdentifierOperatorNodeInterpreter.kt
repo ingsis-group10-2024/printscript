@@ -20,6 +20,6 @@ class IdentifierOperatorNodeInterpreter(val variableMap: VariableMap) : Interpre
                         "line ${ast.identifierPosition.line} ",
                 )
         return variableMap.variableMap[variable]
-            ?: throw IllegalArgumentException("variable.Variable ${ast.identifier} not initialized")
+            ?: throw IllegalArgumentException("variable ${ast.identifier} not initialized")
     }
 }

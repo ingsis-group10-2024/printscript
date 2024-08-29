@@ -6,14 +6,15 @@ import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
+import emitter.PrinterEmitter
 import implementation.Formatter
 import implementation.LexerSingleton
 import implementation.LinterImpl
 import parser.Parser
+import reader.ConsoleInputReader
 import reader.EnvFileReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
-import strategy.InterpreterManagerImplStrategy
 import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
@@ -107,12 +108,20 @@ private fun executeCode(
     inputStream: InputStream,
 ) {
     val envVariableMap = EnvFileReader("cli/src/main/kotlin/.envTest").readEnvFile()
+    val consoleInputReader = ConsoleInputReader()
     val lexer = LexerSingleton.getInstance(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterManagerImplStrategy(VariableMap(HashMap()), envVariableMap)
-    interpreter.interpret(ast)
+    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), envVariableMap, consoleInputReader).buildInterpreter()
+    try {
+        val interpretedList = interpreter.interpret(ast)
+        for (interpreted in interpretedList.second) {
+            PrinterEmitter().print(interpreted)
+        }
+    } catch (e: Exception) {
+        println(e.message)
+    }
 }
 
 /*

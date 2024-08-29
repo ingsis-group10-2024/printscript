@@ -53,7 +53,7 @@ class Lexer(inputStream: InputStream) {
                     position++
                 }
                 '*' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.TIMES, currentChar.toString(), position + 1, lineNumber))
+                    tokens.add(tokenFactory.createToken(TokenType.MULTIPLY, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '/' -> {
@@ -130,9 +130,9 @@ class Lexer(inputStream: InputStream) {
                     position++ // moves past the closing quote
                 }
                 else -> {
-                    if (currentChar.isLetter()) {
+                    if (currentChar.isLetter() || currentChar == '_') {
                         val start = position
-                        while (position < line.length && line[position].isLetterOrDigit()) {
+                        while (position < line.length && (line[position].isLetterOrDigit() || line[position] == '_')) {
                             position++
                         }
                         val word = line.substring(start, position)
@@ -160,14 +160,18 @@ class Lexer(inputStream: InputStream) {
                         tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
                     } else if (currentChar.isDigit()) {
                         val start = position
-                        while (position < line.length && line[position].isDigit()) {
+                        var hasDecimalPoint = false
+                        while (position < line.length && line[position].isDigit() || (line[position] == '.' && !hasDecimalPoint)) {
+                            if (line[position] == '.') {
+                                hasDecimalPoint = true
+                            }
                             position++
                         }
                         tokens.add(
                             tokenFactory.createToken(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber),
                         )
                     } else {
-                        position++
+                        throw IllegalArgumentException("Unknown character at line $lineNumber, position ${position + 1}")
                     }
                 }
             }

@@ -49,7 +49,7 @@ class Parser(private val tokens: List<Token>) {
 
         return when (getCurrentSignificantToken().type) {
             TokenType.NUMERIC_LITERAL, TokenType.STRING_LITERAL, TokenType.IDENTIFIER, TokenType.STRING_TYPE,
-            TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
+            TokenType.OPEN_PARENTHESIS, TokenType.LET, TokenType.CONST, TokenType.PRINTLN, TokenType.READINPUT, TokenType.IF,
             TokenType.READENV,
             -> parseExpression()
             else ->
@@ -105,7 +105,7 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.STRING_LITERAL -> {
                 val token = getTokenAndAdvance()
-                StringOperatorNode(token.value, Position(token.column, token.line))
+                StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.line))
             }
             TokenType.IDENTIFIER -> {
                 val token = getTokenAndAdvance()
@@ -122,7 +122,7 @@ class Parser(private val tokens: List<Token>) {
             }
             TokenType.STRING_TYPE -> {
                 val token = getTokenAndAdvance()
-                StringOperatorNode(token.value, Position(token.column, token.line))
+                StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.line))
             }
             TokenType.OPEN_PARENTHESIS -> {
                 getTokenAndAdvance()
@@ -131,7 +131,10 @@ class Parser(private val tokens: List<Token>) {
                 node
             }
             TokenType.LET -> {
-                parseDeclarationAssignation()
+                parseDeclarationAssignation(TokenType.LET)
+            }
+            TokenType.CONST -> {
+                parseDeclarationAssignation(TokenType.CONST)
             }
             TokenType.PRINTLN -> {
                 parsePrintln()
@@ -146,7 +149,7 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun parseDeclaration(): DeclarationNode {
+    private fun parseDeclaration(tokenType: TokenType): DeclarationNode {
         getTokenAndAdvance() // let
 
         expectToken(TokenType.IDENTIFIER, "identifier")
@@ -162,6 +165,7 @@ class Parser(private val tokens: List<Token>) {
         val typeToken = getTokenAndAdvance()
         return DeclarationNode(
             identifierToken.value,
+            tokenType,
             Position(identifierToken.column, identifierToken.line),
             typeToken.value,
             Position(typeToken.column, typeToken.line),
@@ -184,11 +188,11 @@ class Parser(private val tokens: List<Token>) {
             getCurrentSignificantToken().column,
             getCurrentSignificantToken().line,
         )
-        return AssignationNode("", Position(0, 0), StringOperatorNode(" ", Position(0, 0)))
+        return AssignationNode("", Position(0, 0), StringOperatorNode(" ", TokenType.STRING_LITERAL, Position(0, 0)))
     }
 
-    private fun parseDeclarationAssignation(): ASTNode {
-        val declaration = parseDeclaration()
+    private fun parseDeclarationAssignation(tokenType: TokenType): ASTNode {
+        val declaration = parseDeclaration(tokenType)
         if (currentTokenIndex < tokens.size && isCurrentToken(TokenType.EQUALS)) {
             getTokenAndAdvance()
             val assignation = parseExpression() as ASTNode
@@ -234,7 +238,7 @@ class Parser(private val tokens: List<Token>) {
 
         return MethodNode(
             "readInput",
-            StringOperatorNode(content.value, Position(content.column, content.line)),
+            StringOperatorNode(content.value, TokenType.STRING_LITERAL, Position(content.column, content.line)),
             Position(readInputToken.column, readInputToken.line),
         )
     }
@@ -316,7 +320,11 @@ class Parser(private val tokens: List<Token>) {
 
         return MethodNode(
             "readEnv",
-            StringOperatorNode(envVariableName.value, Position(envVariableName.column, envVariableName.line)),
+            StringOperatorNode(
+                envVariableName.value,
+                TokenType.STRING_LITERAL,
+                Position(envVariableName.column, envVariableName.line),
+            ),
             Position(readEnvToken.column, readEnvToken.line),
         )
     }
