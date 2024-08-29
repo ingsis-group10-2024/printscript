@@ -114,9 +114,13 @@ private fun executeCode(
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterFactory(version, VariableMap(HashMap()), envVariableMap, consoleInputReader).buildInterpreter()
-    val interpretedList = interpreter.interpret(ast)
-    for (interpreted in interpretedList.second) {
-        PrinterEmitter().print(interpreted)
+    try {
+        val interpretedList = interpreter.interpret(ast)
+        for (interpreted in interpretedList.second) {
+            PrinterEmitter().print(interpreted)
+        }
+    } catch (e: Exception) {
+        println(e.message)
     }
 }
 
