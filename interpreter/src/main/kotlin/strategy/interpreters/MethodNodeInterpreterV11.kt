@@ -6,7 +6,7 @@ import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
+class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {
     private val stringBuffer = StringBuffer()
 
     override fun interpret(ast: ASTNode): String {
@@ -18,7 +18,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap:
     private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast.value)
+                val value = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
                 stringBuffer.append(value)
             }
             /*
@@ -30,7 +30,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap:
             readinput tiene que recibir un lector.
              */
             "readInput" -> {
-                val message = BinaryOperationNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast.value)
+                val message = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
                 // Read the input from the user
                 val inputValue = readInput(reader, message)
                 if (inputValue != null) {
@@ -40,13 +40,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap:
                 }
             }
             "readEnv" -> {
-                val envValue = BinaryOperationNodeInterpreterV10(envVariableMap).interpret(ast.value)
-//                if (envVariableMap.containsKey(Variable(envValue, "String", false))) {
-//                    val value = envVariableMap.variableMap[Variable(envValue, "String", false)]
-//                    return value!!
-//                } else {
-//                    throw IllegalArgumentException("Environment variable $envValue not found")
-//                }
+                val envValue = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.value)
                 return System.getenv(envValue)
             }
             else -> throw IllegalArgumentException(
