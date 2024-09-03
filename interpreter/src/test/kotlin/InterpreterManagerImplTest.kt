@@ -28,7 +28,7 @@ class InterpreterManagerImplTest {
         val envMap = VariableMap(HashMap())
         val reader = ConsoleInputReader()
 
-        interpreter = InterpreterManagerImplStrategyV11(variableMap, envMap, reader)
+        interpreter = InterpreterManagerImplStrategyV11(variableMap, reader)
     }
 
     @Test
