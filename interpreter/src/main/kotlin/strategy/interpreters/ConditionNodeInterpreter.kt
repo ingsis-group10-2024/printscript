@@ -7,7 +7,7 @@ import strategy.Interpreter
 import variable.VariableMap
 
 class ConditionNodeInterpreter(val variableMap: VariableMap, val reader: Reader) : Interpreter {
-    override fun interpret(ast: ASTNode): Any? {
+    override fun interpret(ast: ASTNode): Any {
         require(ast is ConditionNode) { "node should be a ConditionNode" }
         return interpretCondition(ast)
     }
