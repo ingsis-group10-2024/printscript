@@ -5,7 +5,3 @@ plugins {
 dependencies {
     implementation(project(":common"))
 }
-
-repositories {
-    mavenCentral()
-}

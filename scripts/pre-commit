@@ -1,16 +1,7 @@
 #!/bin/bash
 
+set -e.
+
 echo "***** Running pre-commit ******"
-
-git stash -q --keep-index
-
-echo "* Running ktlintFormat *"
-./gradlew ktlintFormat
-
-echo "* Running test *"
-./gradlew test
-
-echo "* Running jacoco *"
-./gradlew jacocoTestReport
-
+./gradlew build
 echo "***** Done with pre-commit ******"
