@@ -1,0 +1,30 @@
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint 'com.pinterest.ktlint:ktlint-cli:1.2.1'
+}
+
+tasks.register("ktlintCheck", JavaExec) {
+    classpath = configurations.ktlint
+    mainClass = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt", "**.kts", "!**/build/**"
+}
+
+tasks.register("ktlintFormat", JavaExec) {
+    classpath = configurations.ktlint
+    mainClass = "com.pinterest.ktlint.Main"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
+}
+
+
+//uild.dependsOn("ktlintCheck")
+
+//tasks.register("build"){
+//    dependsOn(tasks.named("ktlintCheck"))
+//}
+//tasks.named("build").configure {
+//    dependsOn("ktlintCheck")
+//}

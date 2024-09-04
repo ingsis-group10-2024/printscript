@@ -1,6 +1,8 @@
 plugins {
+    id 'printscript.ktlint-conventions'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
+    id 'jacoco'
 }
 
 version = "2.1.0"
@@ -9,27 +11,10 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    ktlint
-}
-
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    ktlint("com.pinterest.ktlint:ktlint-cli:1.2.1") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.class, Bundling.EXTERNAL))
-        }
-    }
-
-
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -43,22 +28,6 @@ java {
     }
 }
 
-tasks.register("ktlintCheck", JavaExec) {
-    classpath = configurations.ktlint           //clases necesarias para ejecutar esta tarea
-    mainClass = "com.pinterest.ktlint.Main"
-    args "src/**/*.kt", "**.kts", "!**/build/**"
-}
-
-tasks.register("ktlintFormat", JavaExec) {
-    classpath = configurations.ktlint
-    mainClass = "com.pinterest.ktlint.Main"
-    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
-    args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
-}
-
-tasks.named("check") {
-    dependsOn tasks.named("ktlintCheck")
-}
 
 tasks.register('copyPreCommitHook', Copy) {
     from new File(rootProject.rootDir, 'scripts/pre-commit')
@@ -66,15 +35,14 @@ tasks.register('copyPreCommitHook', Copy) {
     fileMode 0775
 }
 
-tasks.named("build"){
-    dependsOn(tasks.named("copyPreCommitHook"))
-}
+//build.dependsOn("copyPreCommitHook")
+//tasks.named("build").configure {
+//    dependsOn("copyPreCommitHook")
+//}
 
-
-test {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
-
 
 publishing {
     repositories {
@@ -97,8 +65,18 @@ publishing {
 
 
 
+tasks.withType(Test) {
+    finalizedBy 'jacocoTestReport' // Se asegura que la tarea de reporte se ejecute después de las pruebas
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
 
 
 
-
-
+check.dependsOn jacocoTestCoverageVerification // Asegura que la verificación de cobertura se ejecute con la tarea check
