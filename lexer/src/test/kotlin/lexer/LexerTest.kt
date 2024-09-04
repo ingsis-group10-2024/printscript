@@ -2,8 +2,8 @@ package lexer
 
 import implementation.LexerSingleton
 import implementation.MockInputStream
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import token.TokenType
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
