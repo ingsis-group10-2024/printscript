@@ -20,11 +20,8 @@ tasks.register("ktlintFormat", JavaExec) {
 }
 
 
-//uild.dependsOn("ktlintCheck")
 
-//tasks.register("build"){
-//    dependsOn(tasks.named("ktlintCheck"))
-//}
-//tasks.named("build").configure {
-//    dependsOn("ktlintCheck")
+
+//tasks.build{
+//    dependsOn 'ktlintCheck'
 //}
