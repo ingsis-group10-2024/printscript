@@ -5,7 +5,7 @@ let w : number = y - x;
 println("hello world");
 println(x+y+z);
 let p : number = readInput("Enter a number: ");
-let wo : String = readEnv("PORT");
+let wo : String = readEnv("JAVA_HOME");
 let hello : String = "hello";
 let hello2 : String = "hello";
 if(hello == "hello") {
@@ -17,6 +17,5 @@ if(hello == "hello") {
 }
 println(g);
 println(wo);
-readEnv("POSTGRES_HOST");
-let secret_key : String = readEnv("MY_ULTRA_SECRET_KEY");
-println(secret_key);
+let hoohola : number = "trololo";
+println(hoohola);

@@ -12,7 +12,6 @@ import implementation.LexerSingleton
 import implementation.LinterImpl
 import parser.Parser
 import reader.ConsoleInputReader
-import reader.EnvFileReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
 import variable.VariableMap
@@ -107,13 +106,12 @@ private fun executeCode(
     version: String,
     inputStream: InputStream,
 ) {
-    val envVariableMap = EnvFileReader("cli/src/main/kotlin/.envTest").readEnvFile()
     val consoleInputReader = ConsoleInputReader()
     val lexer = LexerSingleton.getInstance(inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), envVariableMap, consoleInputReader).buildInterpreter()
+    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
     try {
         val interpretedList = interpreter.interpret(ast)
         for (interpreted in interpretedList.second) {
