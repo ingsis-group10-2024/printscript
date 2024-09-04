@@ -5,6 +5,7 @@
       <option name="excludeList">
         <list>
           <option value="maven:org.jetbrains.kotlin:kotlin-gradle-plugin" />
+          <option value="maven:com.fasterxml.jackson.module:*" />
         </list>
       </option>
     </inspection_tool>

@@ -8,8 +8,8 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import reader.ConsoleInputReader
 import strategy.InterpreterManagerImplStrategyV11
 import token.TokenType
@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
 class InterpreterManagerImplTest {
     private lateinit var interpreter: InterpreterManagerImplStrategyV11
 
-    @Before
+    @BeforeEach
     fun setup() {
         val variableMap = VariableMap(HashMap())
         val reader = ConsoleInputReader()

@@ -2,7 +2,7 @@ import config.ConfigRule
 import config.JsonConfigLoader
 import config.VerificationConfig
 import config.YamlConfigLoader
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.FileNotFoundException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
