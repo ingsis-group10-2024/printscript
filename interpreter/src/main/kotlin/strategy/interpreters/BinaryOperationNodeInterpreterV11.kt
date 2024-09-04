@@ -12,7 +12,10 @@ import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-class BinaryOperationNodeInterpreterV11(val variableMap: VariableMap, val envVariableMap: VariableMap, val reader: Reader) : Interpreter {
+class BinaryOperationNodeInterpreterV11(
+    val variableMap: VariableMap,
+    val reader: Reader,
+) : Interpreter {
     override fun interpret(ast: ASTNode): String {
         return interpretBinaryNode(ast)
     }
@@ -23,9 +26,9 @@ class BinaryOperationNodeInterpreterV11(val variableMap: VariableMap, val envVar
             is NumberOperatorNode -> (ast.value).toString()
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
-            is MethodNode -> MethodNodeInterpreterV11(variableMap, envVariableMap, reader).interpret(ast)
+            is MethodNode -> MethodNodeInterpreterV11(variableMap, reader).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
-            is ConditionNode -> ConditionNodeInterpreter(variableMap, envVariableMap, reader).interpret(ast).toString()
+            is ConditionNode -> ConditionNodeInterpreter(variableMap, reader).interpret(ast).toString()
             is BinaryOperationNode -> {
                 val left = ast.left!!
                 val right = ast.right!!
