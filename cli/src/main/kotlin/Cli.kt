@@ -6,10 +6,9 @@ import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
+import controller.LexerVersionController
 import emitter.PrinterEmitter
 import implementation.Formatter
-import implementation.LexerSingleton
-import implementation.LinterImpl
 import parser.Parser
 import reader.ConsoleInputReader
 import sca.StaticCodeAnalyzer
@@ -43,10 +42,6 @@ class Cli() : CliktCommand() {
             "format" -> { // Este devuelve el file formateado
                 formatCode(version, inputStream)
             }
-
-            "validate" -> { // Este tiene que correr el lexer, dsp el parser, dsp el linter. y printear los errores que devuelve el linter
-                validateCode(version, inputStream)
-            }
             "analyze" -> { // Este tiene que correr el lexer, dsp el parser, dsp el sca. y printear los errores que devuelve el sca
                 analyzeCode(version, inputStream)
             }
@@ -58,7 +53,8 @@ class Cli() : CliktCommand() {
         version: String,
         inputStream: InputStream,
     ) {
-        val lexer = LexerSingleton.getInstance(inputStream)
+        val versionController = LexerVersionController()
+        val lexer = versionController.getLexer(version, inputStream)
         val tokens = lexer.getToken()
         val parser = Parser(tokens)
         val ast = parser.generateAST()
@@ -72,26 +68,12 @@ class Cli() : CliktCommand() {
     }
 }
 
-private fun validateCode(
-    version: String,
-    inputStream: InputStream,
-) {
-    val lexer = LexerSingleton.getInstance(inputStream)
-    val tokens = lexer.getToken()
-    val parser = Parser(tokens)
-    val ast = parser.generateAST()
-    val linter = LinterImpl()
-    val errors = linter.lint(ast)
-    for (error: String in errors) {
-        println(error)
-    }
-}
-
 private fun formatCode(
     version: String,
     inputStream: InputStream,
 ) {
-    val lexer = LexerSingleton.getInstance(inputStream)
+    val versionController = LexerVersionController()
+    val lexer = versionController.getLexer(version, inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
@@ -107,7 +89,8 @@ private fun executeCode(
     inputStream: InputStream,
 ) {
     val consoleInputReader = ConsoleInputReader()
-    val lexer = LexerSingleton.getInstance(inputStream)
+    val versionController = LexerVersionController()
+    val lexer = versionController.getLexer(version, inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()

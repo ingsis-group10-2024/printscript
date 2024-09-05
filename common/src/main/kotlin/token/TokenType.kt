@@ -11,7 +11,6 @@ enum class TokenType {
     READENV,
     IF,
     ELSE,
-    WHILE,
     RETURN,
     FINAL,
     PUBLIC,
