@@ -13,17 +13,19 @@ import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import config.ConfigRule
-import config.JsonConfigLoader
+import config.FormatterRules
 
-class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
-    private val config = jsonConfigLoader.loadConfig()
-    private val rules: List<ConfigRule> = config.activeRules
+class Formatter(configFileName: String) : ASTVisitor {
+    private val formatterRules = FormatterRules(configFileName)
     private val builder = StringBuilder()
 
     fun format(nodes: List<ASTNode>): String {
         nodes.forEach { it.accept(this) }
         return builder.toString()
+    }
+
+    private fun createWhitespaceString(n: Int): String {
+        return " ".repeat(n)
     }
 
     override fun visit(node: StringOperatorNode) {
@@ -36,26 +38,49 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
 
     override fun visit(node: BinaryOperationNode) {
         node.left?.accept(this)
-        builder.append(" ${node.symbol} ")
+        builder.append(createWhitespaceString(formatterRules.spacesBeforeAndAfterOperators))
+        builder.append(node.symbol)
+        builder.append(createWhitespaceString(formatterRules.spacesBeforeAndAfterOperators))
         node.right?.accept(this)
     }
 
+    // let x : number
     override fun visit(node: DeclarationNode) {
-        val colonWithSpaces = if (rules[3].enabled && rules[4].enabled) " : " else ":"
-        builder.append("let ${node.identifier}$colonWithSpaces${node.type}\n")
+        builder.append("${node.declarationType}".lowercase())
+        builder.append(createWhitespaceString(formatterRules.spacesBetweenTokens))
+        builder.append(node.identifier)
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeColon))
+        builder.append(":")
+        builder.append(createWhitespaceString(formatterRules.custom.spaceAfterColon))
+        builder.append(node.type)
+        builder.append(";\n")
     }
 
     override fun visit(node: DeclarationAssignationNode) {
-        val colonWithSpaces = if (rules[3].enabled && rules[4].enabled) " : " else ":"
-        builder.append("let ${node.declaration.identifier}$colonWithSpaces${node.declaration.type} = ")
+        builder.append("${node.declaration.declarationType}".lowercase())
+        builder.append(createWhitespaceString(formatterRules.spacesBetweenTokens))
+        builder.append(node.declaration.identifier)
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeColon))
+        builder.append(":")
+        builder.append(createWhitespaceString(formatterRules.custom.spaceAfterColon))
+        builder.append(node.declaration.type)
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeAndAfterAssignationOperator))
+        builder.append("=")
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeAndAfterAssignationOperator))
         node.assignation.accept(this)
         builder.append(";")
+        builder.append("\n".repeat(formatterRules.newlinesAfterSemicolon))
     }
 
+    // x = 5;
     override fun visit(node: AssignationNode) {
-        builder.append("${node.identifier} = ")
+        builder.append(node.identifier)
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeAndAfterAssignationOperator))
+        builder.append("=")
+        builder.append(createWhitespaceString(formatterRules.custom.spaceBeforeAndAfterAssignationOperator))
         node.assignation.accept(this)
         builder.append(";")
+        builder.append("\n".repeat(formatterRules.newlinesAfterSemicolon))
     }
 
     override fun visit(node: IdentifierOperatorNode) {
@@ -63,28 +88,30 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
     }
 
     override fun visit(node: MethodNode) {
-        builder.append("\n${" ".repeat(rules[6].value!!)}${node.name}(")
+        builder.append("\n".repeat(formatterRules.custom.newlinesBeforePrintln))
+        builder.append("${node.name}(")
         node.value.accept(this)
         builder.append(");")
     }
 
     override fun visit(node: BooleanOperatorNode) {
-        builder.append("${node.value}")
+        builder.append(node.value)
     }
 
     override fun visit(node: IfNode) {
-        val ifBlockIndent = "\n".repeat(rules[7].value!!)
-        builder.append("if (${formatNode(node.condition)}) {")
-        builder.append(ifBlockIndent)
-        for (ast in node.trueBranch) {
-            builder.append(formatNode(ast))
+        builder.append("if (")
+        node.condition.accept(this)
+        builder.append(") {")
+        builder.append("\n")
+        node.trueBranch.forEach {
+            it.accept(this)
         }
-        builder.append("\n}")
+        builder.append("}")
         node.elseBranch?.let {
             builder.append(" else {")
-            builder.append(ifBlockIndent)
-            for (ast in it) {
-                builder.append(formatNode(ast))
+            builder.append("\n")
+            it.forEach {
+                it.accept(this)
             }
             builder.append("}")
         }
@@ -94,35 +121,5 @@ class Formatter(jsonConfigLoader: JsonConfigLoader) : ASTVisitor {
         node.left.accept(this)
         builder.append(" ${node.conditionType} ")
         node.right.accept(this)
-    }
-
-    private fun formatNode(node: ASTNode?): String {
-        return when (node) {
-            is StringOperatorNode -> "\"${node.value}\""
-            is NumberOperatorNode -> "${node.value}"
-            is BinaryOperationNode -> {
-                "${formatNode(node.left)} ${node.symbol} ${formatNode(node.right)}"
-            }
-            is DeclarationNode -> {
-                // Agrega espacios antes y después del ":"
-                "let ${node.identifier} : ${node.type};"
-            }
-            is DeclarationAssignationNode -> {
-                // Agrega espacios antes y después del ":"
-                "let ${node.declaration.identifier} : ${node.declaration.type} = ${formatNode(node.assignation)};"
-            }
-            is AssignationNode -> {
-                "${node.identifier} = ${formatNode(node.assignation)};"
-            }
-            is IdentifierOperatorNode -> node.identifier
-            is MethodNode -> {
-                // Agrega un salto de línea y 0, 1 o 2 espacios antes del llamado a println
-                "${"\n".repeat(rules[6].value!!)}${node.name}(${formatNode(node.value)});"
-            }
-            is BooleanOperatorNode -> {
-                "${node.value}"
-            }
-            else -> ""
-        }
     }
 }
