@@ -92,6 +92,7 @@ class Formatter(configFileName: String) : ASTVisitor {
         builder.append("${node.name}(")
         node.value.accept(this)
         builder.append(");")
+        builder.append("\n")
     }
 
     override fun visit(node: BooleanOperatorNode) {
