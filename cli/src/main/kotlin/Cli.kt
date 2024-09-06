@@ -78,10 +78,9 @@ private fun formatCode(
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val filePath = "formatter/src/main/resources/test_config_formatter.json"
-    val jsonConfigLoader = JsonConfigLoader(filePath)
-    val formatter = Formatter(jsonConfigLoader)
+    val formatter = Formatter(filePath)
     val formattedCode = formatter.format(ast)
-    println("File formatted $formattedCode")
+    println("File formatted:\n$formattedCode")
 }
 
 private fun executeCode(
