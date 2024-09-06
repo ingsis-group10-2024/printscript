@@ -80,7 +80,7 @@ class FormatterTest {
 
         val result = formatter.format(listOf(methodNode))
 
-        val expected = "\nprintln(\"Hello World!\");"
+        val expected = "\nprintln(\"Hello World!\");\n"
         assertEquals(expected, result)
     }
 
