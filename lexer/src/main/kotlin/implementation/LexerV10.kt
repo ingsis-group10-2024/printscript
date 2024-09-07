@@ -1,5 +1,6 @@
 package implementation
 
+import interfaces.Lexer
 import token.Token
 import token.TokenType
 import token.factory.ConcreteTokenFactory
@@ -8,20 +9,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-object LexerSingleton {
-    private var instance: Lexer? = null
-    private var currentInputStream: InputStream? = null
-
-    fun getInstance(inputStream: InputStream): Lexer {
-        if (instance == null || inputStream != currentInputStream) {
-            instance = Lexer(inputStream)
-            currentInputStream = inputStream
-        }
-        return instance!!
-    }
-}
-
-class Lexer(inputStream: InputStream) {
+class LexerV10(inputStream: InputStream) : Lexer {
     private var lineNumber: Int = 1
     private val tokens = mutableListOf<Token>()
     private val tokenFactory = ConcreteTokenFactory()
@@ -139,21 +127,15 @@ class Lexer(inputStream: InputStream) {
                         val tokenType =
                             when (word) {
                                 "let" -> TokenType.LET
-                                "const" -> TokenType.CONST
                                 "println" -> TokenType.PRINTLN
-                                "if" -> TokenType.IF
-                                "else" -> TokenType.ELSE
-                                "while" -> TokenType.WHILE
                                 "return" -> TokenType.RETURN
-                                "readInput" -> TokenType.READINPUT
-                                "readEnv" -> TokenType.READENV
                                 "final" -> TokenType.FINAL
                                 "public" -> TokenType.PUBLIC
                                 "private" -> TokenType.PRIVATE
                                 "protected" -> TokenType.PROTECTED
-                                "String" -> TokenType.STRING_TYPE
+                                "string" -> TokenType.STRING_TYPE
                                 "number" -> TokenType.NUMBER_TYPE
-                                "Boolean" -> TokenType.BOOLEAN_TYPE
+                                "boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
                                 else -> TokenType.IDENTIFIER
                             }
@@ -178,7 +160,7 @@ class Lexer(inputStream: InputStream) {
         }
     }
 
-    fun getToken(): List<Token> {
+    override fun getToken(): List<Token> {
         return tokens
     }
 }
