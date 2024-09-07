@@ -133,9 +133,9 @@ class LexerV10(inputStream: InputStream) : Lexer {
                                 "public" -> TokenType.PUBLIC
                                 "private" -> TokenType.PRIVATE
                                 "protected" -> TokenType.PROTECTED
-                                "String" -> TokenType.STRING_TYPE
+                                "string" -> TokenType.STRING_TYPE
                                 "number" -> TokenType.NUMBER_TYPE
-                                "Boolean" -> TokenType.BOOLEAN_TYPE
+                                "boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
                                 else -> TokenType.IDENTIFIER
                             }
