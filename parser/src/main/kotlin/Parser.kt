@@ -158,7 +158,10 @@ class Parser(private val tokens: List<Token>) {
         expectToken(TokenType.COLON, "':'")
         getTokenAndAdvance()
 
-        if (!isCurrentToken(TokenType.NUMBER_TYPE) && !isCurrentToken(TokenType.STRING_TYPE)) {
+        if (!isCurrentToken(TokenType.NUMBER_TYPE) &&
+            !isCurrentToken(TokenType.STRING_TYPE) &&
+            !isCurrentToken(TokenType.BOOLEAN_TYPE)
+        ) {
             val currentToken = getCurrentSignificantToken()
             throwParseException("type", currentToken.value, currentToken.column, currentToken.row)
         }

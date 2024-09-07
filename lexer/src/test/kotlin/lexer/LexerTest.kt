@@ -282,7 +282,7 @@ class LexerTest {
 
     @Test
     fun `test lexer with string type`() {
-        val input = "String x = \"Hello\";"
+        val input = "string x = \"Hello\";"
         val lexer = versionController.getLexer("1.1", input.byteInputStream())
         val tokens = lexer.getToken()
         for (token in tokens) {
@@ -320,7 +320,7 @@ class LexerTest {
 
     @Test
     fun `test lexer with boolean type`() {
-        val input = "Boolean x = true;"
+        val input = "boolean x = true;"
         val lexer = versionController.getLexer("1.1", input.byteInputStream())
         val tokens = lexer.getToken()
         for (token in tokens) {
