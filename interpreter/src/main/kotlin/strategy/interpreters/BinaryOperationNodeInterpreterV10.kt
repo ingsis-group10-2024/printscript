@@ -160,5 +160,7 @@ class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap) : Interpre
         }
     }
 
-    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
+    private fun valueIsNumeric(value: String) :Boolean{
+       return value.toDoubleOrNull() != null || value.toIntOrNull() != null
+    }
 }

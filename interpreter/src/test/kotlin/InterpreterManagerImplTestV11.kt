@@ -15,11 +15,10 @@ import strategy.InterpreterManagerImplStrategyV11
 import token.TokenType
 import variable.Variable
 import variable.VariableMap
-import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class InterpreterManagerImplTest {
+class InterpreterManagerImplTestV11 {
     private lateinit var interpreter: InterpreterManagerImplStrategyV11
 
     @BeforeEach
@@ -458,5 +457,23 @@ class InterpreterManagerImplTest {
         val astList = listOf(ast1, ast2, ast3, ast4)
         val response = interpreter.interpret(astList)
         assertEquals(4, response.second.size)
+    }
+    @Test
+    fun test032_GivenBinaryNodesInterpretTheResult(){
+        val ast1 = BinaryOperationNode("/" , NumberOperatorNode(14.0 , Position(3, 1))
+            , NumberOperatorNode(7.0 , Position(5, 1)) )
+        val result = interpreter.interpret(listOf(ast1))
+        assertEquals("2.0" , result.second.get(0))
+    }
+    @Test
+    fun test033_WhenWantingToBuildAnInterpreterTheFactoryBuildsItDependingOnTheVersion(){
+        val variableMaptest = VariableMap(HashMap())
+        val factoryTestv10 = InterpreterFactory("1.0" , variableMaptest , null).buildInterpreter()
+
+        val ast1 = BinaryOperationNode("/" , NumberOperatorNode(14.0 , Position(3, 1))
+            , NumberOperatorNode(7.0 , Position(5, 1)) )
+        val result = factoryTestv10.interpret(listOf(ast1))
+
+        assertEquals("2.0" , result.second.get(0))
     }
 }
