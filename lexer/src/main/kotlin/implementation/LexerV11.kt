@@ -29,7 +29,7 @@ class LexerV11(inputStream: InputStream) : Lexer {
         while (position < line.length) {
             when (val currentChar = line[position]) {
                 ' ', '\t', '\n' -> {
-                    // tokens.add(tokenFactory.createToken(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
+                    tokens.add(tokenFactory.createToken(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
                     position++
                 }
                 '+' -> {
