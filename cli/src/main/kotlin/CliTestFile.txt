@@ -18,5 +18,5 @@ if(hello == "hello") {
 }
 println(g);
 println(wo);
-let hoohola : number = "trololo";
+let hoohola : string = "trololo";
 println(hoohola);

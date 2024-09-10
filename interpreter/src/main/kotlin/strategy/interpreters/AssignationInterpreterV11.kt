@@ -71,32 +71,24 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
         }
     }
 
-    // este metodo verifica que el tipo de la variable sea compatible con el tipo de la asignacion que se le quiere hacer
+    @Throws(IllegalArgumentException::class)
     private fun verifyTypeCompatibility11(
         variable: Variable,
         value: String,
     ): Boolean {
-        when (variable.type) {
-            "number" -> {
-                if (!isNumeric(value)) {
-                    throw IllegalArgumentException("Type mismatch: number expected for variable ${variable.identifier}")
-                }
-                return true
-            }
-            "string" -> {
-                if (isNumeric(value)) {
-                    throw IllegalArgumentException("Type mismatch: string expected for variable ${variable.identifier}")
-                }
-                return true
-            }
-            "boolean" -> {
-                if (value.toBooleanStrictOrNull() == null) {
-                    throw IllegalArgumentException("Type mismatch: boolean expected for variable ${variable.identifier}")
-                }
-                return true
+        return when (variable.type) {
+            "number" -> isNumeric(value)
+            "string" -> !isNumeric(value)
+            "boolean" -> value.toBooleanStrictOrNull() != null
+            else -> false
+        }.also {
+                result ->
+            if (!result) {
+                throw IllegalArgumentException(
+                    "Type mismatch: ${variable.type} expected for variable ${variable.identifier}, but got $value",
+                )
             }
         }
-        throw IllegalArgumentException("Type mismatch")
     }
 
     private fun isNumeric(value: String): Boolean {
