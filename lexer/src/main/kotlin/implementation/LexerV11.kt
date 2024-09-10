@@ -8,8 +8,7 @@ import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.LinkedList
-import java.util.Queue
+import java.util.*
 
 class LexerV11(inputStream: InputStream) : Lexer {
     private val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8))
@@ -26,7 +25,7 @@ class LexerV11(inputStream: InputStream) : Lexer {
 
     override fun getTokens(): List<Token> {
         // Procesa los tokens si no hay más tokens pendientes y aún hay líneas por leer.
-        while (tokens.isEmpty() && currentLine != null) {
+        while (currentLine != null) {
             processLine(currentLine!!)
             currentLine = reader.readLine()
             position = 0

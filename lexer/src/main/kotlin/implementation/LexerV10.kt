@@ -26,7 +26,7 @@ class LexerV10(inputStream: InputStream) : Lexer {
 
     override fun getTokens(): List<Token> {
         // Procesa los tokens si no hay más tokens pendientes y aún hay líneas por leer.
-        while (tokens.isEmpty() && currentLine != null) {
+        while (currentLine != null) {
             processLine(currentLine!!)
             currentLine = reader.readLine()
             position = 0

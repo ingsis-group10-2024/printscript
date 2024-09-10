@@ -119,7 +119,7 @@ class LexerTest {
         val input =
             buildString {
                 repeat(1000) {
-                    append("let x = 10;") // 9 tokens
+                    append("let x = 10;\n") // 9 tokens
                 }
             }
         val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
