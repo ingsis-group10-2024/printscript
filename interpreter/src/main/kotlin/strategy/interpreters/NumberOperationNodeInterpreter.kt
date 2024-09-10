@@ -1,3 +1,3 @@
 package strategy.interpreters
 
-class NumberOperationNodeInterpreter
+class NumberOperationNodeInterpreter()

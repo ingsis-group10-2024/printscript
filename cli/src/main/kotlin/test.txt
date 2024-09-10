@@ -1,0 +1,5 @@
+let something: boolean = true;
+if (something)
+{
+  println("Entered if");
+}

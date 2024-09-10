@@ -55,7 +55,7 @@ class Cli() : CliktCommand() {
     ) {
         val versionController = LexerVersionController()
         val lexer = versionController.getLexer(version, inputStream)
-        val tokens = lexer.getToken()
+        val tokens = lexer.getTokens()
         val parser = Parser(tokens)
         val ast = parser.generateAST()
         val filePath = "sca/src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
@@ -74,7 +74,7 @@ private fun formatCode(
 ) {
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
-    val tokens = lexer.getToken()
+    val tokens = lexer.getTokens()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val filePath = "formatter/src/main/resources/test_config_formatter.json"
@@ -90,7 +90,7 @@ private fun executeCode(
     val consoleInputReader = ConsoleInputReader()
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
-    val tokens = lexer.getToken()
+    val tokens = lexer.getTokens()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()

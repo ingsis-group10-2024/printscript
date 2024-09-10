@@ -8,24 +8,34 @@ import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+import java.util.*
 
 class LexerV11(inputStream: InputStream) : Lexer {
+    private val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8))
     private var lineNumber: Int = 1
-    private val tokens = mutableListOf<Token>()
+    private var currentLine: String? = null
+    private var position: Int = 0
     private val tokenFactory = ConcreteTokenFactory()
+    private val tokens: Queue<Token> = LinkedList()
 
     init {
-        BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8)).useLines { lines ->
-            lines.forEach { line ->
-                processLine(line)
-                lineNumber++
-            }
-        }
+        // Inicializamos con la primera línea para empezar el procesamiento.
+        currentLine = reader.readLine()
     }
 
-    private fun processLine(line: String) {
-        var position = 0
+    override fun getTokens(): List<Token> {
+        // Procesa los tokens si no hay más tokens pendientes y aún hay líneas por leer.
+        while (currentLine != null) {
+            processLine(currentLine!!)
+            currentLine = reader.readLine()
+            position = 0
+            lineNumber++
+        }
 
+        return tokens.toList()
+    }
+
+    override fun processLine(line: String) {
         while (position < line.length) {
             when (val currentChar = line[position]) {
                 ' ', '\t', '\n' -> {
@@ -138,9 +148,9 @@ class LexerV11(inputStream: InputStream) : Lexer {
                                 "public" -> TokenType.PUBLIC
                                 "private" -> TokenType.PRIVATE
                                 "protected" -> TokenType.PROTECTED
-                                "String" -> TokenType.STRING_TYPE
+                                "string" -> TokenType.STRING_TYPE
                                 "number" -> TokenType.NUMBER_TYPE
-                                "Boolean" -> TokenType.BOOLEAN_TYPE
+                                "boolean" -> TokenType.BOOLEAN_TYPE
                                 "true", "false" -> TokenType.BOOLEAN_LITERAL
                                 else -> TokenType.IDENTIFIER
                             }
@@ -163,9 +173,5 @@ class LexerV11(inputStream: InputStream) : Lexer {
                 }
             }
         }
-    }
-
-    override fun getToken(): List<Token> {
-        return tokens
     }
 }

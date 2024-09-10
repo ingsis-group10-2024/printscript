@@ -1,4 +1,4 @@
-package lexer
+package lexerv10
 
 import controller.LexerVersionController
 import implementation.MockInputStream
@@ -14,88 +14,27 @@ class LexerTest {
     @Test
     fun testBasicArithmetic() {
         val input = "+ - * /"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
-        println(tokens)
-        assertEquals(7, tokens.size)
-        assertEquals(TokenType.PLUS, tokens[0].type)
-        assertEquals(TokenType.WHITESPACE, tokens[1].type)
-        assertEquals(TokenType.MINUS, tokens[2].type)
-        assertEquals(TokenType.WHITESPACE, tokens[3].type)
-        assertEquals(TokenType.MULTIPLY, tokens[4].type)
-        assertEquals(TokenType.WHITESPACE, tokens[5].type)
-        assertEquals(TokenType.DIVIDE, tokens[6].type)
-    }
-
-    @Test
-    fun `test read input`() {
-        val input = "readInput();"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
-        println(tokens)
-        assertEquals(4, tokens.size)
-        assertEquals(TokenType.READINPUT, tokens[0].type)
-        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[1].type)
-        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[2].type)
-        assertEquals(TokenType.SEMICOLON, tokens[3].type)
-    }
-
-    @Test
-    fun `test read env`() {
-        val input = "readEnv();"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
-        println(tokens)
-        assertEquals(4, tokens.size)
-        assertEquals(TokenType.READENV, tokens[0].type)
-        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[1].type)
-        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[2].type)
-        assertEquals(TokenType.SEMICOLON, tokens[3].type)
-    }
-
-    @Test
-    fun `test convertToToken with small input`() {
-        val input =
-            "let x = 10;\n" +
-                "let y = 20;"
         val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
-        val lexer = versionController.getLexer("1.1", inputStream)
-        val actualTokens = lexer.getToken()
-        println(actualTokens)
-        assertEquals(TokenType.LET, actualTokens[0].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[1].type)
-        assertEquals(TokenType.IDENTIFIER, actualTokens[2].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[3].type)
-        assertEquals(TokenType.EQUALS, actualTokens[4].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
-        assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
-        assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
-    }
+        val lexer = versionController.getLexer("1.0", inputStream)
+        val tokens = lexer.getTokens()
 
-    @Test
-    fun `test convertToToken with large input`() {
-        val input =
-            buildString {
-                repeat(1000) {
-                    append("let x = 10;\n") // 9 tokens
-                }
-            }
-        val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
-        val lexer = versionController.getLexer("1.1", inputStream)
+        // Definimos los tokens esperados
+        val expectedTokens =
+            listOf(
+                TokenType.PLUS,
+                TokenType.WHITESPACE,
+                TokenType.MINUS,
+                TokenType.WHITESPACE,
+                TokenType.MULTIPLY,
+                TokenType.WHITESPACE,
+                TokenType.DIVIDE,
+            )
 
-        val actualTokens = lexer.getToken()
-
-        println(actualTokens.size)
-
-        assertEquals(TokenType.LET, actualTokens[0].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[1].type)
-        assertEquals(TokenType.IDENTIFIER, actualTokens[2].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[3].type)
-        assertEquals(TokenType.EQUALS, actualTokens[4].type)
-        assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
-        assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
-        assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
-        assertEquals(8000, actualTokens.size)
+        // Verificamos que los tipos de tokens generados son los esperados
+        assertEquals(expectedTokens.size, tokens.size)
+        expectedTokens.forEachIndexed { index, expectedType ->
+            assertEquals(expectedType, tokens[index].type)
+        }
     }
 
     @Test
@@ -106,10 +45,10 @@ class LexerTest {
         val mockInputStream = MockInputStream(line, numberOfLines)
 
         // Initialize the Lexer
-        val lexer = versionController.getLexer("1.1", mockInputStream)
+        val lexer = versionController.getLexer("1.0", mockInputStream)
 
         // Convert the content to tokens
-        val tokens = lexer.getToken()
+        val tokens = lexer.getTokens()
 
         println(tokens[0])
         println(tokens[1])
@@ -131,69 +70,55 @@ class LexerTest {
     }
 
     @Test
-    fun `test lexer with if else`() {
-        val input = "if (x > 10) { println(\"Hello\") } else { println(\"World\") }"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
-        for (token in tokens) {
-            println(token)
-        }
-        assertEquals(29, tokens.size)
-        assertEquals(TokenType.IF, tokens[0].type)
-        assertEquals(TokenType.WHITESPACE, tokens[1].type)
-        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[2].type)
-        assertEquals(TokenType.IDENTIFIER, tokens[3].type)
-        assertEquals(TokenType.WHITESPACE, tokens[4].type)
-        assertEquals(TokenType.GREATER_THAN, tokens[5].type)
-        assertEquals(TokenType.WHITESPACE, tokens[6].type)
-        assertEquals(TokenType.NUMERIC_LITERAL, tokens[7].type)
-        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[8].type)
-        assertEquals(TokenType.WHITESPACE, tokens[9].type)
-        assertEquals(TokenType.OPEN_BRACKET, tokens[10].type)
-        assertEquals(TokenType.WHITESPACE, tokens[11].type)
-        assertEquals(TokenType.PRINTLN, tokens[12].type)
-        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[13].type)
-        assertEquals(TokenType.STRING_LITERAL, tokens[14].type)
-        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[15].type)
-        assertEquals(TokenType.WHITESPACE, tokens[16].type)
-        assertEquals(TokenType.CLOSE_BRACKET, tokens[17].type)
-        assertEquals(TokenType.WHITESPACE, tokens[18].type)
-        assertEquals(TokenType.ELSE, tokens[19].type)
-        assertEquals(TokenType.WHITESPACE, tokens[20].type)
-        assertEquals(TokenType.OPEN_BRACKET, tokens[21].type)
-        assertEquals(TokenType.WHITESPACE, tokens[22].type)
-        assertEquals(TokenType.PRINTLN, tokens[23].type)
-        assertEquals(TokenType.OPEN_PARENTHESIS, tokens[24].type)
-        assertEquals(TokenType.STRING_LITERAL, tokens[25].type)
-        assertEquals(TokenType.CLOSE_PARENTHESIS, tokens[26].type)
-        assertEquals(TokenType.WHITESPACE, tokens[27].type)
-        assertEquals(TokenType.CLOSE_BRACKET, tokens[28].type)
+    fun `test convertToToken with small input`() {
+        val input =
+            "let x = 10;\n" +
+                "let y = 20;"
+        val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
+        val lexer = versionController.getLexer("1.0", inputStream)
+        val actualTokens = lexer.getTokens()
+        println(actualTokens)
+        assertEquals(TokenType.LET, actualTokens[0].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[1].type)
+        assertEquals(TokenType.IDENTIFIER, actualTokens[2].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[3].type)
+        assertEquals(TokenType.EQUALS, actualTokens[4].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
+        assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
+        assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
     }
 
     @Test
-    fun `test lexer with constants`() {
-        val input = "const x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
-        for (token in tokens) {
-            println(token)
-        }
-        assertEquals(8, tokens.size)
-        assertEquals(TokenType.CONST, tokens[0].type)
-        assertEquals(TokenType.WHITESPACE, tokens[1].type)
-        assertEquals(TokenType.IDENTIFIER, tokens[2].type)
-        assertEquals(TokenType.WHITESPACE, tokens[3].type)
-        assertEquals(TokenType.EQUALS, tokens[4].type)
-        assertEquals(TokenType.WHITESPACE, tokens[5].type)
-        assertEquals(TokenType.NUMERIC_LITERAL, tokens[6].type)
-        assertEquals(TokenType.SEMICOLON, tokens[7].type)
+    fun `test convertToToken with large input`() {
+        val input =
+            buildString {
+                repeat(1000) {
+                    append("let x = 10;") // 9 tokens
+                }
+            }
+        val inputStream = ByteArrayInputStream(input.toByteArray(StandardCharsets.UTF_8))
+        val lexer = versionController.getLexer("1.0", inputStream)
+
+        val actualTokens = lexer.getTokens()
+
+        println(actualTokens.size)
+
+        assertEquals(TokenType.LET, actualTokens[0].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[1].type)
+        assertEquals(TokenType.IDENTIFIER, actualTokens[2].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[3].type)
+        assertEquals(TokenType.EQUALS, actualTokens[4].type)
+        assertEquals(TokenType.WHITESPACE, actualTokens[5].type)
+        assertEquals(TokenType.NUMERIC_LITERAL, actualTokens[6].type)
+        assertEquals(TokenType.SEMICOLON, actualTokens[7].type)
+        assertEquals(8000, actualTokens.size)
     }
 
     @Test
     fun `test lexer with return statement`() {
         val input = "return 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -207,8 +132,8 @@ class LexerTest {
     @Test
     fun `test lexer with final keyword`() {
         val input = "final x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -226,8 +151,8 @@ class LexerTest {
     @Test
     fun `test lexer with public keyword`() {
         val input = "public x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -245,8 +170,8 @@ class LexerTest {
     @Test
     fun `test lexer with private keyword`() {
         val input = "private x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -264,8 +189,8 @@ class LexerTest {
     @Test
     fun `test lexer with protected keyword`() {
         val input = "protected x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -282,9 +207,9 @@ class LexerTest {
 
     @Test
     fun `test lexer with string type`() {
-        val input = "String x = \"Hello\";"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val input = "string x = \"Hello\";"
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -302,8 +227,8 @@ class LexerTest {
     @Test
     fun `test lexer with number type`() {
         val input = "number x = 10;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -320,9 +245,9 @@ class LexerTest {
 
     @Test
     fun `test lexer with boolean type`() {
-        val input = "Boolean x = true;"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val input = "boolean x = true;"
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -340,8 +265,8 @@ class LexerTest {
     @Test
     fun `test lexer with boolean literals`() {
         val input = "true false"
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
@@ -354,8 +279,8 @@ class LexerTest {
     @Test
     fun `test lexer with operators`() {
         val input = "== != > >= < <="
-        val lexer = versionController.getLexer("1.1", input.byteInputStream())
-        val tokens = lexer.getToken()
+        val lexer = versionController.getLexer("1.0", input.byteInputStream())
+        val tokens = lexer.getTokens()
         for (token in tokens) {
             println(token)
         }
