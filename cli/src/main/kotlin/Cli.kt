@@ -13,6 +13,7 @@ import parser.Parser
 import reader.ConsoleInputReader
 import sca.StaticCodeAnalyzer
 import sca.StaticCodeAnalyzerError
+import token.Token
 import variable.VariableMap
 import java.io.FileInputStream
 import java.io.InputStream
@@ -55,7 +56,12 @@ class Cli() : CliktCommand() {
     ) {
         val versionController = LexerVersionController()
         val lexer = versionController.getLexer(version, inputStream)
-        val tokens = lexer.getTokens()
+        val tokens = mutableListOf<Token>()
+        var token = lexer.getNextToken()
+        while (token != null) {
+            tokens.add(token)
+            token = lexer.getNextToken()
+        }
         val parser = Parser(tokens)
         val ast = parser.generateAST()
         val filePath = "sca/src/test/kotlin/sca/resources/StaticCodeAnalyzerRules.json"
@@ -74,7 +80,13 @@ private fun formatCode(
 ) {
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
-    val tokens = lexer.getTokens()
+
+    val tokens = mutableListOf<Token>()
+    var token = lexer.getNextToken()
+    while (token != null) {
+        tokens.add(token)
+        token = lexer.getNextToken()
+    }
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val filePath = "formatter/src/main/resources/test_config_formatter.json"
@@ -90,7 +102,15 @@ private fun executeCode(
     val consoleInputReader = ConsoleInputReader()
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
-    val tokens = lexer.getTokens()
+
+    val tokens = mutableListOf<Token>()
+    var token = lexer.getNextToken()
+    while (token != null) {
+        tokens.add(token)
+        token = lexer.getNextToken()
+    }
+    println(tokens)
+
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()

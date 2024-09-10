@@ -8,170 +8,199 @@ import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.*
 
 class LexerV11(inputStream: InputStream) : Lexer {
     private val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream, StandardCharsets.UTF_8))
+    private var currentChar: Char? = null
     private var lineNumber: Int = 1
-    private var currentLine: String? = null
     private var position: Int = 0
     private val tokenFactory = ConcreteTokenFactory()
-    private val tokens: Queue<Token> = LinkedList()
 
     init {
-        // Inicializamos con la primera línea para empezar el procesamiento.
-        currentLine = reader.readLine()
+        readNextChar() // Read the first character
     }
 
-    override fun getTokens(): List<Token> {
-        // Procesa los tokens si no hay más tokens pendientes y aún hay líneas por leer.
-        while (currentLine != null) {
-            processLine(currentLine!!)
-            currentLine = reader.readLine()
-            position = 0
+    private fun readNextChar(): Char? {
+        currentChar = reader.read().takeIf { it != -1 }?.toChar()
+        if (currentChar == '\n') {
             lineNumber++
+            position = 0
+        } else {
+            position++
+        }
+        return currentChar
+    }
+
+    private fun processNextToken(): Token? {
+        while (currentChar?.isWhitespace() == true) {
+            val startPos = position
+            val whitespace =
+                buildString {
+                    while (currentChar?.isWhitespace() == true) {
+                        append(currentChar)
+                        readNextChar()
+                    }
+                }
+            if (currentChar == null) {
+                // End of input, don't return a whitespace token
+                return null
+            }
+            return tokenFactory.createToken(TokenType.WHITESPACE, whitespace, startPos, lineNumber)
         }
 
-        return tokens.toList()
-    }
+        currentChar ?: return null // End of input
 
-    override fun processLine(line: String) {
-        while (position < line.length) {
-            when (val currentChar = line[position]) {
-                ' ', '\t', '\n' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.WHITESPACE, currentChar.toString(), position + 1, lineNumber))
-                    position++
+        return when (currentChar) {
+            '+' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.PLUS, "+", position - 1, lineNumber)
+            }
+            '-' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.MINUS, "-", position - 1, lineNumber)
+            }
+            '*' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.MULTIPLY, "*", position - 1, lineNumber)
+            }
+            '/' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.DIVIDE, "/", position - 1, lineNumber)
+            }
+            '=' -> {
+                readNextChar()
+                if (currentChar == '=') {
+                    readNextChar()
+                    tokenFactory.createToken(TokenType.EQUALS_EQUALS, "==", position - 2, lineNumber)
+                } else {
+                    tokenFactory.createToken(TokenType.EQUALS, "=", position - 1, lineNumber)
                 }
-                '+' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.PLUS, currentChar.toString(), position + 1, lineNumber))
-                    position++
+            }
+            '!' -> {
+                readNextChar()
+                if (currentChar == '=') {
+                    readNextChar()
+                    tokenFactory.createToken(TokenType.UNEQUALS, "!=", position - 2, lineNumber)
+                } else {
+                    throw IllegalArgumentException("Unexpected character '$currentChar' at line $lineNumber")
                 }
-                '-' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.MINUS, currentChar.toString(), position + 1, lineNumber))
-                    position++
+            }
+            ';' -> {
+                val startPos = position
+                readNextChar()
+                tokenFactory.createToken(TokenType.SEMICOLON, ";", startPos, lineNumber)
+            }
+            ':' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.COLON, ":", position - 1, lineNumber)
+            }
+
+            '>' -> {
+                readNextChar()
+                if (currentChar == '=') {
+                    readNextChar()
+                    tokenFactory.createToken(TokenType.GREATER_THAN_EQUAL, ">=", position - 2, lineNumber)
+                } else {
+                    tokenFactory.createToken(TokenType.GREATER_THAN, ">", position - 1, lineNumber)
                 }
-                '*' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.MULTIPLY, currentChar.toString(), position + 1, lineNumber))
-                    position++
+            }
+            '<' -> {
+                readNextChar()
+                if (currentChar == '=') {
+                    readNextChar()
+                    tokenFactory.createToken(TokenType.LESSER_THAN_EQUAL, "<=", position - 2, lineNumber)
+                } else {
+                    tokenFactory.createToken(TokenType.LESSER_THAN, "<", position - 1, lineNumber)
                 }
-                '/' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.DIVIDE, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '=' -> {
-                    if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.EQUALS_EQUALS, "==", position + 1, lineNumber))
-                        position += 2
-                    } else {
-                        tokens.add(tokenFactory.createToken(TokenType.EQUALS, currentChar.toString(), position + 1, lineNumber))
-                        position++
-                    }
-                }
-                '!' -> {
-                    if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.UNEQUALS, "!=", position + 1, lineNumber))
-                        position += 2
-                    } else {
-                        position++
-                    }
-                }
-                ';' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.SEMICOLON, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                ':' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.COLON, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '>' -> {
-                    if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.GREATER_THAN_EQUAL, ">=", position + 1, lineNumber))
-                        position += 2
-                    } else {
-                        tokens.add(tokenFactory.createToken(TokenType.GREATER_THAN, currentChar.toString(), position + 1, lineNumber))
-                        position++
-                    }
-                }
-                '<' -> {
-                    if (position + 1 < line.length && line[position + 1] == '=') {
-                        tokens.add(tokenFactory.createToken(TokenType.LESSER_THAN_EQUAL, "<=", position + 1, lineNumber))
-                        position += 2
-                    } else {
-                        tokens.add(tokenFactory.createToken(TokenType.LESSER_THAN, currentChar.toString(), position + 1, lineNumber))
-                        position++
-                    }
-                }
-                '(' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.OPEN_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                ')' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.CLOSE_PARENTHESIS, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '{' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.OPEN_BRACKET, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '}' -> {
-                    tokens.add(tokenFactory.createToken(TokenType.CLOSE_BRACKET, currentChar.toString(), position + 1, lineNumber))
-                    position++
-                }
-                '"', '\'' -> { // this checks for string literals
-                    val start = position
-                    position++ // moves past the opening quote
-                    while (position < line.length && line[position] != currentChar) {
-                        position++
-                    }
-                    val stringLiteral = line.substring(start + 1, position) // removes the quotes
-                    tokens.add(tokenFactory.createToken(TokenType.STRING_LITERAL, stringLiteral, start + 1, lineNumber))
-                    position++ // moves past the closing quote
-                }
-                else -> {
-                    if (currentChar.isLetter() || currentChar == '_') {
-                        val start = position
-                        while (position < line.length && (line[position].isLetterOrDigit() || line[position] == '_')) {
-                            position++
+            }
+            '(' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.OPEN_PARENTHESIS, "(", position - 1, lineNumber)
+            }
+            ')' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.CLOSE_PARENTHESIS, ")", position - 1, lineNumber)
+            }
+            '{' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.OPEN_BRACKET, "{", position - 1, lineNumber)
+            }
+            '}' -> {
+                readNextChar()
+                tokenFactory.createToken(TokenType.CLOSE_BRACKET, "}", position - 1, lineNumber)
+            }
+            '"', '\'' -> { // Handle string literals
+                val quote = currentChar!!
+                readNextChar() // Move past the opening quote
+                val start = position - 1
+                val stringLiteral =
+                    buildString {
+                        while (currentChar != quote && currentChar != null) {
+                            append(currentChar)
+                            readNextChar()
                         }
-                        val word = line.substring(start, position)
-                        val tokenType =
-                            when (word) {
-                                "let" -> TokenType.LET
-                                "const" -> TokenType.CONST
-                                "println" -> TokenType.PRINTLN
-                                "if" -> TokenType.IF
-                                "else" -> TokenType.ELSE
-                                "return" -> TokenType.RETURN
-                                "readInput" -> TokenType.READINPUT
-                                "readEnv" -> TokenType.READENV
-                                "final" -> TokenType.FINAL
-                                "public" -> TokenType.PUBLIC
-                                "private" -> TokenType.PRIVATE
-                                "protected" -> TokenType.PROTECTED
-                                "string" -> TokenType.STRING_TYPE
-                                "number" -> TokenType.NUMBER_TYPE
-                                "boolean" -> TokenType.BOOLEAN_TYPE
-                                "true", "false" -> TokenType.BOOLEAN_LITERAL
-                                else -> TokenType.IDENTIFIER
-                            }
-                        tokens.add(tokenFactory.createToken(tokenType, word, start + 1, lineNumber))
-                    } else if (currentChar.isDigit()) {
-                        val start = position
-                        var hasDecimalPoint = false
-                        while (position < line.length && line[position].isDigit() || (line[position] == '.' && !hasDecimalPoint)) {
-                            if (line[position] == '.') {
-                                hasDecimalPoint = true
-                            }
-                            position++
-                        }
-                        tokens.add(
-                            tokenFactory.createToken(TokenType.NUMERIC_LITERAL, line.substring(start, position), start + 1, lineNumber),
-                        )
-                    } else {
-                        throw IllegalArgumentException("Unknown character at line $lineNumber, position ${position + 1}")
                     }
+                readNextChar() // Move past the closing quote
+                tokenFactory.createToken(TokenType.STRING_LITERAL, stringLiteral, start, lineNumber)
+            }
+            else -> {
+                if (currentChar!!.isLetter() || currentChar == '_') {
+                    val start = position - 1
+                    val identifier =
+                        buildString {
+                            while (currentChar != null && (currentChar!!.isLetterOrDigit() || currentChar == '_')) {
+                                append(currentChar)
+                                readNextChar()
+                            }
+                        }
+                    val tokenType =
+                        when (identifier) {
+                            "let" -> TokenType.LET
+                            "const" -> TokenType.CONST
+                            "println" -> TokenType.PRINTLN
+                            "if" -> TokenType.IF
+                            "else" -> TokenType.ELSE
+                            "return" -> TokenType.RETURN
+                            "readInput" -> TokenType.READINPUT
+                            "readEnv" -> TokenType.READENV
+                            "final" -> TokenType.FINAL
+                            "public" -> TokenType.PUBLIC
+                            "private" -> TokenType.PRIVATE
+                            "protected" -> TokenType.PROTECTED
+                            "string" -> TokenType.STRING_TYPE
+                            "number" -> TokenType.NUMBER_TYPE
+                            "boolean" -> TokenType.BOOLEAN_TYPE
+                            "true", "false" -> TokenType.BOOLEAN_LITERAL
+                            else -> TokenType.IDENTIFIER
+                        }
+                    tokenFactory.createToken(tokenType, identifier, start, lineNumber)
+                } else if (currentChar!!.isDigit()) {
+                    val start = position - 1
+                    var hasDecimalPoint = false
+                    val number =
+                        buildString {
+                            while (currentChar != null && currentChar!!.isDigit() || (currentChar == '.' && !hasDecimalPoint)) {
+                                if (currentChar == '.') {
+                                    hasDecimalPoint = true
+                                }
+                                append(currentChar)
+                                readNextChar()
+                            }
+                        }
+                    tokenFactory.createToken(
+                        TokenType.NUMERIC_LITERAL,
+                        number,
+                        start,
+                        lineNumber,
+                    )
+                } else {
+                    throw IllegalArgumentException("Unknown character at line $lineNumber: '$currentChar'")
                 }
             }
         }
+    }
+
+    override fun getNextToken(): Token? {
+        return processNextToken()
     }
 }
