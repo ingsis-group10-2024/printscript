@@ -3,5 +3,6 @@ package interfaces
 import token.Token
 
 interface Lexer {
-    fun getToken(): List<Token>
+    fun getTokens(): List<Token>
+    fun processLine(line: String)
 }
