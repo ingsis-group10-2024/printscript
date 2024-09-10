@@ -23,7 +23,7 @@ class BinaryOperationNodeInterpreterV11(
     @Throws(IllegalArgumentException::class)
     private fun interpretBinaryNode(ast: ASTNode): String {
         return when (ast) {
-            is NumberOperatorNode -> (ast.value).toString()
+            is NumberOperatorNode -> BinaryOperationNodeInterpreterV10(variableMap).interpret(ast)
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
             is MethodNode -> MethodNodeInterpreterV11(variableMap, reader).interpret(ast)

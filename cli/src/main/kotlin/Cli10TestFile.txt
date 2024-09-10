@@ -6,3 +6,8 @@ println(pi / 2);
 let result: number;
 result = 5;
 println(result);
+let someNumber: number = 1;
+let someString: string = "hello world ";
+println(someString + someNumber);
+let wololo: string = "Hola";
+println(wololo);
