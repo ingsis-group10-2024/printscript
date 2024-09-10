@@ -315,4 +315,51 @@ class LexerTest {
             assertEquals(expectedType, token?.type)
         }
     }
+
+    @Test
+    fun `test with if something`() {
+        val input =
+            "let something: boolean = true;\n" +
+                "if (something)\n" +
+                "{\n" +
+                "  println(\"Entered if\");\n" +
+                "}\n"
+
+        val lexer = lexerFromInput(input)
+        val expectedTokens =
+            listOf(
+                TokenType.LET,
+                TokenType.WHITESPACE,
+                TokenType.IDENTIFIER,
+                TokenType.COLON,
+                TokenType.WHITESPACE,
+                TokenType.BOOLEAN_TYPE,
+                TokenType.WHITESPACE,
+                TokenType.EQUALS,
+                TokenType.WHITESPACE,
+                TokenType.BOOLEAN_LITERAL,
+                TokenType.SEMICOLON,
+                TokenType.WHITESPACE,
+                TokenType.IF,
+                TokenType.WHITESPACE,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.IDENTIFIER,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.WHITESPACE,
+                TokenType.OPEN_BRACKET,
+                TokenType.WHITESPACE,
+                TokenType.PRINTLN,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.STRING_LITERAL,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.SEMICOLON,
+                TokenType.WHITESPACE,
+                TokenType.CLOSE_BRACKET,
+            )
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
+    }
 }

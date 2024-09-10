@@ -28,8 +28,6 @@ class LexerV10(inputStream: InputStream) : Lexer {
         } else {
             position++
         }
-        if (currentChar == null) {
-        }
         return currentChar
     }
 
@@ -43,6 +41,10 @@ class LexerV10(inputStream: InputStream) : Lexer {
                         readNextChar()
                     }
                 }
+            if (currentChar == null) {
+                // End of input, don't return a whitespace token
+                return null
+            }
             return tokenFactory.createToken(TokenType.WHITESPACE, whitespace, startPos, lineNumber)
         }
 
