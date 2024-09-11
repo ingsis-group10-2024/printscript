@@ -10,6 +10,7 @@ import token.TokenType
 import java.io.ByteArrayInputStream
 
 class LexerTest {
+    // Start the version controller
     private val versionController = LexerVersionController()
 
     private fun lexerFromInput(input: String): LexerV11 {
