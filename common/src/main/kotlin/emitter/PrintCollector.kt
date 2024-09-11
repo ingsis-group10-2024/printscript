@@ -1,0 +1,3 @@
+package emitter
+
+class PrintCollector

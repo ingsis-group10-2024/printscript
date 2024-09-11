@@ -7,34 +7,32 @@ import strategy.Interpreter
 import variable.VariableMap
 
 class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {
-    private val stringBuffer = StringBuffer()
+//    private val stringBuffer = StringBuffer()
+    private val printCollector = ArrayList<String>()
 
     override fun interpret(ast: ASTNode): String {
         require(ast is MethodNode) { "Node must be a MethodNode" }
         return interpretMethodNode(ast)
     }
 
+    // todo: fijate si podes hacer que este interpreter devuelva la arraylist de strings
     @Throws(IllegalArgumentException::class)
     private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
                 val value = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
-                stringBuffer.append(value)
+//                stringBuffer.append(value)
+                printCollector.add(value)
+                return printCollector[0]
             }
-            /*
-            para el println y el readinput yo tendria que tener un lector para la variable que me dan. Para que sea mas escalable.
-            una interfaz lector
-            const sararasa = readinpu("gjygjygj")
-            let x = readinput("msg")
-            let operation = "wololo" + readinput("give me a number")
-            readinput tiene que recibir un lector.
-             */
             "readInput" -> {
                 val message = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
+                printCollector.add(message)
                 // Read the input from the user
                 val inputValue = readInput(reader, message)
                 if (inputValue != null) {
-                    return inputValue
+                    printCollector.add(inputValue)
+                    return printCollector[1]
                 } else {
                     throw IllegalArgumentException("Invalid Input")
                 }
@@ -47,7 +45,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader)
                 "Invalid Method at column ${ast.methodNamePosition.column} row ${ast.methodNamePosition.line}",
             )
         }
-        return stringBuffer.toString()
+//        return stringBuffer.toString()
     }
 
     private fun readInput(

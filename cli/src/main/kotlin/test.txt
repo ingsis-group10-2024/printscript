@@ -1,5 +1,6 @@
 let something: boolean = true;
-if (something)
-{
-  println("Entered if");
+if(something) {
+    println("something is true");
+}else{
+    println("something is false");
 }
