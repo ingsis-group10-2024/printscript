@@ -7,10 +7,8 @@ import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-
-class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader , val printCollector : PrintCollector) : Interpreter {
+class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader, val printCollector: PrintCollector) : Interpreter {
 //    private val stringBuffer = StringBuffer()
-
 
     override fun interpret(ast: ASTNode): PrintCollector {
         require(ast is MethodNode) { "Node must be a MethodNode" }
@@ -19,7 +17,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader 
 
     // todo: fijate si podes hacer que este interpreter devuelva la arraylist de strings hacelo inmutable.
     @Throws(IllegalArgumentException::class)
-    private fun interpretMethodNode(ast: MethodNode): PrintCollector{
+    private fun interpretMethodNode(ast: MethodNode): PrintCollector {
         when (ast.name) {
             "println" -> {
                 val value = BinaryOperationNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast.value)

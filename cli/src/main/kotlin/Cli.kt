@@ -7,6 +7,7 @@ import com.github.ajalt.clikt.parameters.options.validate
 import com.github.ajalt.clikt.parameters.types.file
 import config.JsonConfigLoader
 import controller.LexerVersionController
+import emitter.PrintCollector
 import emitter.PrinterEmitter
 import implementation.Formatter
 import parser.Parser
@@ -88,12 +89,13 @@ private fun executeCode(
     inputStream: InputStream,
 ) {
     val consoleInputReader = ConsoleInputReader()
+    val printCollector = PrintCollector(ArrayList(), ArrayList())
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
     val tokens = lexer.getToken()
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
+    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader, printCollector).buildInterpreter()
     try {
         val interpretedList = interpreter.interpret(ast)
         for (interpreted in interpretedList.second) {

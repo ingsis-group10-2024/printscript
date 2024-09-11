@@ -16,7 +16,7 @@ import variable.VariableMap
 class BinaryOperationNodeInterpreterV11(
     val variableMap: VariableMap,
     val reader: Reader,
-    val printCollector: PrintCollector
+    val printCollector: PrintCollector,
 ) : Interpreter {
     override fun interpret(ast: ASTNode): String {
         return interpretBinaryNode(ast)
@@ -28,9 +28,9 @@ class BinaryOperationNodeInterpreterV11(
             is NumberOperatorNode -> BinaryOperationNodeInterpreterV10(variableMap).interpret(ast)
             is StringOperatorNode -> ast.value
             is BooleanOperatorNode -> ast.value.toString()
-//            is MethodNode -> MethodNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast)
+            is MethodNode -> MethodNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast).printableList[0]
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
-            is ConditionNode -> ConditionNodeInterpreter(variableMap, reader).interpret(ast).toString()
+            is ConditionNode -> ConditionNodeInterpreter(variableMap, reader, printCollector).interpret(ast).toString()
             is BinaryOperationNode -> {
                 BinaryOperationNodeInterpreterV10(variableMap).interpret(ast)
             }

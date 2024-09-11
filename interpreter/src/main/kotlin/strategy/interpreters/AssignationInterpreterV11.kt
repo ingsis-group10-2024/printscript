@@ -11,9 +11,7 @@ import token.TokenType
 import variable.Variable
 import variable.VariableMap
 
-class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader , val printCollector: PrintCollector) : Interpreter {
-
-
+class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader, val printCollector: PrintCollector) : Interpreter {
     override fun interpret(ast: ASTNode): Pair<VariableMap, PrintCollector> {
         require(ast is Assignation) { "ast should be a Assignation or DeclarationAssignation" }
         return interpretAssignation(ast)
@@ -21,7 +19,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
 
     private fun interpretAssignation(ast: Assignation): Pair<VariableMap, PrintCollector> {
         when (ast) {
-            is DeclarationAssignationNode -> { // todo: checkear si es const o no.
+            is DeclarationAssignationNode -> {
                 if (ast.declaration.declarationType == TokenType.LET) {
                     if (variableMap.containsKey(Variable(ast.declaration.identifier, ast.declaration.type, true))) {
                         return Pair(variableMap, printCollector)
@@ -31,7 +29,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
                             reader,
-                            printCollector
+                            printCollector,
                         ).interpret(ast.assignation)
                     if (verifyTypeCompatibility11(variable, value)) {
                         val newMap =
@@ -44,7 +42,8 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                     val value =
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
-                            reader, printCollector
+                            reader,
+                            printCollector,
                         ).interpret(ast.assignation)
                     if (verifyTypeCompatibility11(variable, value)) {
                         val newMap =
@@ -59,7 +58,8 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                     val value =
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
-                            reader, printCollector
+                            reader,
+                            printCollector,
                         ).interpret(ast.assignation)
                     if (it.isMutable && verifyTypeCompatibility11(it, value)) {
                         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
