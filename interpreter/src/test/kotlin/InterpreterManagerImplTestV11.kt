@@ -15,11 +15,10 @@ import strategy.InterpreterManagerImplStrategyV11
 import token.TokenType
 import variable.Variable
 import variable.VariableMap
-import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class InterpreterManagerImplTest {
+class InterpreterManagerImplTestV11 {
     private lateinit var interpreter: InterpreterManagerImplStrategyV11
 
     @BeforeEach
@@ -126,7 +125,7 @@ class InterpreterManagerImplTest {
         // Act
         val response = interpreter.interpret(astList)
         // Assert
-        assertEquals("5.0", response.second[0])
+        assertEquals("5", response.second[0])
     }
 
     @Test
@@ -152,7 +151,7 @@ class InterpreterManagerImplTest {
         // Act
         val response = interpreter.interpret(astList)
         // Assert
-        assertEquals("8.0", response.second[0])
+        assertEquals("8", response.second[0])
     }
 
     @Test
@@ -162,7 +161,7 @@ class InterpreterManagerImplTest {
         val binaryNode = BinaryOperationNode("+", leftNode, rightNode)
         val methodNode = MethodNode("println", binaryNode, Position(3, 1))
         val result = interpreter.interpret(listOf(methodNode))
-        assertEquals("8.0", result.second[0])
+        assertEquals("8", result.second[0])
     }
 
     @Test
@@ -192,7 +191,7 @@ class InterpreterManagerImplTest {
                 ),
             )
         val result = interpreter.interpret(ast)
-        assertEquals("Hello5.0", result.second[0])
+        assertEquals("Hello5", result.second[0])
     }
 
     @Test
@@ -214,7 +213,7 @@ class InterpreterManagerImplTest {
                 MethodNode("println", IdentifierOperatorNode("x", Position(8, 1)), Position(9, 1)),
             )
         val result = interpreter.interpret(ast)
-        assertEquals("1.0Hello", result.second[0])
+        assertEquals("1Hello", result.second[0])
     }
 
 //
@@ -231,7 +230,7 @@ class InterpreterManagerImplTest {
         val ast = BinaryOperationNode("-", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(2, 1)))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("2.0", response.second[0])
+        assertEquals("2", response.second[0])
     }
 
     @Test
@@ -254,7 +253,7 @@ class InterpreterManagerImplTest {
             )
         val astList = listOf(ast1, ast2, ast3)
         val response = interpreter.interpret(astList)
-        assertEquals("8.0", response.second[0])
+        assertEquals("8", response.second[0])
     }
 
 //
@@ -271,7 +270,7 @@ class InterpreterManagerImplTest {
         val ast = BinaryOperationNode("/", NumberOperatorNode(10.0, Position(1, 1)), NumberOperatorNode(2.0, Position(2, 1)))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("5.0", response.second[0])
+        assertEquals("5", response.second[0])
     }
 
     @Test
@@ -279,28 +278,28 @@ class InterpreterManagerImplTest {
         val ast = BinaryOperationNode("*", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(2, 1)))
         val astList = listOf(ast)
         val response = interpreter.interpret(astList)
-        assertEquals("15.0", response.second[0])
+        assertEquals("15", response.second[0])
     }
 
     @Test
     fun test022_GivenBinaryOperationNodeWithAddition_WhenInterpreted_ShouldReturnResultOfAddition() {
         val binaryOperationNode = BinaryOperationNode("+", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(2, 1)))
         val response = interpreter.interpret(listOf(binaryOperationNode))
-        assertEquals("8.0", response.second[0])
+        assertEquals("8", response.second[0])
     }
 
     @Test
     fun test023_GivenBinaryOperationNodeWithSubtraction_WhenInterpreted_ShouldReturnResultOfSubtraction() {
         val binaryOperationNode = BinaryOperationNode("-", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(2, 1)))
         val response = interpreter.interpret(listOf(binaryOperationNode))
-        assertEquals("2.0", response.second[0])
+        assertEquals("2", response.second[0])
     }
 
     @Test
     fun test024_GivenBinaryOperationNodeWithMultiplication_WhenInterpreted_ShouldReturnResultOfMultiplication() {
         val binaryOperationNode = BinaryOperationNode("*", NumberOperatorNode(5.0, Position(1, 1)), NumberOperatorNode(3.0, Position(2, 1)))
         val response = interpreter.interpret(listOf(binaryOperationNode))
-        assertEquals("15.0", response.second[0])
+        assertEquals("15", response.second[0])
     }
 
     @Test
@@ -308,7 +307,7 @@ class InterpreterManagerImplTest {
         val binaryOperationNode =
             BinaryOperationNode("/", NumberOperatorNode(10.0, Position(1, 1)), NumberOperatorNode(2.0, Position(2, 1)))
         val response = interpreter.interpret(listOf(binaryOperationNode))
-        assertEquals("5.0", response.second[0])
+        assertEquals("5", response.second[0])
     }
 
 //
@@ -425,7 +424,7 @@ class InterpreterManagerImplTest {
         val ast2 = MethodNode("println", IdentifierOperatorNode("x", Position(6, 1)), Position(7, 1))
         val astList = listOf(ast, ast2)
         val response = interpreter.interpret(astList)
-        assertEquals("17.0", response.second[0])
+        assertEquals("17", response.second[0])
         assertTrue(interpreter.variableMap.containsKey(Variable("x", "number", true)))
     }
 
@@ -458,5 +457,23 @@ class InterpreterManagerImplTest {
         val astList = listOf(ast1, ast2, ast3, ast4)
         val response = interpreter.interpret(astList)
         assertEquals(4, response.second.size)
+    }
+
+    @Test
+    fun test032_GivenBinaryNodesInterpretTheResult() {
+        val ast1 = BinaryOperationNode("/", NumberOperatorNode(14.0, Position(3, 1)), NumberOperatorNode(7.0, Position(5, 1)))
+        val result = interpreter.interpret(listOf(ast1))
+        assertEquals("2", result.second.get(0))
+    }
+
+    @Test
+    fun test033_WhenWantingToBuildAnInterpreterTheFactoryBuildsItDependingOnTheVersion() {
+        val variableMaptest = VariableMap(HashMap())
+        val factoryTestv10 = InterpreterFactory("1.0", variableMaptest, null).buildInterpreter()
+
+        val ast1 = BinaryOperationNode("/", NumberOperatorNode(14.0, Position(3, 1)), NumberOperatorNode(7.0, Position(5, 1)))
+        val result = factoryTestv10.interpret(listOf(ast1))
+
+        assertEquals("2", result.second.get(0))
     }
 }

@@ -14,151 +14,65 @@ class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap) : Interpre
         return interpretBinaryNode(ast)
     }
 
-    @Throws(IllegalArgumentException::class)
     private fun interpretBinaryNode(ast: ASTNode): String {
         return when (ast) {
-            is NumberOperatorNode -> (ast.value).toString()
+            is NumberOperatorNode -> convertToString(ast.value)
             is StringOperatorNode -> ast.value
             is MethodNode -> MethodNodeInterpreterV10(variableMap).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
-            is BinaryOperationNode -> {
-                val left = ast.left!!
-                val right = ast.right!!
-                when (ast.symbol) {
-                    "+" ->
-                        when {
-                            left is StringOperatorNode && right is StringOperatorNode -> return (left.value + right.value)
-
-                            left is NumberOperatorNode && right is NumberOperatorNode -> return (left.value + right.value).toString()
-
-                            left is StringOperatorNode && right is NumberOperatorNode -> return (left.value + right.value.toString())
-
-                            left is NumberOperatorNode && right is StringOperatorNode -> return (left.value.toString() + right.value)
-
-                            left is IdentifierOperatorNode && right is NumberOperatorNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                return if (valueIsNumeric(leftValue)) {
-                                    (leftValue.toDouble() + right.value).toString()
-                                } else {
-                                    leftValue + right.value
-                                }
-                            }
-                            left is IdentifierOperatorNode && right is StringOperatorNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                return leftValue + right.value
-                            }
-                            left is StringOperatorNode && right is IdentifierOperatorNode -> {
-                                val rightValue = interpretBinaryNode(right)
-                                return left.value + rightValue
-                            }
-                            left is NumberOperatorNode && right is IdentifierOperatorNode -> {
-                                val rightValue = interpretBinaryNode(right)
-                                return if (valueIsNumeric(rightValue)) {
-                                    (left.value + rightValue.toDouble()).toString()
-                                } else {
-                                    rightValue + left.value
-                                }
-                            }
-                            left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                val rightValue = interpretBinaryNode(right)
-                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
-                                    // Both are numbers, perform addition
-                                    (leftValue.toDouble() + rightValue.toDouble()).toString()
-                                } else {
-                                    // At least one is a string, perform concatenation
-                                    leftValue + rightValue
-                                }
-                            }
-                            left is BinaryOperationNode || right is BinaryOperationNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                val rightValue = interpretBinaryNode(right)
-                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
-                                    // Both are numbers, perform addition
-                                    (leftValue.toDouble() + rightValue.toDouble()).toString()
-                                } else {
-                                    // At least one is a string, perform concatenation
-                                    leftValue + rightValue
-                                }
-                            }
-
-                            else -> throw IllegalArgumentException("Invalid Operation")
-                        }
-                    "-", "*", "/" ->
-                        when {
-                            left is NumberOperatorNode && right is NumberOperatorNode -> {
-                                val result =
-                                    when (ast.symbol) {
-                                        "-" -> left.value - right.value
-                                        "*" -> left.value * right.value
-                                        "/" -> left.value / right.value
-
-                                        else -> throw IllegalArgumentException("Invalid Operation")
-                                    }
-                                return result.toString()
-                            }
-                            left is IdentifierOperatorNode && right is NumberOperatorNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                return if (valueIsNumeric(leftValue)) {
-                                    val result =
-                                        when (ast.symbol) {
-                                            "-" -> leftValue.toDouble() - right.value
-                                            "*" -> leftValue.toDouble() * right.value
-                                            "/" -> leftValue.toDouble() / right.value
-
-                                            else -> throw IllegalArgumentException("Invalid Operation")
-                                        }
-                                    result.toString()
-                                } else {
-                                    throw IllegalArgumentException("Invalid Operation")
-                                }
-                            }
-                            left is IdentifierOperatorNode && right is IdentifierOperatorNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                val rightValue = interpretBinaryNode(right)
-                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
-                                    val result =
-                                        when (ast.symbol) {
-                                            "-" -> leftValue.toDouble() - rightValue.toDouble()
-                                            "*" -> leftValue.toDouble() * rightValue.toDouble()
-                                            "/" -> leftValue.toDouble() / rightValue.toDouble()
-
-                                            else -> throw IllegalArgumentException("Invalid Operation")
-                                        }
-                                    result.toString()
-                                } else {
-                                    throw IllegalArgumentException("Invalid Operation")
-                                }
-                            }
-                            left is BinaryOperationNode || right is BinaryOperationNode -> {
-                                val leftValue = interpretBinaryNode(left)
-                                val rightValue = interpretBinaryNode(right)
-                                return if (valueIsNumeric(leftValue) && valueIsNumeric(rightValue)) {
-                                    val result =
-                                        when (ast.symbol) {
-                                            "-" -> leftValue.toDouble() - rightValue.toDouble()
-                                            "*" -> leftValue.toDouble() * rightValue.toDouble()
-                                            "/" -> leftValue.toDouble() / rightValue.toDouble()
-
-                                            else -> throw IllegalArgumentException("Invalid Operation")
-                                        }
-                                    result.toString()
-                                } else {
-                                    throw IllegalArgumentException("Invalid Operation")
-                                }
-                            }
-
-                            else -> throw IllegalArgumentException("Invalid Operation")
-                        }
-                    else -> throw IllegalArgumentException("Invalid Operation")
-                }
-            }
-
-            else -> {
-                throw IllegalArgumentException("Invalid Operation")
-            }
+            is BinaryOperationNode -> interpretBinaryOperation(ast)
+            else -> throw IllegalArgumentException("Invalid Operation")
         }
     }
 
-    private fun valueIsNumeric(value: String) = value.toDoubleOrNull() != null
+    private fun interpretBinaryOperation(node: BinaryOperationNode): String {
+        val leftValue = interpretBinaryNode(node.left!!)
+        val rightValue = interpretBinaryNode(node.right!!)
+
+        return when (node.symbol) {
+            "+" -> handleAddition(leftValue, rightValue)
+            "-", "*", "/" -> handleArithmeticOperation(leftValue, rightValue, node.symbol)
+            else -> throw IllegalArgumentException("Invalid Operation")
+        }
+    }
+
+    private fun handleAddition(
+        left: String,
+        right: String,
+    ): String {
+        if (isNumeric(left) && isNumeric(right)) {
+            return convertToString(left.toDouble() + right.toDouble())
+        } else {
+            return left + right
+        }
+    }
+
+    private fun handleArithmeticOperation(
+        left: String,
+        right: String,
+        symbol: String,
+    ): String {
+        if (!isNumeric(left) || !isNumeric(right)) {
+            throw IllegalArgumentException("Invalid Operation")
+        }
+
+        val result =
+            when (symbol) {
+                "-" -> left.toDouble() - right.toDouble()
+                "*" -> left.toDouble() * right.toDouble()
+                "/" -> left.toDouble() / right.toDouble()
+                else -> throw IllegalArgumentException("Invalid Operation")
+            }
+
+        return convertToString(result)
+    }
+
+    private fun isNumeric(value: String): Boolean {
+        return value.toDoubleOrNull() != null || value.toIntOrNull() != null
+    }
+
+    private fun convertToString(value: Double): String {
+        val intValue = value.toInt()
+        return if (intValue.toDouble() == value) intValue.toString() else value.toString()
+    }
 }

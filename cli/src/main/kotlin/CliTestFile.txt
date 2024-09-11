@@ -4,10 +4,11 @@ let z : number = 504;
 let w : number = y - x;
 println("hello world");
 println(x+y+z);
-let p : number = readInput("Enter a number: ");
-let wo : String = readEnv("JAVA_HOME");
-let hello : String = "hello";
-let hello2 : String = "hello";
+const p : number = readInput("Enter a number: ");
+println(p);
+let wo : string = readEnv("JAVA_HOME");
+let hello : string = "hello";
+let hello2 : string = "hello";
 if(hello == "hello") {
     println("x is 10");
     println(x + z);
@@ -17,5 +18,5 @@ if(hello == "hello") {
 }
 println(g);
 println(wo);
-let hoohola : number = "trololo";
+let hoohola : string = "trololo";
 println(hoohola);

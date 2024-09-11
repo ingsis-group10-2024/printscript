@@ -1,5 +1,6 @@
 import ast.AssignationNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.ConditionNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
@@ -132,6 +133,11 @@ class ParserTest {
                 Token(TokenType.COLON, ":", 3, 1),
                 Token(TokenType.STRING_TYPE, "string", 4, 1),
                 Token(TokenType.SEMICOLON, ";", 5, 1),
+                Token(TokenType.LET, "let", 1, 2),
+                Token(TokenType.IDENTIFIER, "z", 2, 2),
+                Token(TokenType.COLON, ":", 3, 2),
+                Token(TokenType.BOOLEAN_TYPE, "boolean", 4, 2),
+                Token(TokenType.SEMICOLON, ";", 5, 2),
             )
 
         val parser = Parser(tokens)
@@ -141,6 +147,7 @@ class ParserTest {
             listOf(
                 DeclarationNode("x", TokenType.LET, Position(2, 0), "number", Position(4, 0)),
                 DeclarationNode("y", TokenType.CONST, Position(2, 1), "string", Position(4, 1)),
+                DeclarationNode("z", TokenType.LET, Position(2, 2), "boolean", Position(4, 2)),
             )
 
         assertEquals(expected, result)
@@ -256,8 +263,14 @@ class ParserTest {
                 Token(TokenType.EQUALS, "=", 5, 2),
                 Token(TokenType.STRING_LITERAL, "Hello", 6, 2),
                 Token(TokenType.SEMICOLON, ";", 7, 2),
+                Token(TokenType.LET, "let", 1, 3),
+                Token(TokenType.IDENTIFIER, "z", 2, 3),
+                Token(TokenType.COLON, ":", 3, 3),
+                Token(TokenType.BOOLEAN_TYPE, "boolean", 4, 3),
+                Token(TokenType.EQUALS, "=", 5, 3),
+                Token(TokenType.BOOLEAN_LITERAL, "true", 6, 3),
+                Token(TokenType.SEMICOLON, ";", 7, 3),
             )
-
         val parser = Parser(tokens)
         val result = parser.generateAST()
 
@@ -270,6 +283,10 @@ class ParserTest {
                 DeclarationAssignationNode(
                     DeclarationNode("y", TokenType.LET, Position(2, 2), "string", Position(4, 2)),
                     StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(6, 2)),
+                ),
+                DeclarationAssignationNode(
+                    DeclarationNode("z", TokenType.LET, Position(2, 3), "boolean", Position(4, 3)),
+                    BooleanOperatorNode(true, Position(6, 3)),
                 ),
             )
 
@@ -686,6 +703,53 @@ class ParserTest {
                 ),
             )
 
+        assertEquals(expectedAst, ast)
+    }
+
+    @Test
+    fun parseOtherIf() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "something", 1, 1),
+                Token(TokenType.COLON, ":", 1, 2),
+                Token(TokenType.BOOLEAN_TYPE, "boolean", 1, 3),
+                Token(TokenType.EQUALS, "=", 1, 4),
+                Token(TokenType.BOOLEAN_LITERAL, "true", 1, 5),
+                Token(TokenType.SEMICOLON, ";", 1, 6),
+                Token(TokenType.IF, "if", 1, 7),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 8),
+                Token(TokenType.IDENTIFIER, "something", 1, 9),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 10),
+                Token(TokenType.OPEN_BRACKET, "{", 1, 11),
+                Token(TokenType.PRINTLN, "println", 1, 12),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 13),
+                Token(TokenType.STRING_LITERAL, "Entered if", 1, 14),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 15),
+                Token(TokenType.SEMICOLON, ";", 1, 16),
+                Token(TokenType.CLOSE_BRACKET, "}", 1, 17),
+            )
+        val parser = Parser(tokens)
+        val ast = parser.generateAST()
+
+        val expectedAst =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("something", TokenType.LET, Position(1, 1), "boolean", Position(1, 3)),
+                    BooleanOperatorNode(true, Position(1, 5)),
+                ),
+                IfNode(
+                    IdentifierOperatorNode("something", Position(1, 9)),
+                    listOf(
+                        MethodNode(
+                            "println",
+                            StringOperatorNode("Entered if", TokenType.STRING_LITERAL, Position(1, 14)),
+                            Position(1, 12),
+                        ),
+                    ),
+                    listOf(),
+                ),
+            )
         assertEquals(expectedAst, ast)
     }
 

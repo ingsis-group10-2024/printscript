@@ -4,6 +4,7 @@ import ast.ASTNode
 import ast.AssignationNode
 import ast.BinaryNode
 import ast.BinaryOperationNode
+import ast.BooleanOperatorNode
 import ast.ConditionNode
 import ast.DeclarationAssignationNode
 import ast.DeclarationNode
@@ -107,6 +108,10 @@ class Parser(private val tokens: List<Token>) {
                 val token = getTokenAndAdvance()
                 StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.row))
             }
+            TokenType.BOOLEAN_LITERAL -> {
+                val token = getTokenAndAdvance()
+                BooleanOperatorNode(token.value.toBoolean(), Position(token.column, token.row))
+            }
             TokenType.IDENTIFIER -> {
                 val token = getTokenAndAdvance()
                 if (isCurrentToken(TokenType.EQUALS)) {
@@ -124,6 +129,12 @@ class Parser(private val tokens: List<Token>) {
                 val token = getTokenAndAdvance()
                 StringOperatorNode(token.value, TokenType.STRING_LITERAL, Position(token.column, token.row))
             }
+
+            TokenType.BOOLEAN_TYPE -> {
+                val token = getTokenAndAdvance()
+                BooleanOperatorNode(token.value.toBoolean(), Position(token.column, token.row))
+            }
+
             TokenType.OPEN_PARENTHESIS -> {
                 getTokenAndAdvance()
                 val node = parseExpression()
@@ -275,7 +286,8 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
 
         val elseBranch = mutableListOf<ASTNode>()
-        if (isCurrentToken(TokenType.ELSE)) {
+        // Si hay siguiente token y es un else
+        if (currentTokenIndex != tokens.size && isCurrentToken(TokenType.ELSE)) {
             getTokenAndAdvance()
             expectToken(TokenType.OPEN_BRACKET, "'{'")
             getTokenAndAdvance()

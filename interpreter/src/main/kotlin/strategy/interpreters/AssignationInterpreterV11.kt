@@ -31,8 +31,12 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                             variableMap,
                             reader,
                         ).interpret(ast.assignation)
-                    val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
-                    return newMap
+                    if (verifyTypeCompatibility11(variable, value)) {
+                        val newMap =
+                            variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
+                        return newMap
+                    }
+                    return variableMap
                 } else {
                     val variable = Variable(ast.declaration.identifier, ast.declaration.type, false)
                     val value =
@@ -40,18 +44,22 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                             variableMap,
                             reader,
                         ).interpret(ast.assignation)
-                    val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
-                    return newMap
+                    if (verifyTypeCompatibility11(variable, value)) {
+                        val newMap =
+                            variableMap.copy(variableMap = variableMap.variableMap.apply { put(variable, value) })
+                        return newMap
+                    }
+                    return variableMap
                 }
             }
             is AssignationNode -> {
                 variableMap.findKey(ast.identifier)?.let {
-                    if (it.isMutable) {
-                        val value =
-                            BinaryOperationNodeInterpreterV11(
-                                variableMap,
-                                reader,
-                            ).interpret(ast.assignation)
+                    val value =
+                        BinaryOperationNodeInterpreterV11(
+                            variableMap,
+                            reader,
+                        ).interpret(ast.assignation)
+                    if (it.isMutable && verifyTypeCompatibility11(it, value)) {
                         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
                         stringBuffer.append("${it.identifier} = $value")
                         return newMap
@@ -61,5 +69,29 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                 } ?: throw IllegalArgumentException("variable ${ast.identifier} not declared")
             }
         }
+    }
+
+    @Throws(IllegalArgumentException::class)
+    private fun verifyTypeCompatibility11(
+        variable: Variable,
+        value: String,
+    ): Boolean {
+        return when (variable.type) {
+            "number" -> isNumeric(value)
+            "string" -> !isNumeric(value)
+            "boolean" -> value.toBooleanStrictOrNull() != null
+            else -> false
+        }.also {
+                result ->
+            if (!result) {
+                throw IllegalArgumentException(
+                    "Type mismatch: ${variable.type} expected for variable ${variable.identifier}, but got $value",
+                )
+            }
+        }
+    }
+
+    private fun isNumeric(value: String): Boolean {
+        return value.toDoubleOrNull() != null || value.toIntOrNull() != null
     }
 }
