@@ -286,7 +286,8 @@ class Parser(private val tokens: List<Token>) {
         getTokenAndAdvance()
 
         val elseBranch = mutableListOf<ASTNode>()
-        if (isCurrentToken(TokenType.ELSE)) {
+        // Si hay siguiente token y es un else
+        if (currentTokenIndex != tokens.size && isCurrentToken(TokenType.ELSE)) {
             getTokenAndAdvance()
             expectToken(TokenType.OPEN_BRACKET, "'{'")
             getTokenAndAdvance()
