@@ -109,8 +109,6 @@ private fun executeCode(
         tokens.add(token)
         token = lexer.getNextToken()
     }
-    println(tokens)
-
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()

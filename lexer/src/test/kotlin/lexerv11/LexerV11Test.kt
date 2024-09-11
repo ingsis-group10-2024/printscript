@@ -1,7 +1,7 @@
-package lexerv10
+package lexerv11
 
 import controller.LexerVersionController
-import implementation.LexerV10
+import implementation.LexerV11
 import implementation.MockInputStream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -9,11 +9,12 @@ import token.Token
 import token.TokenType
 import java.io.ByteArrayInputStream
 
-class LexerTest {
+class LexerV11Test {
+    // Start the version controller
     private val versionController = LexerVersionController()
 
-    private fun lexerFromInput(input: String): LexerV10 {
-        return LexerV10(ByteArrayInputStream(input.toByteArray()))
+    private fun lexerFromInput(input: String): LexerV11 {
+        return LexerV11(ByteArrayInputStream(input.toByteArray()))
     }
 
     @Test
@@ -22,7 +23,7 @@ class LexerTest {
         val message = "This is a text;"
         val line = "println(\"$message\");\n"
         val mockInputStream = MockInputStream(line, numberOfLines)
-        val lexer = versionController.getLexer("1.0", mockInputStream)
+        val lexer = versionController.getLexer("1.1", mockInputStream)
 
         val tokensList = mutableListOf<Token>() // Asumiendo que Token es el tipo retornado por getNextToken()
 
@@ -50,29 +51,17 @@ class LexerTest {
         val expectedTokens =
             listOf(
                 TokenType.PLUS,
-                TokenType.WHITESPACE,
                 TokenType.MINUS,
-                TokenType.WHITESPACE,
                 TokenType.MULTIPLY,
-                TokenType.WHITESPACE,
                 TokenType.DIVIDE,
-                TokenType.WHITESPACE,
                 TokenType.EQUALS,
-                TokenType.WHITESPACE,
                 TokenType.EQUALS_EQUALS,
-                TokenType.WHITESPACE,
                 TokenType.UNEQUALS,
-                TokenType.WHITESPACE,
                 TokenType.SEMICOLON,
-                TokenType.WHITESPACE,
                 TokenType.COLON,
-                TokenType.WHITESPACE,
                 TokenType.OPEN_PARENTHESIS,
-                TokenType.WHITESPACE,
                 TokenType.CLOSE_PARENTHESIS,
-                TokenType.WHITESPACE,
                 TokenType.OPEN_BRACKET,
-                TokenType.WHITESPACE,
                 TokenType.CLOSE_BRACKET,
             )
 
@@ -91,10 +80,87 @@ class LexerTest {
         assertEquals(TokenType.STRING_LITERAL, stringToken1?.type)
         assertEquals("hello world", stringToken1?.value)
 
-        lexer.getNextToken()
         val stringToken2 = lexer.getNextToken()
         assertEquals(TokenType.STRING_LITERAL, stringToken2?.type)
         assertEquals("single quote", stringToken2?.value)
+    }
+
+    @Test
+    fun `test identifiers and numbers`() {
+        val input = "let const 123 45.67 identifier"
+        val lexer = lexerFromInput(input)
+
+        val expectedTokens =
+            listOf(
+                TokenType.LET,
+                TokenType.CONST,
+                TokenType.NUMERIC_LITERAL,
+                TokenType.NUMERIC_LITERAL,
+                TokenType.IDENTIFIER,
+            )
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
+    }
+
+    @Test
+    fun `test if else`() {
+        val input = "if else"
+        val lexer = lexerFromInput(input)
+
+        val expectedTokens = listOf(TokenType.IF, TokenType.ELSE)
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
+    }
+
+    @Test
+    fun `test if else with body`() {
+        val input = "if (true) { println(\"hello\") } else { println(\"world\") }"
+        val lexer = lexerFromInput(input)
+
+        val expectedTokens =
+            listOf(
+                TokenType.IF,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.BOOLEAN_LITERAL,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.OPEN_BRACKET,
+                TokenType.PRINTLN,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.STRING_LITERAL,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.CLOSE_BRACKET,
+                TokenType.ELSE,
+                TokenType.OPEN_BRACKET,
+                TokenType.PRINTLN,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.STRING_LITERAL,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.CLOSE_BRACKET,
+            )
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
+    }
+
+    @Test
+    fun `test readInput readEnv`() {
+        val input = "readInput readEnv"
+        val lexer = lexerFromInput(input)
+
+        val expectedTokens = listOf(TokenType.READINPUT, TokenType.READENV)
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
     }
 
     @Test
@@ -105,11 +171,8 @@ class LexerTest {
         val expectedTokens =
             listOf(
                 TokenType.FINAL,
-                TokenType.WHITESPACE,
                 TokenType.PUBLIC,
-                TokenType.WHITESPACE,
                 TokenType.PRIVATE,
-                TokenType.WHITESPACE,
                 TokenType.PROTECTED,
             )
 
@@ -127,9 +190,7 @@ class LexerTest {
         val expectedTokens =
             listOf(
                 TokenType.STRING_TYPE,
-                TokenType.WHITESPACE,
                 TokenType.NUMBER_TYPE,
-                TokenType.WHITESPACE,
                 TokenType.BOOLEAN_TYPE,
             )
 
@@ -144,7 +205,7 @@ class LexerTest {
         val input = "true false"
         val lexer = lexerFromInput(input)
 
-        val expectedTokens = listOf(TokenType.BOOLEAN_LITERAL, TokenType.WHITESPACE, TokenType.BOOLEAN_LITERAL)
+        val expectedTokens = listOf(TokenType.BOOLEAN_LITERAL, TokenType.BOOLEAN_LITERAL)
 
         for (expectedType in expectedTokens) {
             val token = lexer.getNextToken()
@@ -170,7 +231,7 @@ class LexerTest {
         val input = "123 123.456"
         val lexer = lexerFromInput(input)
 
-        val expectedTokens = listOf(TokenType.NUMERIC_LITERAL, TokenType.WHITESPACE, TokenType.NUMERIC_LITERAL)
+        val expectedTokens = listOf(TokenType.NUMERIC_LITERAL, TokenType.NUMERIC_LITERAL)
 
         for (expectedType in expectedTokens) {
             val token = lexer.getNextToken()
@@ -186,13 +247,9 @@ class LexerTest {
         val expectedTokens =
             listOf(
                 TokenType.IDENTIFIER,
-                TokenType.WHITESPACE,
                 TokenType.LESSER_THAN,
-                TokenType.WHITESPACE,
                 TokenType.IDENTIFIER,
-                TokenType.WHITESPACE,
                 TokenType.GREATER_THAN,
-                TokenType.WHITESPACE,
                 TokenType.IDENTIFIER,
             )
 
@@ -210,14 +267,48 @@ class LexerTest {
         val expectedTokens =
             listOf(
                 TokenType.IDENTIFIER,
-                TokenType.WHITESPACE,
                 TokenType.LESSER_THAN_EQUAL,
-                TokenType.WHITESPACE,
                 TokenType.IDENTIFIER,
-                TokenType.WHITESPACE,
                 TokenType.GREATER_THAN_EQUAL,
-                TokenType.WHITESPACE,
                 TokenType.IDENTIFIER,
+            )
+
+        for (expectedType in expectedTokens) {
+            val token = lexer.getNextToken()
+            assertEquals(expectedType, token?.type)
+        }
+    }
+
+    @Test
+    fun `test with if something`() {
+        val input =
+            "let something: boolean = true;\n" +
+                "if (something)\n" +
+                "{\n" +
+                "  println(\"Entered if\");\n" +
+                "}\n"
+
+        val lexer = lexerFromInput(input)
+        val expectedTokens =
+            listOf(
+                TokenType.LET,
+                TokenType.IDENTIFIER,
+                TokenType.COLON,
+                TokenType.BOOLEAN_TYPE,
+                TokenType.EQUALS,
+                TokenType.BOOLEAN_LITERAL,
+                TokenType.SEMICOLON,
+                TokenType.IF,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.IDENTIFIER,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.OPEN_BRACKET,
+                TokenType.PRINTLN,
+                TokenType.OPEN_PARENTHESIS,
+                TokenType.STRING_LITERAL,
+                TokenType.CLOSE_PARENTHESIS,
+                TokenType.SEMICOLON,
+                TokenType.CLOSE_BRACKET,
             )
 
         for (expectedType in expectedTokens) {
