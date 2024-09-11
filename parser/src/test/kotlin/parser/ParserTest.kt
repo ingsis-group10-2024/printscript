@@ -707,6 +707,53 @@ class ParserTest {
     }
 
     @Test
+    fun parseOtherIf() {
+        val tokens =
+            listOf(
+                Token(TokenType.LET, "let", 1, 0),
+                Token(TokenType.IDENTIFIER, "something", 1, 1),
+                Token(TokenType.COLON, ":", 1, 2),
+                Token(TokenType.BOOLEAN_TYPE, "boolean", 1, 3),
+                Token(TokenType.EQUALS, "=", 1, 4),
+                Token(TokenType.BOOLEAN_LITERAL, "true", 1, 5),
+                Token(TokenType.SEMICOLON, ";", 1, 6),
+                Token(TokenType.IF, "if", 1, 7),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 8),
+                Token(TokenType.IDENTIFIER, "something", 1, 9),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 10),
+                Token(TokenType.OPEN_BRACKET, "{", 1, 11),
+                Token(TokenType.PRINTLN, "println", 1, 12),
+                Token(TokenType.OPEN_PARENTHESIS, "(", 1, 13),
+                Token(TokenType.STRING_LITERAL, "Entered if", 1, 14),
+                Token(TokenType.CLOSE_PARENTHESIS, ")", 1, 15),
+                Token(TokenType.SEMICOLON, ";", 1, 16),
+                Token(TokenType.CLOSE_BRACKET, "}", 1, 17),
+            )
+        val parser = Parser(tokens)
+        val ast = parser.generateAST()
+
+        val expectedAst =
+            listOf(
+                DeclarationAssignationNode(
+                    DeclarationNode("something", TokenType.LET, Position(1, 1), "boolean", Position(1, 3)),
+                    BooleanOperatorNode(true, Position(1, 5)),
+                ),
+                IfNode(
+                    IdentifierOperatorNode("something", Position(1, 9)),
+                    listOf(
+                        MethodNode(
+                            "println",
+                            StringOperatorNode("Entered if", TokenType.STRING_LITERAL, Position(1, 14)),
+                            Position(1, 12),
+                        ),
+                    ),
+                    listOf(),
+                ),
+            )
+        assertEquals(expectedAst, ast)
+    }
+
+    @Test
     fun testParseIfMix() {
         val tokens =
             listOf(
