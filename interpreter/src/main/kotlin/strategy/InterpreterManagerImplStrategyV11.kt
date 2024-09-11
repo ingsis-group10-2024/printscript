@@ -11,6 +11,7 @@ import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.PrintCollector
 import reader.Reader
 import strategy.interpreters.AssignationInterpreterV11
 import strategy.interpreters.BinaryOperationNodeInterpreterV11
@@ -24,6 +25,7 @@ import variable.VariableMap
 class InterpreterManagerImplStrategyV11(
     val variableMap: VariableMap,
     val reader: Reader,
+    val printCollector: PrintCollector,
 ) : InterpreterManager {
     private val stringList = ArrayList<String>()
 
@@ -38,11 +40,12 @@ class InterpreterManagerImplStrategyV11(
                 }
 
                 is Assignation -> {
-                    varMap = AssignationInterpreterV11(variableMap, reader).interpret(ast).first
+                    varMap = AssignationInterpreterV11(variableMap, reader , printCollector).interpret(ast).first
                 }
 
                 is MethodNode -> {
-                    stringList.add(MethodNodeInterpreterV11(variableMap, reader).interpret(ast))
+                    stringList.addAll(MethodNodeInterpreterV11(variableMap, reader , printCollector).interpret(ast).readInputList)
+                    stringList.addAll(MethodNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast).printableList)
                 }
 
                 is IfNode -> {
@@ -70,6 +73,7 @@ class InterpreterManagerImplStrategyV11(
                 else -> throw IllegalArgumentException("Invalid Node Type")
             }
         }
+        println(stringList)
         return Pair(varMap, stringList)
     }
 }

@@ -1,22 +1,4 @@
-let x : number = 10;
-let y : number = 20;
-let z : number = 504;
-let w : number = y - x;
-println("hello world");
-println(x+y+z);
+
 const p : number = readInput("Enter a number: ");
 println(p);
-let wo : string = readEnv("JAVA_HOME");
-let hello : string = "hello";
-let hello2 : string = "hello";
-if(hello == "hello") {
-    println("x is 10");
-    println(x + z);
-    let g : number = 2020;
-} else {
-    println("x is not 10");
-}
-println(g);
-println(wo);
-let hoohola : string = "trololo";
-println(hoohola);
+

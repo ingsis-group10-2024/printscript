@@ -2,44 +2,47 @@ package strategy.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
+import emitter.PrintCollector
 import reader.Reader
 import strategy.Interpreter
 import variable.VariableMap
 
-class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {
-//    private val stringBuffer = StringBuffer()
-    private val printCollector = ArrayList<String>()
 
-    override fun interpret(ast: ASTNode): String {
+class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader , val printCollector : PrintCollector) : Interpreter {
+//    private val stringBuffer = StringBuffer()
+
+
+    override fun interpret(ast: ASTNode): PrintCollector {
         require(ast is MethodNode) { "Node must be a MethodNode" }
         return interpretMethodNode(ast)
     }
 
-    // todo: fijate si podes hacer que este interpreter devuelva la arraylist de strings
+    // todo: fijate si podes hacer que este interpreter devuelva la arraylist de strings hacelo inmutable.
     @Throws(IllegalArgumentException::class)
-    private fun interpretMethodNode(ast: MethodNode): String {
+    private fun interpretMethodNode(ast: MethodNode): PrintCollector{
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
+                val value = BinaryOperationNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast.value)
 //                stringBuffer.append(value)
-                printCollector.add(value)
-                return printCollector[0]
+                printCollector.printableList.add(value)
+                return printCollector
             }
             "readInput" -> {
-                val message = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
-                printCollector.add(message)
+                val message = BinaryOperationNodeInterpreterV11(variableMap, reader, printCollector).interpret(ast.value)
                 // Read the input from the user
                 val inputValue = readInput(reader, message)
+                printCollector.readInputList.add(message)
                 if (inputValue != null) {
-                    printCollector.add(inputValue)
-                    return printCollector[1]
+                    printCollector.printableList.add(inputValue)
+                    return printCollector
                 } else {
                     throw IllegalArgumentException("Invalid Input")
                 }
             }
             "readEnv" -> {
                 val envValue = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.value)
-                return System.getenv(envValue)
+                printCollector.printableList.add(envValue)
+                return printCollector
             }
             else -> throw IllegalArgumentException(
                 "Invalid Method at column ${ast.methodNamePosition.column} row ${ast.methodNamePosition.line}",
