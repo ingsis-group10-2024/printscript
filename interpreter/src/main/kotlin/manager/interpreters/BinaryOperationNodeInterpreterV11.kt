@@ -8,8 +8,8 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import reader.Reader
 import manager.Interpreter
+import reader.Reader
 import variable.VariableMap
 
 class BinaryOperationNodeInterpreterV11(

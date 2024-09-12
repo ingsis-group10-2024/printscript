@@ -11,7 +11,6 @@ import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import reader.Reader
 import manager.interpreters.AssignationInterpreterV11
 import manager.interpreters.BinaryOperationNodeInterpreterV11
 import manager.interpreters.ConditionNodeInterpreter
@@ -19,6 +18,7 @@ import manager.interpreters.DeclarationNodeInterpreterV11
 import manager.interpreters.IdentifierOperatorNodeInterpreter
 import manager.interpreters.IfNodeInterpreter
 import manager.interpreters.MethodNodeInterpreterV11
+import reader.Reader
 import variable.VariableMap
 
 class InterpreterManagerImplV11(

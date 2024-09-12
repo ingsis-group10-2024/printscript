@@ -8,10 +8,10 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
+import manager.InterpreterManagerImplV11
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import reader.ConsoleInputReader
-import manager.InterpreterManagerImplV11
 import token.TokenType
 import variable.Variable
 import variable.VariableMap

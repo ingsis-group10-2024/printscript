@@ -2,8 +2,8 @@ package manager.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
-import reader.Reader
 import manager.Interpreter
+import reader.Reader
 import variable.VariableMap
 
 class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {

@@ -2,8 +2,8 @@ package manager.interpreters
 
 import ast.ASTNode
 import ast.ConditionNode
-import reader.Reader
 import manager.Interpreter
+import reader.Reader
 import variable.VariableMap
 
 class ConditionNodeInterpreter(val variableMap: VariableMap, val reader: Reader) : Interpreter {
