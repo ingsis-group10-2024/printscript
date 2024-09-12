@@ -14,8 +14,11 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
         for (node in astNodes) {
             when (node) {
                 is DeclarationAssignationNode -> {
-                    if (isCamelCaseRequired(config) && !isLowerCamelCase(node.declaration.identifier)) {
-                        errors.add(StaticCodeAnalyzerError("Variable name '${node.declaration.identifier}' is not in lower camel case"))
+                    if (isCamelCaseRequired(config) && !isCamelCase(node.declaration.identifier)) {
+                        errors.add(StaticCodeAnalyzerError("Variable name '${node.declaration.identifier}' is not in lower camelCase"))
+                    }
+                    if (isSnakeCaseRequired(config) && !isSnakeCase(node.declaration.identifier)) {
+                        errors.add(StaticCodeAnalyzerError("Variable name '${node.declaration.identifier}' is not in snake_case"))
                     }
                 }
                 is MethodNode -> {
@@ -31,8 +34,12 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
         return errors
     }
 
-    private fun isLowerCamelCase(identifier: String): Boolean {
-        return identifier.matches("""^[a-z]+(?:[A-Z][a-z\d])$""".toRegex())
+    private fun isCamelCase(identifier: String): Boolean {
+        return identifier.matches(Regex("[a-z][a-zA-Z0-9]*"))
+    }
+
+    private fun isSnakeCase(identifier: String): Boolean {
+        return identifier.matches(Regex("[a-z][a-z_0-9]*"))
     }
 
     private fun isValidPrintlnArgument(argument: String): Boolean {
@@ -40,7 +47,11 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
     }
 
     private fun isCamelCaseRequired(config: VerificationConfig): Boolean {
-        return config.activeRules.any { it.name == "camel_case" && it.enabled }
+        return config.activeRules.any { it.name == "camelCase" && it.enabled }
+    }
+
+    private fun isSnakeCaseRequired(config: VerificationConfig): Boolean {
+        return config.activeRules.any { it.name == "snake_case" && it.enabled }
     }
 
     private fun isPrintlnArgumentCheckerEnabled(config: VerificationConfig): Boolean {

@@ -1,7 +1,7 @@
 {
   "activeRules": [
     {
-      "name": "camel_case",
+      "name": "camelCase",
       "enabled": true
     },
     {
