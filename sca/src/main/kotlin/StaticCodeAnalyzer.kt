@@ -34,11 +34,11 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
         return errors
     }
 
-    private fun isCamelCase(identifier: String): Boolean {
+    fun isCamelCase(identifier: String): Boolean {
         return identifier.matches(Regex("[a-z][a-zA-Z0-9]*"))
     }
 
-    private fun isSnakeCase(identifier: String): Boolean {
+    fun isSnakeCase(identifier: String): Boolean {
         return identifier.matches(Regex("[a-z][a-z_0-9]*"))
     }
 
@@ -46,11 +46,11 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
         return argument.matches("""^[\w\d]+$""".toRegex())
     }
 
-    private fun isCamelCaseRequired(config: VerificationConfig): Boolean {
+    fun isCamelCaseRequired(config: VerificationConfig): Boolean {
         return config.activeRules.any { it.name == "camelCase" && it.enabled }
     }
 
-    private fun isSnakeCaseRequired(config: VerificationConfig): Boolean {
+    fun isSnakeCaseRequired(config: VerificationConfig): Boolean {
         return config.activeRules.any { it.name == "snake_case" && it.enabled }
     }
 
