@@ -1,10 +1,10 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.IfNode
+import manager.Interpreter
+import manager.InterpreterManagerImplV11
 import reader.Reader
-import strategy.Interpreter
-import strategy.InterpreterManagerImplStrategyV11
 import variable.VariableMap
 
 class IfNodeInterpreter(val variableMap: VariableMap, val reader: Reader) : Interpreter {
@@ -17,11 +17,11 @@ class IfNodeInterpreter(val variableMap: VariableMap, val reader: Reader) : Inte
         val condition = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.condition)
         return when (condition) {
             "true" -> {
-                InterpreterManagerImplStrategyV11(variableMap, reader).interpret(ast.trueBranch).second
+                InterpreterManagerImplV11(variableMap, reader).interpret(ast.trueBranch).second
             }
 
             "false" -> {
-                InterpreterManagerImplStrategyV11(variableMap, reader).interpret(ast.elseBranch!!).second
+                InterpreterManagerImplV11(variableMap, reader).interpret(ast.elseBranch!!).second
             }
             else -> {
                 throw IllegalArgumentException("Condition must be a boolean")
