@@ -1,4 +1,4 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.BinaryOperationNode
@@ -6,7 +6,7 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import strategy.Interpreter
+import manager.Interpreter
 import variable.VariableMap
 
 class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {

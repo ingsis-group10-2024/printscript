@@ -1,4 +1,4 @@
-package strategy
+package manager
 
 import InterpreterManager
 import ast.ASTNode
@@ -12,16 +12,16 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
 import reader.Reader
-import strategy.interpreters.AssignationInterpreterV11
-import strategy.interpreters.BinaryOperationNodeInterpreterV11
-import strategy.interpreters.ConditionNodeInterpreter
-import strategy.interpreters.DeclarationNodeInterpreterV11
-import strategy.interpreters.IdentifierOperatorNodeInterpreter
-import strategy.interpreters.IfNodeInterpreter
-import strategy.interpreters.MethodNodeInterpreterV11
+import manager.interpreters.AssignationInterpreterV11
+import manager.interpreters.BinaryOperationNodeInterpreterV11
+import manager.interpreters.ConditionNodeInterpreter
+import manager.interpreters.DeclarationNodeInterpreterV11
+import manager.interpreters.IdentifierOperatorNodeInterpreter
+import manager.interpreters.IfNodeInterpreter
+import manager.interpreters.MethodNodeInterpreterV11
 import variable.VariableMap
 
-class InterpreterManagerImplStrategyV11(
+class InterpreterManagerImplV11(
     val variableMap: VariableMap,
     val reader: Reader,
 ) : InterpreterManager {

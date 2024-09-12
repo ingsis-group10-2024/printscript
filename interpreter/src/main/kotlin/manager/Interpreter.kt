@@ -1,4 +1,4 @@
-package strategy
+package manager
 
 import ast.ASTNode
 

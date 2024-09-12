@@ -1,9 +1,9 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.ConditionNode
 import reader.Reader
-import strategy.Interpreter
+import manager.Interpreter
 import variable.VariableMap
 
 class ConditionNodeInterpreter(val variableMap: VariableMap, val reader: Reader) : Interpreter {
