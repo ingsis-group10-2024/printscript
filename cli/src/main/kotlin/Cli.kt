@@ -159,7 +159,6 @@ Choose an option:
     - execute: execute the code
     - format: format the code
     - analyze: analyze the code
-    - validate: validate the code
     """,
     )
     Cli().main(args)

@@ -1,8 +1,8 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.IdentifierOperatorNode
-import strategy.Interpreter
+import manager.Interpreter
 import variable.VariableMap
 
 class IdentifierOperatorNodeInterpreter(val variableMap: VariableMap) : Interpreter {

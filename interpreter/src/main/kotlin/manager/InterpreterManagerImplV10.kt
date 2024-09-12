@@ -1,4 +1,4 @@
-package strategy
+package manager
 
 import InterpreterManager
 import ast.ASTNode
@@ -9,14 +9,14 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
-import strategy.interpreters.AssignationInterpreterV10
-import strategy.interpreters.BinaryOperationNodeInterpreterV10
-import strategy.interpreters.DeclarationNodeInterpreterV10
-import strategy.interpreters.IdentifierOperatorNodeInterpreter
-import strategy.interpreters.MethodNodeInterpreterV10
+import manager.interpreters.AssignationInterpreterV10
+import manager.interpreters.BinaryOperationNodeInterpreterV10
+import manager.interpreters.DeclarationNodeInterpreterV10
+import manager.interpreters.IdentifierOperatorNodeInterpreter
+import manager.interpreters.MethodNodeInterpreterV10
 import variable.VariableMap
 
-class InterpreterManagerImplStrategyV10(val variableMap: VariableMap) : InterpreterManager {
+class InterpreterManagerImplV10(val variableMap: VariableMap) : InterpreterManager {
     private val stringList = ArrayList<String>()
 
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, ArrayList<String>> {

@@ -1,8 +1,8 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.DeclarationNode
-import strategy.Interpreter
+import manager.Interpreter
 import token.TokenType
 import variable.VariableFactory
 import variable.VariableMap

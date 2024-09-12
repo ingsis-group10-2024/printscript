@@ -1,8 +1,8 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
-import strategy.Interpreter
+import manager.Interpreter
 import variable.VariableMap
 
 class MethodNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {

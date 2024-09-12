@@ -1,4 +1,4 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.BinaryOperationNode
@@ -8,8 +8,8 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import manager.Interpreter
 import reader.Reader
-import strategy.Interpreter
 import variable.VariableMap
 
 class BinaryOperationNodeInterpreterV11(
