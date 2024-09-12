@@ -128,7 +128,6 @@ si el file existe: elige que quiere hacer.
     - execute: ejecutar el codigo
     - format: formatear el codigo
     - analyze: analizar el codigo
-    - validate: validar el codigo
     - exit: salir
 promptear paso a paso.
 ir a la docu y como pasarle prompts por terminal
