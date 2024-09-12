@@ -1,14 +1,5 @@
 
-import ast.AssignationNode
-import ast.ConditionNode
-import ast.DeclarationAssignationNode
-import ast.DeclarationNode
-import ast.IdentifierOperatorNode
-import ast.IfNode
-import ast.MethodNode
-import ast.NumberOperatorNode
-import ast.Position
-import ast.StringOperatorNode
+import ast.*
 import implementation.Formatter
 import org.junit.Assert.assertEquals
 import token.TokenType
@@ -33,6 +24,95 @@ class FormatterTest {
         val result = formatter.format(listOf(declarationNode))
 
         val expected = "let x : number;\n"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBinaryOperationNodeFormatting(){
+        // Simula una operación binaria: 5 + 5;
+        val binaryOperationNode =
+            BinaryOperationNode(
+                left = NumberOperatorNode(5.0, Position(1, 1)),
+                right = NumberOperatorNode(5.0, Position(1, 5)),
+                symbol = "+",
+
+                )
+        val result = formatter.format(listOf(binaryOperationNode))
+
+        val expected = "5.0 + 5.0"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBinaryOperationNodeFormattingv2(){
+        // Simula una operación binaria: 5 + 5 * 5;
+        val binaryOperationNode =
+            BinaryOperationNode(
+                left = NumberOperatorNode(5.0, Position(1, 1)),
+                right = BinaryOperationNode(
+                    left = NumberOperatorNode(5.0, Position(1, 5)),
+                    right = NumberOperatorNode(5.0, Position(1, 9)),
+                    symbol = "*",
+                ),
+                symbol = "+",
+            )
+        val result = formatter.format(listOf(binaryOperationNode))
+
+        val expected = "5.0 + 5.0 * 5.0"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBinaryOperationNodeFormattingv3() {
+        // Simula una operación binaria: 5 + 5;
+        val binaryOperationNode = BinaryOperationNode(
+            left = NumberOperatorNode(5.0, Position(1, 1)),
+            right = NumberOperatorNode(5.0, Position(1, 5)),
+            symbol = "+"
+        )
+        val result = formatter.format(listOf(binaryOperationNode))
+        val expected = "5.0 + 5.0"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBinaryOperationNodeFormattingWithDifferentOperator() {
+        // Simula una operación binaria: 5 - 5;
+        val binaryOperationNode = BinaryOperationNode(
+            left = NumberOperatorNode(5.0, Position(1, 1)),
+            right = NumberOperatorNode(5.0, Position(1, 5)),
+            symbol = "-"
+        )
+        val result = formatter.format(listOf(binaryOperationNode))
+        val expected = "5.0 - 5.0"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBinaryOperationNodeFormattingWithNestedOperations() {
+        // Simula una operación binaria: 5 + 5 * 5;
+        val binaryOperationNode = BinaryOperationNode(
+            left = NumberOperatorNode(5.0, Position(1, 1)),
+            right = BinaryOperationNode(
+                left = NumberOperatorNode(5.0, Position(1, 5)),
+                right = NumberOperatorNode(5.0, Position(1, 9)),
+                symbol = "*"
+            ),
+            symbol = "+"
+        )
+        val result = formatter.format(listOf(binaryOperationNode))
+        val expected = "5.0 + 5.0 * 5.0"
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun testBooleanOperatorNodeFormatting(){
+        // Simula un operador booleano: true;
+        val booleanOperatorNode =
+            BooleanOperatorNode(true, Position(1, 1))
+        val result = formatter.format(listOf(booleanOperatorNode))
+
+        val expected = "true"
         assertEquals(expected, result)
     }
 

@@ -298,4 +298,54 @@ class InterpreterV11Test {
         variableMap.variableMap[Variable("x", "number", true)] = "5"
         assertEquals(variableMap, value.first)
     }
+
+    @Test
+    fun test013_WhenGivenAssignationNode_BeAbleToChangeTheValueOfAVariable() {
+        val declarationNode =
+            DeclarationNode(
+                "x",
+                TokenType.LET,
+                Position(0, 1),
+                "number",
+                Position(0, 1),
+            )
+        val numberOperatorNode =
+            NumberOperatorNode(
+                5.0,
+                Position(0, 1),
+            )
+        val declarationAssignationNode = DeclarationAssignationNode(declarationNode, numberOperatorNode)
+        val newNumber = NumberOperatorNode(20.0, Position(0, 1))
+        val assignationNode = AssignationNode("x", Position(0, 1), newNumber)
+
+        val result = interpreterV11.interpret(listOf(declarationAssignationNode, assignationNode))
+
+        assertEquals("20", result.first.variableMap[Variable("x", "number", true)])
+    }
+
+    @Test
+    fun test014_WhenGivenAssignationNode_WithTypeMismatchThrowError() {
+        val declarationNode =
+            DeclarationNode(
+                "x",
+                TokenType.LET,
+                Position(0, 1),
+                "number",
+                Position(0, 1),
+            )
+        val numberOperatorNode =
+            NumberOperatorNode(
+                5.0,
+                Position(0, 1),
+            )
+        val declarationAssignationNode = DeclarationAssignationNode(declarationNode, numberOperatorNode)
+        val newNumber = StringOperatorNode("Wololo", TokenType.STRING_LITERAL, Position(0, 1))
+        val assignationNode = AssignationNode("x", Position(0, 1), newNumber)
+
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                interpreterV11.interpret(listOf(declarationAssignationNode, assignationNode))
+            }
+        assertEquals("Type mismatch: number expected for variable x, but got Wololo", exception.message)
+    }
 }
