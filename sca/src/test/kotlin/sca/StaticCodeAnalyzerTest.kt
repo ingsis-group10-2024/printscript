@@ -1,7 +1,9 @@
 package sca
 
 import ast.DeclarationNode
+import ast.MethodNode
 import ast.Position
+import ast.StringOperatorNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import config.ConfigLoader
@@ -19,7 +21,7 @@ class StaticCodeAnalyzerTest {
         val configLoader =
             object : ConfigLoader {
                 override fun loadConfig(): VerificationConfig {
-                    return VerificationConfig(emptyList()) // No rules enabled
+                    return VerificationConfig(emptyList())
                 }
             }
         val analyzer = StaticCodeAnalyzer(configLoader)
@@ -46,18 +48,30 @@ class StaticCodeAnalyzerTest {
         assertEquals(0, errors.size)
     }
 
-    /**@Test
-     fun testAnalyzeWithPrintlnChecker() {
-     val astNodes = listOf(MethodNode("println", StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(0, 0)), Position(1, 0)))
-     val configLoader = object : ConfigLoader {
-     override fun loadConfig(): VerificationConfig {
-     return VerificationConfig(listOf(ConfigRule("printlnArgumentChecker", true)))
-     }
-     }
-     val analyzer = StaticCodeAnalyzer(configLoader)
-     val errors = analyzer.analyze(astNodes)
-     assertEquals(0, errors.size)
-     } */
+    @Test
+    fun testAnalyzeWithPrintlnChecker() {
+        val astNodes =
+            listOf(
+                MethodNode(
+                    "println",
+                    StringOperatorNode("Hello", TokenType.STRING_LITERAL, Position(0, 0)),
+                    Position(1, 0),
+                ),
+            )
+
+        val configLoader =
+            object : ConfigLoader {
+                override fun loadConfig(): VerificationConfig {
+                    return VerificationConfig(
+                        listOf(ConfigRule("printlnArgumentChecker", true)),
+                    )
+                }
+            }
+
+        val analyzer = StaticCodeAnalyzer(configLoader)
+        val errors = analyzer.analyze(astNodes)
+        assertEquals(0, errors.size)
+    }
 
     @Test
     fun testAnalyzeWithCamelCaseJSONConfiguration() {
@@ -207,5 +221,13 @@ class StaticCodeAnalyzerTest {
         assertEquals(false, analyzer.isSnakeCase("myVariable")) // camelCase no es snake_case
         assertEquals(false, analyzer.isSnakeCase("My_Variable")) // snake_case no debe tener letras mayúsculas
         assertEquals(true, analyzer.isSnakeCase("myvariable")) // snake_case permite solo letras minúsculas y números, pero aquí no se está usando ningún número
+    }
+
+    @Test
+    fun testStaticCodeAnalyzerErrorInitialization() {
+        val errorMessage = "Test error message"
+        val error = StaticCodeAnalyzerError(errorMessage)
+
+        assertEquals(errorMessage, error.message, "Error message should be initialized correctly")
     }
 }
