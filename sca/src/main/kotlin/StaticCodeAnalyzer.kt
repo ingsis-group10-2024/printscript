@@ -32,6 +32,11 @@ class StaticCodeAnalyzer(private val configLoader: ConfigLoader) {
                             errors.add(StaticCodeAnalyzerError("Expected identifier or literal but found '${node.value}' in println argument"))
                         }
                     }
+                    if (isReadInputCheckerEnabled(config) && node.name == "readInput") {
+                        if (!isIdentifierOrLiteral(node.value)) {
+                            errors.add(StaticCodeAnalyzerError("Expected identifier or literal but found '${node.value}' in readInput argument"))
+                        }
+                    }
                 }
                 else -> {}
             }
