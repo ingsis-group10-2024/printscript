@@ -109,8 +109,6 @@ private fun executeCode(
         tokens.add(token)
         token = lexer.getNextToken()
     }
-    println(tokens)
-
     val parser = Parser(tokens)
     val ast = parser.generateAST()
     val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
@@ -130,7 +128,6 @@ si el file existe: elige que quiere hacer.
     - execute: ejecutar el codigo
     - format: formatear el codigo
     - analyze: analizar el codigo
-    - validate: validar el codigo
     - exit: salir
 promptear paso a paso.
 ir a la docu y como pasarle prompts por terminal
@@ -161,7 +158,6 @@ Choose an option:
     - execute: execute the code
     - format: format the code
     - analyze: analyze the code
-    - validate: validate the code
     """,
     )
     Cli().main(args)

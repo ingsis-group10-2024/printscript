@@ -3,7 +3,13 @@
 
 root = true
 
-[*]
-# indent_style = space
-# max_line_length = 180 # use a positive number to set max line length
+[*.{kt,kts}]
+# or 2, 8..  use an integer number
+indent_size = 4
+
+# or 'tab'
+indent_style = space
+
+# or 180, use a positive number to set max line length
+max_line_length = off
 insert_final_newline = true

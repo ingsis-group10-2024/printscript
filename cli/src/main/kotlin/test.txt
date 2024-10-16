@@ -1,5 +1,5 @@
-let something: boolean = true;
-if (something)
+let somethingRandom: boolean = true;
+if (somethingRandom)
 {
   println("Entered if");
 }

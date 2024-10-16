@@ -45,7 +45,6 @@ class LexerV11(inputStream: InputStream) : Lexer {
                 // End of input, don't return a whitespace token
                 return null
             }
-            return tokenFactory.createToken(TokenType.WHITESPACE, whitespace, startPos, lineNumber)
         }
 
         currentChar ?: return null // End of input

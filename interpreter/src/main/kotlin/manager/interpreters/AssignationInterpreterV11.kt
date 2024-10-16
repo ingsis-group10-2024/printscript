@@ -1,11 +1,11 @@
-package strategy.interpreters
+package manager.interpreters
 
 import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.DeclarationAssignationNode
+import manager.Interpreter
 import reader.Reader
-import strategy.Interpreter
 import token.TokenType
 import variable.Variable
 import variable.VariableMap

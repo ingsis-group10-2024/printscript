@@ -1,0 +1,7 @@
+let x : number = 10;
+let y : number = 20;
+let z : number = 504;
+let w : number = y - x;
+println("hello world");
+const name: string = readInput("Please enter your name: ");
+println("Hello, " + name + "!");
