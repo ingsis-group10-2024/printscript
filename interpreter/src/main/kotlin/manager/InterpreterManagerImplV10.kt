@@ -9,6 +9,7 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.Printer
 import manager.interpreters.AssignationInterpreterV10
 import manager.interpreters.BinaryOperationNodeInterpreterV10
 import manager.interpreters.DeclarationNodeInterpreterV10
@@ -16,7 +17,7 @@ import manager.interpreters.IdentifierOperatorNodeInterpreter
 import manager.interpreters.MethodNodeInterpreterV10
 import variable.VariableMap
 
-class InterpreterManagerImplV10(val variableMap: VariableMap) : InterpreterManager {
+class InterpreterManagerImplV10(val variableMap: VariableMap, val outputter: Printer) : InterpreterManager {
     private val stringList = ArrayList<String>()
 
     override fun interpret(astList: List<ASTNode>): Pair<VariableMap, ArrayList<String>> {
@@ -29,23 +30,23 @@ class InterpreterManagerImplV10(val variableMap: VariableMap) : InterpreterManag
                 }
 
                 is Assignation -> {
-                    varMap = AssignationInterpreterV10(variableMap).interpret(ast).first
+                    varMap = AssignationInterpreterV10(variableMap, outputter).interpret(ast).first
                 }
 
                 is MethodNode -> {
-                    stringList.add(MethodNodeInterpreterV10(variableMap).interpret(ast))
+                    stringList.add(MethodNodeInterpreterV10(variableMap, outputter).interpret(ast))
                 }
 
                 is NumberOperatorNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap, outputter).interpret(ast))
                 }
 
                 is StringOperatorNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap, outputter).interpret(ast))
                 }
 
                 is BinaryOperationNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV10(variableMap, outputter).interpret(ast))
                 }
                 is IdentifierOperatorNode -> {
                     stringList.add(IdentifierOperatorNodeInterpreter(variableMap).interpret(ast).toString())

@@ -11,6 +11,7 @@ import ast.IfNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.Printer
 import manager.interpreters.AssignationInterpreterV11
 import manager.interpreters.BinaryOperationNodeInterpreterV11
 import manager.interpreters.ConditionNodeInterpreter
@@ -24,6 +25,7 @@ import variable.VariableMap
 class InterpreterManagerImplV11(
     val variableMap: VariableMap,
     val reader: Reader,
+    val outputter: Printer,
 ) : InterpreterManager {
     private val stringList = ArrayList<String>()
 
@@ -38,33 +40,33 @@ class InterpreterManagerImplV11(
                 }
 
                 is Assignation -> {
-                    varMap = AssignationInterpreterV11(variableMap, reader).interpret(ast).first
+                    varMap = AssignationInterpreterV11(variableMap, reader, outputter).interpret(ast).first
                 }
 
                 is MethodNode -> {
-                    stringList.add(MethodNodeInterpreterV11(variableMap, reader).interpret(ast))
+                    stringList.add(MethodNodeInterpreterV11(variableMap, reader, outputter).interpret(ast))
                 }
 
                 is IfNode -> {
-                    stringList.addAll(IfNodeInterpreter(variableMap, reader).interpret(ast))
+                    stringList.addAll(IfNodeInterpreter(variableMap, reader, outputter).interpret(ast))
                 }
 
                 is NumberOperatorNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader, outputter).interpret(ast))
                 }
 
                 is StringOperatorNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader, outputter).interpret(ast))
                 }
 
                 is BinaryOperationNode -> {
-                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast))
+                    stringList.add(BinaryOperationNodeInterpreterV11(variableMap, reader, outputter).interpret(ast))
                 }
                 is IdentifierOperatorNode -> {
                     stringList.add(IdentifierOperatorNodeInterpreter(variableMap).interpret(ast).toString())
                 }
                 is ConditionNode -> {
-                    ConditionNodeInterpreter(variableMap, reader).interpret(ast)
+                    ConditionNodeInterpreter(variableMap, reader, outputter).interpret(ast)
 //                    stringBuffer.append(BinaryOperationNodeInterpreter(variableMap, envVariableMap).interpret(ast))
                 }
                 else -> throw IllegalArgumentException("Invalid Node Type")

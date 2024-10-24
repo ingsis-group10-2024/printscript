@@ -2,10 +2,11 @@ package manager.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
+import emitter.Printer
 import manager.Interpreter
 import variable.VariableMap
 
-class MethodNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {
+class MethodNodeInterpreterV10(val variableMap: VariableMap, val outputter: Printer) : Interpreter {
     private val stringBuffer = StringBuffer()
 
     override fun interpret(ast: ASTNode): String {
@@ -17,7 +18,8 @@ class MethodNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {
     private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.value)
+                val value = BinaryOperationNodeInterpreterV10(variableMap, outputter).interpret(ast.value)
+                outputter.print(value)
                 stringBuffer.append(value)
             }
             else -> throw IllegalArgumentException(

@@ -4,13 +4,14 @@ import ast.ASTNode
 import ast.Assignation
 import ast.AssignationNode
 import ast.DeclarationAssignationNode
+import emitter.Printer
 import manager.Interpreter
 import reader.Reader
 import token.TokenType
 import variable.Variable
 import variable.VariableMap
 
-class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {
+class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader, val outputter: Printer) : Interpreter {
     private val stringBuffer = StringBuffer()
 
     override fun interpret(ast: ASTNode): Pair<VariableMap, String?> {
@@ -30,6 +31,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
                             reader,
+                            outputter,
                         ).interpret(ast.assignation)
                     if (verifyTypeCompatibility11(variable, value)) {
                         val newMap =
@@ -43,6 +45,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
                             reader,
+                            outputter,
                         ).interpret(ast.assignation)
                     if (verifyTypeCompatibility11(variable, value)) {
                         val newMap =
@@ -58,6 +61,7 @@ class AssignationInterpreterV11(val variableMap: VariableMap, val reader: Reader
                         BinaryOperationNodeInterpreterV11(
                             variableMap,
                             reader,
+                            outputter,
                         ).interpret(ast.assignation)
                     if (it.isMutable && verifyTypeCompatibility11(it, value)) {
                         val newMap = variableMap.copy(variableMap = variableMap.variableMap.apply { put(it, value) })
