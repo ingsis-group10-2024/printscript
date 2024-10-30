@@ -2,11 +2,13 @@ package manager.interpreters
 
 import ast.ASTNode
 import ast.MethodNode
+import emitter.Printer
+import emitter.PrinterEmitter
 import manager.Interpreter
 import reader.Reader
 import variable.VariableMap
 
-class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader) : Interpreter {
+class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader, val outputter: Printer) : Interpreter {
     private val stringBuffer = StringBuffer()
 
     override fun interpret(ast: ASTNode): String {
@@ -18,7 +20,8 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader)
     private fun interpretMethodNode(ast: MethodNode): String {
         when (ast.name) {
             "println" -> {
-                val value = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
+                val value = BinaryOperationNodeInterpreterV11(variableMap, reader, outputter).interpret(ast.value)
+                PrinterEmitter().print(value)
                 stringBuffer.append(value)
             }
             /*
@@ -30,7 +33,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader)
             readinput tiene que recibir un lector.
              */
             "readInput" -> {
-                val message = BinaryOperationNodeInterpreterV11(variableMap, reader).interpret(ast.value)
+                val message = BinaryOperationNodeInterpreterV11(variableMap, reader, outputter).interpret(ast.value)
                 // Read the input from the user
                 val inputValue = readInput(reader, message)
                 if (inputValue != null) {
@@ -40,7 +43,7 @@ class MethodNodeInterpreterV11(val variableMap: VariableMap, val reader: Reader)
                 }
             }
             "readEnv" -> {
-                val envValue = BinaryOperationNodeInterpreterV10(variableMap).interpret(ast.value)
+                val envValue = BinaryOperationNodeInterpreterV10(variableMap, outputter).interpret(ast.value)
                 return System.getenv(envValue)
             }
             else -> throw IllegalArgumentException(

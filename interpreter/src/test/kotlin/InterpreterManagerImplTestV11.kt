@@ -8,6 +8,7 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
+import emitter.PrinterEmitter
 import manager.InterpreterManagerImplV11
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,8 +26,8 @@ class InterpreterManagerImplTestV11 {
     fun setup() {
         val variableMap = VariableMap(HashMap())
         val reader = ConsoleInputReader()
-
-        interpreter = InterpreterManagerImplV11(variableMap, reader)
+        val outputter = PrinterEmitter()
+        interpreter = InterpreterManagerImplV11(variableMap, reader, outputter)
     }
 
     @Test
@@ -468,8 +469,9 @@ class InterpreterManagerImplTestV11 {
 
     @Test
     fun test033_WhenWantingToBuildAnInterpreterTheFactoryBuildsItDependingOnTheVersion() {
+        val outputter = PrinterEmitter()
         val variableMaptest = VariableMap(HashMap())
-        val factoryTestv10 = InterpreterFactory("1.0", variableMaptest, null).buildInterpreter()
+        val factoryTestv10 = InterpreterFactory("1.0", variableMaptest, null, outputter).buildInterpreter()
 
         val ast1 = BinaryOperationNode("/", NumberOperatorNode(14.0, Position(3, 1)), NumberOperatorNode(7.0, Position(5, 1)))
         val result = factoryTestv10.interpret(listOf(ast1))
