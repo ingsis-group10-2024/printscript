@@ -62,6 +62,7 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/ingsis-group10-2024/printscript")
+
             version = "2.1.10"
             credentials {
                 username = System.getenv("GITHUB_USERNAME") ?: ""
