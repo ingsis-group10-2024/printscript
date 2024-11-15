@@ -100,6 +100,7 @@ private fun executeCode(
     inputStream: InputStream,
 ) {
     val consoleInputReader = ConsoleInputReader()
+    val outputter = PrinterEmitter()
     val versionController = LexerVersionController()
     val lexer = versionController.getLexer(version, inputStream)
 
@@ -111,12 +112,13 @@ private fun executeCode(
     }
     val parser = Parser(tokens)
     val ast = parser.generateAST()
-    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader).buildInterpreter()
+    val interpreter = InterpreterFactory(version, VariableMap(HashMap()), consoleInputReader, outputter).buildInterpreter()
     try {
-        val interpretedList = interpreter.interpret(ast)
-        for (interpreted in interpretedList.second) {
-            PrinterEmitter().print(interpreted)
-        }
+        interpreter.interpret(ast)
+//        val interpretedList = interpreter.interpret(ast)
+// //        for (interpreted in interpretedList.second) {
+// //            PrinterEmitter().print(interpreted)
+// //        }
     } catch (e: Exception) {
         println(e.message)
     }

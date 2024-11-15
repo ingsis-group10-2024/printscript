@@ -7,6 +7,7 @@ import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.Position
 import ast.StringOperatorNode
+import emitter.PrinterEmitter
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -19,10 +20,11 @@ import kotlin.test.assertTrue
 class InterpreterV10Test {
     private lateinit var interpreterFactory: InterpreterFactory
     private lateinit var interpreterV10: InterpreterManager
+    private val outputter = PrinterEmitter()
 
     @BeforeEach
     fun setUp() {
-        interpreterFactory = InterpreterFactory("1.0", VariableMap(HashMap()), null)
+        interpreterFactory = InterpreterFactory("1.0", VariableMap(HashMap()), null, outputter)
         interpreterV10 = interpreterFactory.buildInterpreter()
     }
 

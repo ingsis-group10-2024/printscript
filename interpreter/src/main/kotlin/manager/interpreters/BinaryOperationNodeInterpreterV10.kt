@@ -6,10 +6,11 @@ import ast.IdentifierOperatorNode
 import ast.MethodNode
 import ast.NumberOperatorNode
 import ast.StringOperatorNode
+import emitter.Printer
 import manager.Interpreter
 import variable.VariableMap
 
-class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap) : Interpreter {
+class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap, val outputter: Printer) : Interpreter {
     override fun interpret(ast: ASTNode): String {
         return interpretBinaryNode(ast)
     }
@@ -18,7 +19,7 @@ class BinaryOperationNodeInterpreterV10(val variableMap: VariableMap) : Interpre
         return when (ast) {
             is NumberOperatorNode -> convertToString(ast.value)
             is StringOperatorNode -> ast.value
-            is MethodNode -> MethodNodeInterpreterV10(variableMap).interpret(ast)
+            is MethodNode -> MethodNodeInterpreterV10(variableMap, outputter).interpret(ast)
             is IdentifierOperatorNode -> IdentifierOperatorNodeInterpreter(variableMap).interpret(ast) as String
             is BinaryOperationNode -> interpretBinaryOperation(ast)
             else -> throw IllegalArgumentException("Invalid Operation")
